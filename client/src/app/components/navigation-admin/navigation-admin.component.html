@@ -1,0 +1,25 @@
+<div class="page-container">
+    <header class="header-custom">
+        <nav class="navbar navbar-light navbar-expand-md">
+            <div class="container">
+                <a class="navbar-brand custom-brand" routerLink="/">Ralenzo Hospedaje</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navcol-1" aria-controls="navcol-1" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div>
+                    <div class="dropdown">
+                        <div >
+                            <a class="dropdown-item text-color white">Cerrar sesión</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main class="content">
+        <router-outlet></router-outlet>
+    </main>
+    <footer>
+        <app-footer></app-footer>
+    </footer>
+</div>

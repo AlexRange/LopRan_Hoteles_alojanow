@@ -1,0 +1,84 @@
+/* Estilos Generales */
+.error-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(to right, #f7f9fc, #e3ebf2);
+    text-align: center;
+    padding: 20px;
+}
+
+.error-content {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    max-width: 600px;
+    width: 90%;
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* Imagen */
+.error-image img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+/* Animación de imagen */
+.animated-image {
+    animation: float 4s infinite ease-in-out;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+/* Texto */
+.error-title {
+    color: #34495e;
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.error-description {
+    color: #666;
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+/* Botón */
+.btn-home {
+    display: inline-block;
+    padding: 12px 24px;
+    background: #3498db;
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    border-radius: 6px;
+    transition: 0.3s ease-in-out;
+}
+
+.btn-home:hover {
+    background: #2980b9;
+    transform: scale(1.05);
+}
+
+/* Animación de entrada */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

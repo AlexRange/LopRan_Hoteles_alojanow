@@ -1,0 +1,90 @@
+/* Contenedor principal */
+.privacy-policy-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    min-height: 100vh;
+    background-color: #f9f9f9;
+}
+
+/* Tarjeta de contenido */
+.privacy-policy-card {
+    background: #ffffff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    border-radius: 10px;
+    width: 80%;
+    max-width: 850px;
+    padding: 30px;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Cabecera */
+.privacy-policy-header {
+    text-align: center;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #ddd;
+}
+
+.privacy-policy-header h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Contenido */
+.privacy-policy-content {
+    margin-top: 20px;
+    color: #444;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+/* Estilos de títulos */
+h4 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 25px;
+}
+
+/* Listas */
+ul {
+    padding-left: 20px;
+    list-style-type: disc;
+}
+
+ul li {
+    margin-bottom: 8px;
+}
+
+/* Párrafos */
+p {
+    margin: 10px 0;
+}
+
+/* Adaptación responsiva */
+@media (max-width: 768px) {
+    .privacy-policy-card {
+        width: 100%;
+        padding: 20px;
+    }
+
+    .privacy-policy-header h2 {
+        font-size: 20px;
+    }
+}
+
+/* Contenedor de los breadcrumbs */
+.breadcrumb-container {
+    margin: 20px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+
+/* Breadcrumbs */
+.breadcrumb {
+    margin-bottom: 0;
+    padding-left: 15px; /* Puedes ajustar este valor si necesitas más espacio */
+    padding-right: 15px; /* Lo mismo para el lado derecho */
+}

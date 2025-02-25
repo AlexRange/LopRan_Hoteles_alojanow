@@ -1,0 +1,152 @@
+/* Asegurar que el contenedor de la página no cause desbordamiento */
+.page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Full viewport height */
+    overflow-x: hidden; /* Evita el desbordamiento horizontal */
+    overflow-y: auto;   /* Permite el desbordamiento vertical si es necesario */
+}
+
+/* Asegurar que el menú desplegable se posicione correctamente */
+.dropdown-menu {
+    position: absolute;
+    top: 100%; /* Posiciona el menú justo debajo del ícono */
+    left: 0;   /* Alinea el menú con el ícono */
+    z-index: 1000; /* Asegura que el menú esté por encima de otros elementos */
+    min-width: 150px;
+    border-radius: 0.25rem; /* Bordes redondeados */
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); /* Sombra del menú */
+    overflow: hidden;
+    margin-top: 0.25rem;
+    white-space: nowrap; /* Evita que el texto se envuelva */
+}
+
+/* Asegurar que el dropdown se ajuste correctamente en pantallas pequeñas */
+.dropdown {
+    position: relative;
+    max-width: 100%; /* Asegura que no desborde el ancho de la pantalla */
+}
+
+/* Estilo para el ícono de usuario */
+.dropdown-toggle {
+    cursor: pointer;
+    width: 40px; /* Ajusta el tamaño del ícono */
+    height: 40px; /* Ajusta el tamaño del ícono */
+    border-radius: 50%; /* Haciendo que el ícono sea circular */
+    object-fit: cover; /* Ajusta la imagen dentro del contenedor circular */
+}
+
+/* Estilo para los elementos del menú desplegable */
+.dropdown-item {
+    cursor: pointer;
+    padding: 0.5rem 1rem; /* Aumenta el padding para mayor área de clic */
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+/* Asegurar que el dropdown no se recorte si está cerca del borde derecho */
+@media (max-width: 576px) {
+    .dropdown-menu {
+        left: auto;
+        right: 0; /* Alinea el menú al borde derecho en pantallas pequeñas */
+    }
+}
+
+/* Estilos generales para la cabecera y la navegación */
+.header-custom {
+    background-color: #2C2C2C; /* Cambia el color de fondo */
+    padding: 10px 0;
+}
+
+.custom-brand {
+    font-size: 1.5rem;
+    color: #ecf0f1; /* Color del texto de la marca */
+}
+
+.custom-brand:hover {
+    color: #bdc3c7;
+}
+
+.navbar-toggler {
+    border-color: #ecf0f1;
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='%23ecf0f1' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+.custom-link {
+    color: #ecf0f1;
+    font-weight: bold;
+}
+
+.custom-link:hover {
+    color: #bdc3c7; /* Cambia el color al hacer hover */
+}
+
+.custom-btn {
+    background-color: #e74c3c;
+    color: #fff;
+    border-radius: 25px;
+    padding: 5px 15px;
+    transition: background-color 0.3s ease;
+}
+
+.custom-btn:hover {
+    background-color: #c0392b; /* Cambia el color del botón al hacer hover */
+}
+
+.navbar {
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para el contenido principal */
+.content {
+    flex: 1; /* Allow content to expand and push footer down */
+    padding: 1rem; /* Optional: Add some padding for spacing */
+}
+
+/* Estilo para el footer */
+.footer {
+    background-color: #f8f9fa; /* Light grey background */
+    padding: 0.5rem; /* Smaller padding */
+    text-align: center;
+    font-size: 0.875rem; /* Smaller text size */
+}
+
+.view-toggle {
+    display: flex;
+    justify-content: center;
+    margin: 0.5rem;
+}
+
+.fa {
+    font-size: 1rem; /* Tamaño de los íconos */
+    cursor: pointer;
+    transition: color 0.3s ease;
+    margin: 0 1rem; /* Espaciado entre íconos */
+}
+
+.fa:hover {
+    color: #f8f9fa21 /* Color de cambio al pasar el mouse */
+}
+
+/* Estilo específico para la barra de navegación en la sección de administración */
+.header-custom .navbar-brand {
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.dropdown-menu {
+    min-width: 150px;
+    border-radius: 0.25rem; /* Bordes redondeados */
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); /* Sombra del menú */
+    overflow: hidden;
+}
+
+.dropdown-item {
+    cursor: pointer;
+}

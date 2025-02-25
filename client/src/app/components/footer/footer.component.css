@@ -1,0 +1,99 @@
+/* Estilos generales */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+}
+
+/* Contenedor principal del footer */
+.footer {
+    background: linear-gradient(135deg, #1a1a1a, #000000);
+    color: #fff;
+    padding: 40px 20px;
+    text-align: center;
+    width: 100%;
+    position: relative;
+    bottom: 0;
+    left: 0;
+}
+
+/* Redes Sociales */
+.social-icons {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.footer-icon {
+    transition: transform 0.3s;
+}
+
+/* Ajusta las imágenes de las redes sociales */
+.social-image {
+    width: 30px; /* Tamaño pequeño de la imagen */
+    height: 30px; /* Mantenemos la proporción de la imagen */
+    transition: transform 0.3s, filter 0.3s;
+}
+
+.social-image:hover {
+    transform: scale(1.1);
+    filter: brightness(1.2); /* Efecto para que resalten al pasar el ratón */
+}
+
+/* Estilo de las secciones */
+.footer h5 {
+    margin-bottom: 15px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #d4af37; /* Dorado */
+}
+
+/* Enlaces */
+.footer p, .footer a {
+    color: #ddd;
+    text-decoration: none;
+    font-size: 15px;
+    margin: 5px 0;
+    display: block;
+}
+
+.footer a:hover {
+    color: #d4af37;
+    text-decoration: underline;
+}
+
+/* Línea divisoria superior */
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    margin-top: 20px;
+    padding-top: 15px;
+    font-size: 14px;
+    color: #bbb;
+}
+
+/* Estilos para hacer las imágenes responsivas */
+@media (max-width: 768px) {
+    .social-icons {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .social-image {
+        width: 25px; /* Reducir el tamaño en pantallas pequeñas */
+        height: 25px;
+    }
+
+    .footer h5 {
+        font-size: 18px;
+    }
+
+    .footer p, .footer a {
+        font-size: 14px;
+    }
+}

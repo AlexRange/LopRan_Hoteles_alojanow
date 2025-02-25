@@ -1,0 +1,14 @@
+/* Contenedor de los breadcrumbs */
+.breadcrumb-container {
+    margin: 20px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+
+/* Breadcrumbs */
+.breadcrumb {
+    margin-bottom: 0;
+    padding-left: 15px; /* Puedes ajustar este valor si necesitas más espacio */
+    padding-right: 15px; /* Lo mismo para el lado derecho */
+}

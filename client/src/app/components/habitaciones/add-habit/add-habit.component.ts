@@ -1,0 +1,105 @@
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import Swal from 'sweetalert2';
+import { Habitaciones, Hoteles } from '../../../models/modelos';
+import { HabitacionesService } from '../../../services/habitaciones.service';
+import { HotelesService } from '../../../services/hoteles.service';
+
+@Component({
+  selector: 'app-add-habit',
+  standalone: false,
+  templateUrl: './add-habit.component.html',
+  styleUrl: './add-habit.component.css'
+})
+export class AddHabitComponent implements OnInit {
+  habitacionForm: FormGroup;
+  imagenHabitBase64: string = '';
+  hotelesget: Hoteles[] = [];
+
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private modal: NgbActiveModal,
+    private habitService: HabitacionesService,
+    private hotelSrv: HotelesService
+  ) {
+    this.habitacionForm = this.fb.group({
+      id_hotel: ['', Validators.required],
+      tipo_habitacion: ['', Validators.required],
+      descripcion: ['', Validators.required],
+      capacidad: ['', [Validators.required, Validators.min(1)]],
+      precio_noche: ['', [Validators.required]],
+      disponibilidad: [true, Validators.required],
+      imagen_habitacion: ['', Validators.required],
+      descripcion_imagen_hab: [''],
+    });
+  }
+
+  ngOnInit(): void {
+    this.getHoteles();
+  }
+
+  getHoteles() {
+    this.hotelSrv.getHotel().subscribe(
+      res => {
+        this.hotelesget = res;
+      },
+      err => console.error('Error fetching hoteles:', err)
+    );
+  }
+
+  onSubmit() {
+    if (this.habitacionForm.invalid) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Campos incompletos',
+        text: 'Por favor, completa todos los campos obligatorios.'
+      });
+      return;
+    }
+
+    const habitacion: Habitaciones = {
+      ...this.habitacionForm.value,
+  };
+
+  console.log('Enviando datos al backend:', habitacion);
+
+    this.habitService.saveHabitacion(habitacion).subscribe(
+      () => {
+        Swal.fire({
+          icon: 'success',
+          title: '¡Éxito!',
+          text: 'El hotel se ha guardado correctamente.'
+        }).then(() => {
+          this.close();
+        });
+      },
+      error => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Hubo un problema al guardar el hotel.'
+        });
+        console.error('Error guardando hotel:', error);
+      }
+    );
+  }
+
+  close() {
+    this.modal.dismiss();
+  }
+
+  onFileChange(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagenHabitBase64 = reader.result as string;
+        this.habitacionForm.patchValue({ imagen_habitacion: this.imagenHabitBase64 });
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+}

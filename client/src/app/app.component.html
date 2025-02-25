@@ -1,0 +1,12 @@
+<ng-container *ngIf="isAdmin; else regularNavigation">
+  <app-navigation-admin></app-navigation-admin>
+</ng-container>
+
+<ng-template #regularNavigation>
+  <app-navigation></app-navigation>
+</ng-template>
+
+<!-- Contenido principal -->
+<div class="container p-4">
+  <router-outlet></router-outlet>
+</div>

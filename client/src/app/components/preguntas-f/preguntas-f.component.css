@@ -1,0 +1,78 @@
+/* Estilos generales */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+}
+
+/* Contenedor principal de preguntas frecuentes */
+.faq-section {
+    padding: 40px 20px;
+    background-color: #fafafa;
+    min-height: 100vh;
+}
+
+/* Contenedor de las preguntas frecuentes */
+.faq-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+/* Título de la sección */
+.faq-title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+/* Tarjeta de cada pregunta */
+.faq-card {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 20px;
+}
+
+.faq-card:last-child {
+    border-bottom: none;
+}
+
+/* Estilo para la pregunta */
+.faq-question {
+    font-size: 18px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 10px;
+}
+
+/* Estilo para la respuesta */
+.faq-answer {
+    font-size: 16px;
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Contenedor de los breadcrumbs */
+.breadcrumb-container {
+    margin: 20px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+
+/* Breadcrumbs */
+.breadcrumb {
+    margin-bottom: 0;
+    padding-left: 15px; /* Puedes ajustar este valor si necesitas más espacio */
+    padding-right: 15px; /* Lo mismo para el lado derecho */
+}

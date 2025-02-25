@@ -1,0 +1,71 @@
+<div class="container mt-5" style="background-color: #F8F8F8;">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">Inicio Ad</li>
+            <li class="breadcrumb-item active" aria-current="page"></li>
+        </ol>
+    </nav>
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h1>Administrar habitaciones</h1>
+            <p class="lead">Gestión de habitaciones</p>
+            <hr class="my-4">
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12 d-flex justify-content-between">
+            <h4>Lista de Habitaciones</h4>
+            <button class="btn btn-primary" ngbTooltip="Agregar nueva Habitación" (click)="openModal()">
+                <i class="fas fa-plus"></i> Agregar habitacion
+            </button>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-12">
+            <table class="table-responsive table table-bordered table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>ID Hotel</th>
+                        <th>Tipo habitacion</th>
+                        <th>Descripción</th>
+                        <th>Capacidad</th>
+                        <th>Precio noche</th>
+                        <th>Disponibilidad</th>
+                        <th>Imagen habitacion</th>
+                        <th>Descripción imagen</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let hab of habitacionesget">
+                        <td> {{ hab.id_habitacion }} </td>
+                        <td> {{ hab.id_hotel }} </td>
+                        <td> {{ hab.tipo_habitacion }} </td>
+                        <td> {{ hab.descripcion }} </td>
+                        <td> {{ hab.capacidad }} </td>
+                        <td> $ {{ hab.precio_noche }} </td>
+                        <td> {{ hab.disponibilidad }} </td>
+                        <td>
+                            <img [src]="hab.imagen_habitacion" alt="Imagen de la Habitación" class="img-fluid rounded"
+                                style="max-width: 150px;">
+                        </td>
+                        <td> {{ hab.descripcion_imagen_hab }} </td>
+                        <td class="text-center">
+                            <button class="btn btn-success btn-sm" ngbTooltip="Editar Habitación"
+                                (click)="openModalEdit(hab)">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm ml-2" ngbTooltip="Eliminar Habitación"
+                                (click)="deleteHotel(hab.id_hotel)">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
