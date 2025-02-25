@@ -11,10 +11,10 @@ class ComentariosRoutes {
 
     config(): void {
         this.router.get('/', comentariosController.list);
-        this.router.get('/:id',comentariosController.getOne);
+        this.router.get('/:id_comentario',comentariosController.getOne);
         this.router.post('/',comentariosController.create);
-        this.router.put('/:id',comentariosController.update);
-        this.router.delete('/:id',comentariosController.delete);
+        this.router.put('/:id_comentario',comentariosController.update);
+        this.router.delete('/:id_comentario',comentariosController.delete);
     }
 
 }

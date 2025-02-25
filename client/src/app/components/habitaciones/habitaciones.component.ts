@@ -32,7 +32,7 @@ export class HabitacionesComponent implements OnInit {
     );
   }
 
-  deleteHotel(id_habitacion: number) {
+  deleteHabitacion(id_habitacion: number) {
     Swal.fire({
       title: '¿Estás seguro?',
       icon: 'warning',

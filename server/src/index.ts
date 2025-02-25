@@ -41,7 +41,7 @@ class Server {
         this.app.use('/api/pagos', pagosRoutes);
         this.app.use('/api/promociones', promocionesRoutes);
         this.app.use('/api/reservaciones-servicios', reservacionesRoutes);
-        this.app.use('/api/servicios-adicionales', serviciosAdicionalesRoutes);
+        this.app.use('/api/s ervicios-adicionales', serviciosAdicionalesRoutes);
     }
 
     start() {
