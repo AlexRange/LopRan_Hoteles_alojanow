@@ -21,7 +21,14 @@ import { AddHComponent } from './components/hoteles/add-h/add-h.component';
 import { PrivacidadComponent } from './components/privacidad/privacidad.component';
 import { NosotrsoComponent } from './components/nosotrso/nosotrso.component';
 import { PreguntasFComponent } from './components/preguntas-f/preguntas-f.component';
+
 import { CarruselComponent } from './components/carrusel/carrusel.component';
+
+import { ComentariosComponent } from './components/comentarios/comentarios.component';
+import { PromocionesComponent } from './components/promociones/promociones.component';
+import { AddPComponent } from './components/promociones/add-p/add-p.component';
+import { UpdatePComponent } from './components/promociones/update-p/update-p.component';
+
 
 @NgModule({
   declarations: [
@@ -42,6 +49,10 @@ import { CarruselComponent } from './components/carrusel/carrusel.component';
     NosotrsoComponent,
     PreguntasFComponent,
     CarruselComponent,
+    ComentariosComponent,
+    PromocionesComponent,
+    AddPComponent,
+    UpdatePComponent,
   ],
   imports: [
     BrowserModule,

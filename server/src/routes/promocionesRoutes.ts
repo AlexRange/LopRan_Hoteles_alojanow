@@ -11,10 +11,10 @@ class PromocionesRoutes {
 
     config(): void {
         this.router.get('/', promocionesController.list);
-        this.router.get('/:id',promocionesController.getOne);
+        this.router.get('/:id_promocion',promocionesController.getOne);
         this.router.post('/',promocionesController.create);
-        this.router.put('/:id',promocionesController.update);
-        this.router.delete('/:id',promocionesController.delete);
+        this.router.put('/:id_promocion',promocionesController.update);
+        this.router.delete('/:id_promocion',promocionesController.delete);
     }
 }
 

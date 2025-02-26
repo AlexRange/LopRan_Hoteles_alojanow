@@ -13,10 +13,10 @@ class PromocionesController {
     }
 
     public async getOne(req: Request, res: Response): Promise<any> {
-        const { id } = req.params;
+        const { id_promocion } = req.params;
         try {
             const connection = await poolPromise;
-            const promocion = await connection.query('SELECT * FROM promociones WHERE id = ?', [id]);
+            const promocion = await connection.query('SELECT * FROM promociones WHERE id_promocion = ?', [id_promocion]);
             if (promocion.length > 0) {
                 return res.json(promocion[0]);
             }
@@ -37,10 +37,10 @@ class PromocionesController {
     }
 
     public async delete(req: Request, res: Response): Promise<void> {
-        const { id } = req.params;
+        const { id_promocion } = req.params;
         try {
             const connection = await poolPromise;
-            await connection.query('DELETE FROM promociones WHERE id = ?', [id]);
+            await connection.query('DELETE FROM promociones WHERE id_promocion = ?', [id_promocion]);
             res.json({ message: "La promoción fue eliminada" });
         } catch (error) {
             res.status(500).json({ text: 'Error al eliminar la promoción', error });
@@ -48,10 +48,10 @@ class PromocionesController {
     }
 
     public async update(req: Request, res: Response): Promise<void> {
-        const { id } = req.params;
+        const { id_promocion } = req.params;
         try {
             const connection = await poolPromise;
-            await connection.query('UPDATE promociones set ? WHERE id = ?', [req.body, id]);
+            await connection.query('UPDATE promociones set ? WHERE id_promocion = ?', [req.body, id_promocion]);
             res.json({ message: "La promoción fue actualizada" });
         } catch (error) {
             res.status(500).json({ text: 'Error al actualizar la promoción', error });

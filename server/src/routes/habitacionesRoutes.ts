@@ -11,10 +11,10 @@ class HabitacionesRoutes {
 
     config(): void {
         this.router.get('/', habitacionesController.list);
-        this.router.get('/:id', habitacionesController.getOne);
+        this.router.get('/:id_habitacion', habitacionesController.getOne);
         this.router.post('/', habitacionesController.create);
-        this.router.put('/:id', habitacionesController.update);
-        this.router.delete('/:id', habitacionesController.delete);
+        this.router.put('/:id_habitacion', habitacionesController.update);
+        this.router.delete('/:id_habitacion', habitacionesController.delete);
     }
 
 }

@@ -60,36 +60,36 @@
 
 /* Agregar imágenes de fondo específicas para cada panel */
 .panel:nth-child(1) {
-    background-image: url('https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.forbes.co%2F2020%2F02%2Fsofitel-legend-santa-clara-outdoor-pool.jpg&f=1&nofb=1&ipt=7ba5683717ae4126482352190bcbdb41c255a10ea52e78bf82855881a50c9c8b&ipo=images');
+    background-image: url('../../../../public/assets/web-hoteles.jpg');
 }
 
-/*.panel:nth-child(2) {
+.panel:nth-child(2) {
     background-image: url('../../../../public/assets/web-hoteles.jpg');
 }
 
 .panel:nth-child(3) {
-    background-image: url('../../../../public/assets/web-hoteles.jpg');
+    background-image: url('../../../assets/web-hoteles.jpg');
 }
 
 .panel:nth-child(4) {
-    background-image: url('../../../../public/assets/web-hoteles.jpg');
+    background-image: url('../../../assets/web-hoteles.jpg');
 }
 
 .panel:nth-child(5) {
-    background-image: url('../../../../public/assets/web-hoteles.jpg');
+    background-image: url('../../../assets/web-hoteles.jpg');
 }
 
 .panel:nth-child(6) {
-    background-image: url('../../../../public/assets/web-hoteles.jpg');
+    background-image: url('../../../assets/web-hoteles.jpg');
 }
 
 .panel:nth-child(7) {
-    background-image: url('../../../../public/assets/web-hoteles.jpg');
+    background-image: url('../../../assets/web-hoteles.jpg');
 }
 
 .panel:nth-child(8) {
     background-image: url('../../../../public/assets/web-hoteles.jpg');
-}/*
+}
 
 /* Efecto de opacidad sobre la imagen para mejorar la visibilidad del texto */
 .panel:before {

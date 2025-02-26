@@ -14,9 +14,9 @@ class ComentariosController {
 
     public async getOne(req: Request, res: Response): Promise<Response> {
         try {
-            const { id_habitacion } = req.params;
+            const { id_comentario } = req.params;
             const pool = await poolPromise;
-            const comentario = await pool.query('SELECT * FROM comentarios_calificaciones WHERE id_habitacion = ?', [id_habitacion]);
+            const comentario = await pool.query('SELECT * FROM comentarios_calificaciones WHERE id_comentario = ?', [id_comentario]);
             if (comentario.length > 0) {
                 return res.json(comentario[0]);
             }
@@ -38,9 +38,9 @@ class ComentariosController {
 
     public async delete(req: Request, res: Response): Promise<void> {
         try {
-            const { id_habitacion } = req.params;
+            const { id_comentario } = req.params;
             const pool = await poolPromise;
-            await pool.query('DELETE FROM comentarios_calificaciones WHERE id_habitacion = ?', [id_habitacion]);
+            await pool.query('DELETE FROM comentarios_calificaciones WHERE id_comentario = ?', [id_comentario]);
             res.json({ message: "El comentario fue eliminado" });
         } catch (err) {
             res.status(500).json({ message: 'Error al eliminar el comentario', error: err });
@@ -49,9 +49,9 @@ class ComentariosController {
 
     public async update(req: Request, res: Response): Promise<void> {
         try {
-            const { id_habitacion } = req.params;
+            const { id_comentario } = req.params;
             const pool = await poolPromise;
-            await pool.query('UPDATE comentarios_calificaciones SET ? WHERE id_habitacion = ?', [req.body, id_habitacion]);
+            await pool.query('UPDATE comentarios_calificaciones SET ? WHERE id_comentario = ?', [req.body, id_comentario]);
             res.json({ message: "El comentario fue actualizado" });
         } catch (err) {
             res.status(500).json({ message: 'Error al actualizar el comentario', error: err });

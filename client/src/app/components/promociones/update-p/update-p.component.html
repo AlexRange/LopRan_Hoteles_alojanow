@@ -1,0 +1,47 @@
+<div class="card shadow-sm border-light">
+    <div class="card-body border-dark">
+        <div class="modal-header" style="background: #04ac84; color: white; border-radius: 5px 5px 0 0;">
+            <h2 class="mb-4 text-center">Agregar Nueva Promoción</h2>
+        </div>
+        <div class="container p-4">
+            <form [formGroup]="promocionForm" (ngSubmit)="onSubmit()">
+                <div class="form-group mb-4">
+                    <label for="id_hotel" class="form-label">Hotel:</label>
+                    <select id="id_hotel" formControlName="id_hotel" class="form-control" required>
+                        <option *ngFor="let hotel of hotelesget" [value]="hotel.id_hotel">{{ hotel.nombre }}</option>
+                    </select>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="descripcion" class="form-label">Descripción:</label>
+                    <textarea id="descripcion" formControlName="descripcion" class="form-control"
+                        placeholder="Ingresa una breve descripción de la promoción" required></textarea>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="descuento" class="form-label">Descuento (%):</label>
+                    <input type="number" id="descuento" formControlName="descuento" class="form-control"
+                        placeholder="Ingresa el porcentaje de descuento" min="0" max="100" required />
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="fecha_inicio" class="form-label">Fecha de Inicio:</label>
+                    <input type="date" id="fecha_inicio" formControlName="fecha_inicio" class="form-control" required />
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="fecha_fin" class="form-label">Fecha de Fin:</label>
+                    <input type="date" id="fecha_fin" formControlName="fecha_fin" class="form-control" required />
+                </div>
+
+                <div class="container mt-4">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button class="btn btn-success btn-block" type="submit">Guardar Promoción</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

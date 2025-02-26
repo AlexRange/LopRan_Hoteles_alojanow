@@ -7,6 +7,9 @@ import { Error404Component } from './components/error404/error404.component';
 import { HotelesComponent } from './components/hoteles/hoteles.component';
 import { PrivacidadComponent } from './components/privacidad/privacidad.component';
 import { PreguntasFComponent } from './components/preguntas-f/preguntas-f.component';
+import { NosotrsoComponent } from './components/nosotrso/nosotrso.component';
+import { ComentariosComponent } from './components/comentarios/comentarios.component';
+import { PromocionesComponent } from './components/promociones/promociones.component';
 
 const routes: Routes = [
   {
@@ -31,12 +34,24 @@ const routes: Routes = [
     component: HotelesComponent
   },
   {
+    path: 'comentarios-admin',
+    component: ComentariosComponent
+  },
+  {
+    path: 'promociones-admin',
+    component: PromocionesComponent
+  },
+  {
     path: 'preguntas-frec',
     component: PreguntasFComponent
   },
   {
     path: 'privacidad',
     component: PrivacidadComponent
+  },
+  {
+    path: 'nosotros',
+    component: NosotrsoComponent
   },
   {
     path: '**',

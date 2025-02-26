@@ -1,0 +1,62 @@
+<div class="container mt-5" style="background-color: #F8F8F8;">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">Inicio Ad</li>
+            <li class="breadcrumb-item active" aria-current="page"></li>
+        </ol>
+    </nav>
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h1>Administrar Promociones</h1>
+            <p class="lead">Gestión de promociones de hoteles</p>
+            <hr class="my-4">
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12 d-flex justify-content-between">
+            <h4>Lista de Promociones</h4>
+            <button class="btn btn-primary" ngbTooltip="Agregar nueva promoción" (click)="openModal()">
+                <i class="fas fa-plus"></i> Agregar Promoción
+            </button>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-12">
+            <table class="table-responsive table table-bordered table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>ID Promoción</th>
+                        <th>ID Hotel</th>
+                        <th>Descripción</th>
+                        <th>Descuento (%)</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let prom of promocionesget">
+                        <td> {{ prom.id_promocion }} </td>
+                        <td> {{ prom.id_hotel }} </td>
+                        <td> {{ prom.descripcion }} </td>
+                        <td> {{ prom.descuento }}%</td>
+                        <td> {{ prom.fecha_inicio | date:'dd/MM/yyyy' }} </td>
+                        <td> {{ prom.fecha_fin | date:'dd/MM/yyyy' }} </td>
+                        <td class="text-center">
+                            <button class="btn btn-success btn-sm" ngbTooltip="Editar promoción"
+                                (click)="openModalEdit(prom)">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm ml-2" ngbTooltip="Eliminar promoción"
+                                (click)="deletePromocion(prom.id_promocion)">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
