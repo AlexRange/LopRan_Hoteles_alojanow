@@ -1,10 +1,9 @@
 <div class="page-container">
     <header class="header-custom">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <nav class="navbar navbar-expand-lg navbar-light">
             <div class="container">
                 <a class="navbar-brand custom-brand" routerLink="/">Ralenzo Hospedaje</a>
 
-                <!-- Botón para el menú en dispositivos móviles -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -34,19 +33,23 @@
                         </li>
                     </ul>
 
-                    <!-- Botón de inicio de sesión si el usuario NO ha iniciado sesión -->
+                    <div class="search-box">
+                        <form>
+                            <input type="text" placeholder="Search">
+                            <button type="submit"><i class="fa fa-search"></i></button>
+                        </form>
+                    </div>
+
                     <div *ngIf="!(auth.isAuthenticated$ | async)" class="d-flex">
-                        <button type="button" class="btn btn-primary me-3" (click)="login()">
+                        <button type="button" class="btn-login" (click)="login()">
                             Iniciar sesión
                         </button>
                     </div>
 
-                    <!-- Nombre e imagen del usuario si ha iniciado sesión -->
                     <div *ngIf="auth.isAuthenticated$ | async" class="user-menu d-flex align-items-center">
                         <span class="user-name me-2 d-none d-md-block">{{ userName }}</span>
                         <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle user-button" type="button" id="userMenu"
-                                data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="user-button" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
                                 <img [src]="userPicture" class="user-avatar" alt="User Avatar">
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
@@ -62,12 +65,4 @@
             </div>
         </nav>
     </header>
-
-    <main class="content">
-        <router-outlet></router-outlet>
-    </main>
-
-    <footer class="footer">
-        <app-footer></app-footer>
-    </footer>
 </div>

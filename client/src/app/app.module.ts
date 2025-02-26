@@ -21,6 +21,7 @@ import { AddHComponent } from './components/hoteles/add-h/add-h.component';
 import { PrivacidadComponent } from './components/privacidad/privacidad.component';
 import { NosotrsoComponent } from './components/nosotrso/nosotrso.component';
 import { PreguntasFComponent } from './components/preguntas-f/preguntas-f.component';
+import { CarruselComponent } from './components/carrusel/carrusel.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { PreguntasFComponent } from './components/preguntas-f/preguntas-f.compon
     PrivacidadComponent,
     NosotrsoComponent,
     PreguntasFComponent,
+    CarruselComponent,
   ],
   imports: [
     BrowserModule,

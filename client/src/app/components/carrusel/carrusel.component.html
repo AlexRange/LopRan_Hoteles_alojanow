@@ -1,0 +1,23 @@
+<!-- 🏞 Sección 1: Carrusel -->
+<div class="carousel">
+    <div class="list">
+      <div *ngFor="let item of items" class="item" [ngStyle]="{'background-image': 'url(' + item.image + ')'}">
+        <div class="content">
+          <div class="title">{{ item.title }}</div>
+          <div class="name">{{ item.name }}</div>
+          <div class="des">{{ item.description }}</div>
+          <div class="btn">
+            <button>Ver Mas</button>
+            <button>Reservar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <div class="arrows">
+      <button class="prev" (click)="showSlider('prev')"><</button>
+      <button class="next" (click)="showSlider('next')">></button>
+    </div>
+    <div class="timeRunning"></div>
+  </div>
+  
