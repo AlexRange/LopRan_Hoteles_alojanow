@@ -1,15 +1,20 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { CarruselComponent } from './components/carrusel/carrusel.component';
+import { ComentariosComponent } from './components/comentarios/comentarios.component';
+import { Error404Component } from './components/error404/error404.component';
 import { HabitacionesComponent } from './components/habitaciones/habitaciones.component';
 import { HomeAdminComponent } from './components/home-admin/home-admin.component';
 import { HomeComponent } from './components/home/home.component';
-import { Error404Component } from './components/error404/error404.component';
+import { HabitHotelComponent } from './components/hoteles-cliente/habit-hotel/habit-hotel.component';
+import { HotelesClienteComponent } from './components/hoteles-cliente/hoteles-cliente.component';
 import { HotelesComponent } from './components/hoteles/hoteles.component';
-import { PrivacidadComponent } from './components/privacidad/privacidad.component';
-import { PreguntasFComponent } from './components/preguntas-f/preguntas-f.component';
 import { NosotrsoComponent } from './components/nosotrso/nosotrso.component';
-import { ComentariosComponent } from './components/comentarios/comentarios.component';
+import { PreguntasFComponent } from './components/preguntas-f/preguntas-f.component';
+import { PrivacidadComponent } from './components/privacidad/privacidad.component';
 import { PromocionesComponent } from './components/promociones/promociones.component';
+import { ReservacionesHabComponent } from './components/reservaciones-hab/reservaciones-hab.component';
+import { HotelesDesComponent } from './components/hoteles-cliente/hoteles-des/hoteles-des.component';
 
 const routes: Routes = [
   {
@@ -19,7 +24,24 @@ const routes: Routes = [
   },
   {
     path: 'home',
+    component: CarruselComponent
+  },
+  {
+    path: 'home-sin-usar',
     component: HomeComponent
+  },
+  {
+    path: 'hoteles',
+    component: HotelesClienteComponent
+  },
+  {
+    path: 'hoteles/:id_hotel',
+    component: HabitHotelComponent
+  },
+  
+  {
+    path: 'hoteles-destacados',
+    component: HotelesDesComponent
   },
   {
     path: 'home-admin',

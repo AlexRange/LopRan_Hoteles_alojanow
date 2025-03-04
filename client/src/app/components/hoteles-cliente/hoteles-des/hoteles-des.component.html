@@ -1,0 +1,35 @@
+<div class="container mt-4">
+    <!-- Migas de pan mejoradas -->
+    <nav aria-label="breadcrumb" class="breadcrumb-container">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/home">Inicio</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Hoteles</li>
+        </ol>
+    </nav>
+
+    <!-- Listado de hoteles -->
+    <div class="row">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let hotel of hoteles">
+            <div class="card hotel-card">
+                <!-- Imagen responsiva -->
+                <img [src]="hotel.imagen_hotel" class="card-img-top" [alt]="hotel.nombre" />
+                <div class="card-body">
+                    <h5 class="card-title">{{ hotel.nombre }}</h5>
+                    <p class="hotel-location">
+                        <i class="fas fa-map-marker-alt"></i> {{ hotel.direccion }}, {{ hotel.ciudad }}, {{ hotel.pais }}
+                    </p>
+                    <p class="card-text">{{ hotel.descripcion }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <!-- Estrellas -->
+                        <div class="star-rating">
+                            <span *ngFor="let star of [1, 2, 3, 4, 5]; let i = index">
+                                <i class="fas fa-star" [ngClass]="{'text-warning': i < hotel.estrellas, 'text-secondary': i >= hotel.estrellas}"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <a [routerLink]="['/hoteles', hotel.id_hotel]" class="btn btn-primary mt-3">Ver habitaciones</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

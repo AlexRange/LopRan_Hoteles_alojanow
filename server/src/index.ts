@@ -9,9 +9,10 @@ import hotelesRoutes from './routes/hotelesRoutes';
 import loginRoutes from './routes/loginRoutes';
 import pagosRoutes from './routes/PagosRoutes';
 import promocionesRoutes from './routes/promocionesRoutes';
-import reservacionesRoutes from './routes/reservacionesRoutes';
-import serviciosAdicionalesRoutes from './routes/ServiciosAdicionalesRoutes';
+import reservacionesHabitacionesRoutes from './routes/reservacionesHbitacionesRoutes'
+import reservacionesServiciosRoutes from './routes/reservacionesServiciosRoutes';
 import UsuariosRoutes from './routes/usuariosRoutes';
+import serviciosAdicionalesRoutes from './routes/serviciosAdicionalesRoutes';
 
 class Server {
     public app : Application
@@ -34,14 +35,14 @@ class Server {
     routes(): void {
         this.app.use('/api/users', UsuariosRoutes);
         this.app.use('/api/login', loginRoutes);
-        this.app.use('/api/reservaciones', reservacionesRoutes);
+        this.app.use('/api/reservaciones', reservacionesHabitacionesRoutes);
         this.app.use('/api/comentarios', comentariosRoutes);
         this.app.use('/api/habitaciones', habitacionesRoutes);
         this.app.use('/api/hoteles', hotelesRoutes);
         this.app.use('/api/pagos', pagosRoutes);
         this.app.use('/api/promociones', promocionesRoutes);
-        this.app.use('/api/reservaciones-servicios', reservacionesRoutes);
-        this.app.use('/api/s ervicios-adicionales', serviciosAdicionalesRoutes);
+        this.app.use('/api/reservacionesSer', reservacionesServiciosRoutes);
+        this.app.use('/api/serviciosAd', serviciosAdicionalesRoutes);
     }
 
     start() {

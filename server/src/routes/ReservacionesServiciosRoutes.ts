@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import reservacionesServiciosController from '../controllers/ReservacionesServiciosController';
+import reservacionesServiciosController from '../controllers/reservacionesServiciosController';
 
 class ReservacionesServiciosRoutes {
     public router: Router = Router();
@@ -11,11 +11,12 @@ class ReservacionesServiciosRoutes {
 
     config(): void {
         this.router.get('/', reservacionesServiciosController.list);
-        this.router.get('/:id',reservacionesServiciosController.getOne);
+        this.router.get('/:id_reservacion',reservacionesServiciosController.getOne);
         this.router.post('/',reservacionesServiciosController.create);
-        this.router.put('/:id',reservacionesServiciosController.update);
-        this.router.delete('/:id',reservacionesServiciosController.delete);
+        this.router.put('/:id_reservacion',reservacionesServiciosController.update);
+        this.router.delete('/:id_reservacion',reservacionesServiciosController.delete);
     }
+
 }
 
 const reservacionesServiciosRoutes = new ReservacionesServiciosRoutes();

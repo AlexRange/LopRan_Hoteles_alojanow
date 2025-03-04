@@ -1,0 +1,75 @@
+<div class="container mt-5" style="background-color: #F8F8F8;">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">Inicio Ad</li>
+            <li class="breadcrumb-item active" aria-current="page"></li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h1>Administrar Reservaciones</h1>
+            <p class="lead">Gestión de reservaciones de habitaciones</p>
+            <hr class="my-4">
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12 d-flex justify-content-between">
+            <h4>Lista de Reservaciones</h4>
+            <button class="btn btn-primary" ngbTooltip="Agregar nueva reservación" (click)="openModal()">
+                <i class="fas fa-plus"></i> Agregar Reservación
+            </button>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-12">
+            <table class="table-responsive table table-bordered table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>ID Usuario</th>
+                        <th>ID Habitación</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Precio Total</th>
+                        <th>Estado</th>
+                        <th>Fecha de Reservación</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let reservacion of reservacionesget">
+                        <td> {{ reservacion.id_reservacion }} </td>
+                        <td> {{ reservacion.id_usuario }} </td>
+                        <td> {{ reservacion.id_habitacion }} </td>
+                        <td> {{ reservacion.fecha_inicio }} </td>
+                        <td> {{ reservacion.fecha_fin }} </td>
+                        <td> {{ reservacion.precio_total | currency }}</td>
+                        <td>
+                            <span [ngClass]="{
+                                'badge badge-warning': reservacion.estado === 'pendiente',
+                                'badge badge-success': reservacion.estado === 'confirmada',
+                                'badge badge-danger': reservacion.estado === 'cancelada'
+                            }">
+                                {{ reservacion.estado }}
+                            </span>
+                        </td>
+                        <td> {{ reservacion.fecha_reservacion }} </td>
+                        <td class="text-center">
+                            <button class="btn btn-success btn-sm" ngbTooltip="Editar reservación"
+                                (click)="openModalEdit(reservacion)">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm ml-2" ngbTooltip="Eliminar reservación"
+                                (click)="deleteReservacion(reservacion.id_reservacion)">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -3,51 +3,40 @@
         <nav class="navbar navbar-expand-lg navbar-light">
             <div class="container">
                 <a class="navbar-brand custom-brand" routerLink="/">Ralenzo Hospedaje</a>
-
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="hotelesDropdown" role="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                Hoteles
-                            </a>
+                                data-bs-toggle="dropdown" aria-expanded="false">Hoteles</a>
                             <ul class="dropdown-menu" aria-labelledby="hotelesDropdown">
-                                <li><a class="dropdown-item" href="#">Explorar Hoteles</a></li>
-                                <li><a class="dropdown-item" href="#">Hoteles Destacados</a></li>
+                                <li><a class="dropdown-item" href="/hoteles">Explorar Hoteles</a></li>
+                                <li><a class="dropdown-item" href="/hoteles-destacados">Hoteles Destacados</a></li>
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="promocionesDropdown" role="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                Promociones
-                            </a>
+                                data-bs-toggle="dropdown" aria-expanded="false">Promociones</a>
                             <ul class="dropdown-menu" aria-labelledby="promocionesDropdown">
                                 <li><a class="dropdown-item" href="#">Promociones Activas</a></li>
                                 <li><a class="dropdown-item" href="#">Hoteles con Descuento</a></li>
                             </ul>
                         </li>
                     </ul>
-
                     <div class="search-box">
                         <form>
                             <input type="text" placeholder="Search">
                             <button type="submit"><i class="fa fa-search"></i></button>
                         </form>
                     </div>
-
                     <div *ngIf="!(auth.isAuthenticated$ | async)" class="d-flex">
-                        <button type="button" class="btn-login" (click)="login()">
-                            Iniciar sesión
-                        </button>
+                        <button type="button" class="btn-login" (click)="login()">Iniciar sesión</button>
                     </div>
-
                     <div *ngIf="auth.isAuthenticated$ | async" class="user-menu d-flex align-items-center">
-                        <span class="user-name me-2 d-none d-md-block">{{ userName }}</span>
+                        <span class="user-name me-2 d-none d-md-block" style="color: white;">{{ userName }}</span>
                         <div class="dropdown">
                             <button class="user-button" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
                                 <img [src]="userPicture" class="user-avatar" alt="User Avatar">
@@ -65,4 +54,10 @@
             </div>
         </nav>
     </header>
+    <main class="content">
+        <router-outlet></router-outlet>
+    </main>
+    <footer>
+        <app-footer></app-footer>
+    </footer>
 </div>

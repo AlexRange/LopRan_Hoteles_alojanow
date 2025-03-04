@@ -60,11 +60,11 @@
 
 /* Agregar imágenes de fondo específicas para cada panel */
 .panel:nth-child(1) {
-    background-image: url('../../../../public/assets/web-hoteles.jpg');
+    background-image: url('../../../assets/web-hoteles.jpg');
 }
 
 .panel:nth-child(2) {
-    background-image: url('../../../../public/assets/web-hoteles.jpg');
+    background-image: url('../../../assets/web-hoteles.jpg');
 }
 
 .panel:nth-child(3) {
@@ -88,7 +88,7 @@
 }
 
 .panel:nth-child(8) {
-    background-image: url('../../../../public/assets/web-hoteles.jpg');
+    background-image: url('../../../assets/web-hoteles.jpg');
 }
 
 /* Efecto de opacidad sobre la imagen para mejorar la visibilidad del texto */

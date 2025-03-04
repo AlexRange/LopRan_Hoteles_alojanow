@@ -1,39 +1,63 @@
 import { Request, Response } from 'express';
+import poolPromise from '../database';
 
-import pool from '../database';
-
-class ServiciosAdicionalesController{
+class ServiciosAdicionalesController {
     public async list(req: Request, res: Response): Promise<void> {
-        const servivioA = await pool.query('SELECT * FROM servicios_adicionales');
-        res.json(servivioA);
+        try {
+            const pool = await poolPromise;
+            const serviciosA = await pool.query('SELECT * FROM servicios_adicionales');
+            res.json(serviciosA);
+        } catch (error) {
+            res.status(500).json({ error: 'Error al obtener los servicios adicionales' });
+        }
     }
 
-    public async getOne(req: Request, res: Response): Promise<any> {
-        const { id } = req.params;
-        const servivioA = await pool.query('SELECT * FROM servicios_adicionales WHERE id = ?', [id]);
-        console.log(servivioA.length);
-        if (servivioA.length > 0) {
-            return res.json(servivioA[0]);
+    public async getOne(req: Request, res: Response): Promise<void> {
+        try {
+            const { id_servicio } = req.params;
+            const pool = await poolPromise;
+            const serviciosA = await pool.query('SELECT * FROM servicios_adicionales WHERE id_servicio = ?', [id_servicio]);
+            
+            if (serviciosA.length > 0) {
+                res.json(serviciosA[0]);
+            } else {
+                res.status(404).json({ message: 'El servicio adicional no existe' });
+            }
+        } catch (error) {
+            res.status(500).json({ error: 'Error al obtener el servicio adicional' });
         }
-        res.status(404).json({ text: "El servivio Adicional no existe" });
     }
 
     public async create(req: Request, res: Response): Promise<void> {
-        const result = await pool.query('INSERT INTO servicios_adicionales set ?', [req.body]);
-        res.json({ message: 'Servicio adicional Guardado' });
+        try {
+            const pool = await poolPromise;
+            await pool.query('INSERT INTO servicios_adicionales SET ?', [req.body]);
+            res.json({ message: 'Servicio adicional guardado' });
+        } catch (error) {
+            res.status(500).json({ error: 'Error al guardar el servicio adicional' });
+        }
     }
 
     public async delete(req: Request, res: Response): Promise<void> {
-        const { id } = req.params;
-        await pool.query('DELETE FROM servicios_adicionales WHERE id = ?', [id]);
-        res.json({ message: "El servicio adicional fue eliminado" });
+        try {
+            const { id_servicio } = req.params;
+            const pool = await poolPromise;
+            await pool.query('DELETE FROM servicios_adicionales WHERE id_servicio = ?', [id_servicio]);
+            res.json({ message: 'El servicio adicional fue eliminado' });
+        } catch (error) {
+            res.status(500).json({ error: 'Error al eliminar el servicio adicional' });
+        }
     }
 
     public async update(req: Request, res: Response): Promise<void> {
-        const { id } = req.params;
-        const oldservivioA = req.body;
-        await pool.query('UPDATE servicios_adicionales set ? WHERE id = ?', [req.body, id]);
-        res.json({ message: "El registro del Servicio adicional fue actualizado" });
+        try {
+            const { id_servicio } = req.params;
+            const pool = await poolPromise;
+            await pool.query('UPDATE servicios_adicionales SET ? WHERE id_servicio = ?', [req.body, id_servicio]);
+            res.json({ message: 'El registro del servicio adicional fue actualizado' });
+        } catch (error) {
+            res.status(500).json({ error: 'Error al actualizar el servicio adicional' });
+        }
     }
 }
 

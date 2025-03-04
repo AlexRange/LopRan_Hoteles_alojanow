@@ -1,0 +1,27 @@
+<div class="container mt-4">
+    <!-- Migas de pan con el nombre del hotel -->
+    <nav aria-label="breadcrumb" class="breadcrumb-container">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/home">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="/hoteles">Hoteles</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Hotel {{ hotelNombre }}</li>
+        </ol>
+    </nav>
+
+    <!-- Título de la sección -->
+    <h2>Habitaciones de {{ hotelNombre }}</h2>
+
+    <!-- Listado de habitaciones -->
+    <div class="row">
+        <div class="col-12 col-sm-6 col-md-4" *ngFor="let habitacion of habitaciones">
+            <div class="card mb-4 shadow-sm">
+                <img [src]="habitacion.imagen_habitacion" class="card-img-top" alt="{{ habitacion.descripcion_imagen_hab || habitacion.tipo_habitacion }}" />
+                <div class="card-body">
+                    <h5 class="card-title">{{ habitacion.tipo_habitacion }}</h5>
+                    <p class="card-text"><strong>Capacidad:</strong> {{ habitacion.capacidad }} personas</p>
+                    <p class="card-text"><strong>Precio por noche:</strong> ${{ habitacion.precio_noche | number:'1.2-2' }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

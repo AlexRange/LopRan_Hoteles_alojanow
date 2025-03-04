@@ -37,10 +37,10 @@ class PagosController {
     }
 
     public async delete(req: Request, res: Response): Promise<void> {
-        const { id } = req.params;
+        const { id_pago } = req.params;
         try {
             const connection = await poolPromise;
-            await connection.query('DELETE FROM pagos WHERE id = ?', [id]);
+            await connection.query('DELETE FROM pagos WHERE id_pago = ?', [id_pago]);
             res.json({ message: "El pago fue eliminado" });
         } catch (error) {
             res.status(500).json({ text: 'Error al eliminar el pago', error });
@@ -48,10 +48,10 @@ class PagosController {
     }
 
     public async update(req: Request, res: Response): Promise<void> {
-        const { id } = req.params;
+        const { id_pago } = req.params;
         try {
             const connection = await poolPromise;
-            await connection.query('UPDATE pagos set ? WHERE id = ?', [req.body, id]);
+            await connection.query('UPDATE pagos set ? WHERE id_pago = ?', [req.body, id_pago]);
             res.json({ message: "El pago fue actualizado" });
         } catch (error) {
             res.status(500).json({ text: 'Error al actualizar el pago', error });

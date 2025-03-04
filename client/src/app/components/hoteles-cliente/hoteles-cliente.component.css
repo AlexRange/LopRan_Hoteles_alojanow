@@ -1,0 +1,128 @@
+/* Contenedor de migas de pan */
+.breadcrumb-container {
+    margin-bottom: 20px;
+    padding: 8px 15px;
+    background-color: #ffffff;
+    border-left: 4px solid #007bff;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: block;
+    width: 100%; /* Asegura que el contenedor ocupe todo el ancho */
+}
+
+.breadcrumb {
+    margin-bottom: 0;
+    padding: 0;
+    background-color: transparent;
+    font-size: 0.9rem;
+}
+
+.breadcrumb-item a {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.breadcrumb-item a:hover {
+    color: #0056b3;
+}
+
+.breadcrumb-item.active {
+    color: #6c757d;
+    font-weight: 500;
+}
+
+/* Tarjeta de hotel */
+.hotel-card {
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #ddd;
+}
+
+.hotel-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Imagen responsiva */
+.card-img-top {
+    object-fit: cover;
+    width: 100%;
+    height: 180px;
+}
+
+/* Contenido de la tarjeta */
+.card-body {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Ubicación */
+.hotel-location {
+    font-size: 0.9rem;
+    color: #555;
+    display: flex;
+    align-items: center;
+}
+
+.hotel-location i {
+    margin-right: 5px;
+    color: #007bff;
+}
+
+/* Botón */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    width: 100%;
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+}
+
+/* Estrellas */
+.star-rating {
+    font-size: 1.1rem;
+}
+
+.star-rating .fa-star {
+    margin-right: 2px;
+}
+
+/* Responsividad */
+@media (max-width: 576px) {
+    .breadcrumb-container {
+        display: block;
+        text-align: center;
+        border-left: none;
+        border-top: 3px solid #007bff;
+        padding: 5px 10px;
+    }
+
+    .card-img-top {
+        height: 150px;
+    }
+}
+
+@media (min-width: 768px) {
+    .card-img-top {
+        height: 180px;
+    }
+}
+
+@media (min-width: 992px) {
+    .card-img-top {
+        height: 200px;
+    }
+}

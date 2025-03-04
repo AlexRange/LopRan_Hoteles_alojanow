@@ -11,10 +11,10 @@ class PagosRoutes {
 
     config(): void {
         this.router.get('/', pagosController.list);
-        this.router.get('/:id',pagosController.getOne);
+        this.router.get('/:id_pago',pagosController.getOne);
         this.router.post('/',pagosController.create);
-        this.router.put('/:id',pagosController.update);
-        this.router.delete('/:id',pagosController.delete);
+        this.router.put('/:id_pago',pagosController.update);
+        this.router.delete('/:id_pago',pagosController.delete);
     }
 }
 

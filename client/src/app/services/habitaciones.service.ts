@@ -31,4 +31,9 @@ export class HabitacionesService {
   updateHabitacion(id_habitacion: string | number, update: Habitaciones): Observable<Habitaciones> {
     return this.http.put<Habitaciones>(`${this.API_URI}/habitaciones/${id_habitacion}`, update);
   }
+
+  getHabitacionesByHotel(id_hotel: number): Observable<Habitaciones[]> {
+    return this.http.get<Habitaciones[]>(`${this.API_URI}/habitaciones/hotel/${id_hotel}`);
+  }
+  
 }

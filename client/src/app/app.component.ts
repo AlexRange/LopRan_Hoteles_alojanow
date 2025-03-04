@@ -15,12 +15,12 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     // Suscribirse directamente al observable user$
-    this.authService.user$.subscribe((user: any) => {
-      if (user && user['roles'] && user['roles'].includes('admin')) {
-        this.isAdmin = true;
-      } else {
-        this.isAdmin = false;
-      }
-    });
+    // this.authService.user$.subscribe((user: any) => {
+    //   if (user && user['roles'] && user['roles'].includes('admin')) {
+    //     this.isAdmin = true;
+    //   } else {
+    //     this.isAdmin = false;
+    //   }
+    // });
   }
 }

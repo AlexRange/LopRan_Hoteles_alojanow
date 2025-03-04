@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
 import poolPromise from '../database';
 
-class ReservacionesServiciosController {
+class ReservacionesHabitacionesController {
     public async list(req: Request, res: Response): Promise<void> {
         try {
             const pool = await poolPromise;
-            const reservaciones = await pool.query('SELECT * FROM reservaciones_servicios');
+            const reservaciones = await pool.query('SELECT * FROM reservaciones');
             res.json(reservaciones);
         } catch (error) {
             res.status(500).json({ error: 'Error retrieving reservations' });
@@ -16,7 +16,7 @@ class ReservacionesServiciosController {
         try {
             const { id_reservacion } = req.params;
             const pool = await poolPromise;
-            const reservaciones = await pool.query('SELECT * FROM reservaciones_servicios WHERE id_reservacion = ?', [id_reservacion]);
+            const reservaciones = await pool.query('SELECT * FROM reservaciones WHERE id_reservacion = ?', [id_reservacion]);
             
             if (reservaciones.length > 0) {
                 res.json(reservaciones[0]);
@@ -31,7 +31,7 @@ class ReservacionesServiciosController {
     public async create(req: Request, res: Response): Promise<void> {
         try {
             const pool = await poolPromise;
-            await pool.query('INSERT INTO reservaciones_servicios SET ?', [req.body]);
+            await pool.query('INSERT INTO reservaciones SET ?', [req.body]);
             res.json({ message: 'Reservation Saved' });
         } catch (error) {
             res.status(500).json({ error: 'Error saving reservation' });
@@ -42,7 +42,7 @@ class ReservacionesServiciosController {
         try {
             const { id_reservacion } = req.params;
             const pool = await poolPromise;
-            await pool.query('DELETE FROM reservaciones_servicios WHERE id_reservacion = ?', [id_reservacion]);
+            await pool.query('DELETE FROM reservaciones WHERE id_reservacion = ?', [id_reservacion]);
             res.json({ message: 'The reservation was deleted' });
         } catch (error) {
             res.status(500).json({ error: 'Error deleting reservation' });
@@ -53,7 +53,7 @@ class ReservacionesServiciosController {
         try {
             const { id_reservacion } = req.params;
             const pool = await poolPromise;
-            await pool.query('UPDATE reservaciones_servicios SET ? WHERE id_reservacion = ?', [req.body, id_reservacion]);
+            await pool.query('UPDATE reservaciones SET ? WHERE id_reservacion = ?', [req.body, id_reservacion]);
             res.json({ message: 'The reservation was updated' });
         } catch (error) {
             res.status(500).json({ error: 'Error updating reservation' });
@@ -61,5 +61,5 @@ class ReservacionesServiciosController {
     }
 }
 
-const reservacionesServiciosController = new ReservacionesServiciosController();
-export default reservacionesServiciosController;
+const reservacionesHabitacionesController = new ReservacionesHabitacionesController();
+export default reservacionesHabitacionesController;

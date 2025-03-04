@@ -15,6 +15,7 @@ class HabitacionesRoutes {
         this.router.post('/', habitacionesController.create);
         this.router.put('/:id_habitacion', habitacionesController.update);
         this.router.delete('/:id_habitacion', habitacionesController.delete);
+        this.router.get('/hotel/:id_hotel', habitacionesController.getByHotel);
     }
 
 }

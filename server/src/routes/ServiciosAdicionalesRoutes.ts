@@ -11,10 +11,10 @@ class ServiciosAdicionalesRoutes {
 
     config(): void {
         this.router.get('/', serviciosAdicionalesController.list);
-        this.router.get('/:id', serviciosAdicionalesController.getOne);
+        this.router.get('/:id_servicio', serviciosAdicionalesController.getOne);
         this.router.post('/', serviciosAdicionalesController.create);
-        this.router.put('/:id', serviciosAdicionalesController.update);
-        this.router.delete('/:id', serviciosAdicionalesController.delete);
+        this.router.put('/:id_servicio', serviciosAdicionalesController.update);
+        this.router.delete('/:id_servicio', serviciosAdicionalesController.delete);
     }
 
 }

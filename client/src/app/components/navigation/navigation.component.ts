@@ -16,7 +16,7 @@ export class NavigationComponent {
     // Obtener datos del usuario autenticado
     this.auth.user$.subscribe(user => {
       this.userPicture = user?.picture || 'assets/default-avatar.png';
-      this.userName = user?.name || 'Usuario';
+      this.userName = user?.nickname || 'Usuario';
     });
   }
 

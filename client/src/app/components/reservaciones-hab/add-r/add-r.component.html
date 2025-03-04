@@ -1,0 +1,54 @@
+<div class="card shadow-sm border-light">
+    <div class="card-body border-dark">
+        <div class="modal-header" style="background: #04ac84; color: white; border-radius: 5px 5px 0 0;">
+            <h2 class="mb-4 text-center">Agregar Nueva Reservación</h2>
+        </div>
+        <div class="container p-4">
+            <form [formGroup]="reservacionForm" (ngSubmit)="onSubmit()">
+                
+                <div class="form-group mb-4">
+                    <label for="id_usuario" class="form-label">ID Usuario:</label>
+                    <input type="number" id="id_usuario" formControlName="id_usuario" class="form-control" placeholder="Ingrese el ID del usuario" required />
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="id_habitacion" class="form-label">ID Habitación:</label>
+                    <input type="number" id="id_habitacion" formControlName="id_habitacion" class="form-control" placeholder="Ingrese el ID de la habitación" required />
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="fecha_inicio" class="form-label">Fecha de Inicio:</label>
+                    <input type="date" id="fecha_inicio" formControlName="fecha_inicio" class="form-control" required />
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="fecha_fin" class="form-label">Fecha de Fin:</label>
+                    <input type="date" id="fecha_fin" formControlName="fecha_fin" class="form-control" required />
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="precio_total" class="form-label">Precio Total:</label>
+                    <input type="number" id="precio_total" formControlName="precio_total" class="form-control" placeholder="Ingrese el precio total" required />
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="estado" class="form-label">Estado:</label>
+                    <select id="estado" formControlName="estado" class="form-control" required>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="confirmada">Confirmada</option>
+                        <option value="cancelada">Cancelada</option>
+                    </select>
+                </div>
+
+                <div class="container mt-4">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button class="btn btn-success btn-block" type="submit">Guardar Reservación</button>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

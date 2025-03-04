@@ -2,20 +2,21 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">Inicio Ad</li>
-            <li class="breadcrumb-item active" aria-current="page"></li>
+            <li class="breadcrumb-item active" aria-current="page">Administrar Comentarios</li>
         </ol>
     </nav>
+
     <div class="row">
         <div class="col-md-12 text-center">
-            <h1>Administrar Hoteles</h1>
-            <p class="lead">Gestión de hoteles</p>
+            <h1>Administrar Comentarios</h1>
+            <p class="lead">Gestión de comentarios y calificaciones</p>
             <hr class="my-4">
         </div>
     </div>
 
     <div class="row mt-4">
         <div class="col-md-12 d-flex justify-content-between">
-            <h4>Lista de Hoteles</h4>
+            <h4>Lista de Comentarios</h4>
         </div>
     </div>
 
@@ -24,16 +25,12 @@
             <table class="table-responsive table table-bordered table-hover">
                 <thead class="thead-dark">
                     <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Dirección</th>
-                        <th>Ciudad</th>
-                        <th>Pais</th>
-                        <th>Descripción</th>
-                        <th>Fecha registro</th>
-                        <th>Estrellas</th>
-                        <th>Imagen</th>
-                        <th>Descripción de imagen </th>
+                        <th>ID Comentario</th>
+                        <th>ID Usuario</th>
+                        <th>ID Hotel</th>
+                        <th>Comentario</th>
+                        <th>Calificación</th>
+                        <th>Fecha Comentario</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -42,9 +39,9 @@
                         <td>{{ comentario.id_comentario }}</td>
                         <td>{{ comentario.id_usuario }}</td>
                         <td>{{ comentario.id_hotel }}</td>
-                        <td>{{ comentario.comentario }}</td>
+                        <td>{{ comentario.comentario || 'Sin comentario' }}</td>
                         <td>{{ comentario.calificacion }}</td>
-                        <td>{{ comentario.fecha_comentario }}</td>
+                        <td>{{ comentario.fecha_comentario | date:'dd/MM/yyyy' }}</td>
                         <td class="text-center">
                             <button class="btn btn-danger btn-sm" (click)="deleteComentario(comentario.id_comentario)">
                                 <i class="fas fa-trash"></i>

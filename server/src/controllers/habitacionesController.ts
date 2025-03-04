@@ -68,6 +68,21 @@ class HabitacionesController {
             res.status(500).json({ message: 'Error al actualizar la habitación' });
         }
     }
+
+    public async getByHotel(req: Request, res: Response): Promise<void> {
+        const { id_hotel } = req.params;
+        try {
+            const pool = await poolPromise;
+            const habitaciones = await pool.query(
+                'SELECT * FROM habitaciones WHERE id_hotel = ?',
+                [id_hotel]
+            );
+            res.json(habitaciones);
+        } catch (err) {
+            res.status(500).json({ message: 'Error al obtener habitaciones del hotel', error: err });
+        }
+    }
+    
 }
 
 const habitacionesController = new HabitacionesController();
