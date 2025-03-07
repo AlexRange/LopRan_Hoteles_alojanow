@@ -3,12 +3,12 @@
     <nav aria-label="breadcrumb" class="breadcrumb-container">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/home">Inicio</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Hoteles</li>
+            <li class="breadcrumb-item active" aria-current="page">Explorar Hoteles</li>
         </ol>
     </nav>
 
     <!-- Filtro de estrellas -->
-    <div class="row mb-3">
+    <!-- <div class="row mb-3">
         <div class="col-md-6">
             <label for="filtroEstrellas" class="form-label">Filtrar por estrellas:</label>
             <select id="filtroEstrellas" class="form-select" [(ngModel)]="filtroEstrellas" (change)="filtrarHotelesPorEstrellas()">
@@ -19,11 +19,11 @@
         <div class="col-md-6 d-flex align-items-end">
             <button class="btn btn-secondary w-100" (click)="resetearFiltro()">Restablecer filtro</button>
         </div>
-    </div>
+    </div> -->
 
     <!-- Listado de hoteles -->
     <div class="row">
-        <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let hotel of hotelesFiltrados">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let hotel of hoteles">
             <div class="card hotel-card">
                 <!-- Imagen responsiva -->
                 <img [src]="hotel.imagen_hotel" class="card-img-top" [alt]="hotel.nombre" />

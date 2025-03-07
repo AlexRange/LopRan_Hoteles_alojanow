@@ -3,11 +3,13 @@ import { ActivatedRoute } from '@angular/router';
 import { HabitacionesService } from '../../../services/habitaciones.service';
 import { HotelesService } from '../../../services/hoteles.service';
 
+declare var bootstrap: any; // Para manejar el modal de Bootstrap
+
 @Component({
   selector: 'app-habit-hotel',
   standalone: false,
   templateUrl: './habit-hotel.component.html',
-  styleUrl: './habit-hotel.component.css'
+  styleUrls: ['./habit-hotel.component.css']
 })
 export class HabitHotelComponent implements OnInit {
 
@@ -15,6 +17,7 @@ export class HabitHotelComponent implements OnInit {
   id_hotel!: number;
   hotelNombre: string = '';
   habitaciones: any[] = [];
+  habitacionSeleccionada: any = null; // Almacena la habitación seleccionada para el modal
 
   constructor(
     private route: ActivatedRoute,
@@ -23,20 +26,19 @@ export class HabitHotelComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Escuchar cambios en los parámetros de la ruta
     this.route.params.subscribe(params => {
       const idParam = params['id_hotel'];
       
       if (idParam) {
-        this.id_hotel = Number(idParam); // Convertimos a número
+        this.id_hotel = Number(idParam); // Convertir a número
         if (!isNaN(this.id_hotel)) {
           this.cargarHabitaciones();
+          this.cargarHotel();
         } else {
           console.error('Error: id_hotel no es un número válido');
         }
       }
     });
-    this.cargarHotel();
   }
 
   cargarHabitaciones(): void {
@@ -65,5 +67,17 @@ export class HabitHotelComponent implements OnInit {
         console.error('Error al cargar hoteles:', err);
       }
     });
+  }
+
+  abrirModal(habitacion: any): void {
+    this.habitacionSeleccionada = habitacion;
+    let modalElement = document.getElementById('reservacionModal');
+    
+    if (modalElement) {
+      let modal = new bootstrap.Modal(modalElement);
+      modal.show();
+    } else {
+      console.error('No se encontró el elemento del modal en el DOM.');
+    }
   }
 }

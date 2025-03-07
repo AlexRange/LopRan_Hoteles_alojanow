@@ -1,0 +1,119 @@
+/* Contenedor principal */
+.container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+/* Contenedor de las migas de pan */
+.breadcrumb-container {
+    margin-bottom: 20px;
+    padding: 8px 15px;
+    background-color: #ffffff;
+    border-left: 4px solid #007bff;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: block;
+    width: 100%;
+}
+
+.breadcrumb {
+    margin-bottom: 0;
+    padding: 0;
+    background-color: transparent;
+    font-size: 0.9rem;
+}
+
+.breadcrumb-item a {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.breadcrumb-item a:hover {
+    color: #0056b3;
+}
+
+.breadcrumb-item.active {
+    color: #6c757d;
+    font-weight: 500;
+}
+
+/* Estilo para las tarjetas de promociones */
+.promo-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+}
+
+/* Efecto hover en las tarjetas */
+.promo-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Encabezado de la tarjeta */
+.promo-card-header {
+    background-color: #007bff;
+    color: #fff;
+    padding: 15px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+/* Estilos para el título de la tarjeta */
+.promo-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* Cuerpo de la tarjeta */
+.promo-card-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: #555;
+}
+
+/* Estilo para la descripción */
+.promo-description {
+    font-size: 1rem;
+    margin-bottom: 15px;
+}
+
+/* Botón de acción */
+.btn-promo {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: #fff;
+    text-align: center;
+    border-radius: 4px;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-promo:hover {
+    background-color: #0056b3;
+}
+
+/* Responsividad: adaptando a pantallas más pequeñas */
+@media (max-width: 576px) {
+    .promo-card {
+        margin-bottom: 20px;
+    }
+    .promo-card-header {
+        text-align: center;
+    }
+}

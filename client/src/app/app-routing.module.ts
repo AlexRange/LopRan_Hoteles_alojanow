@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CarruselComponent } from './components/carrusel/carrusel.component';
 import { ComentariosComponent } from './components/comentarios/comentarios.component';
 import { Error404Component } from './components/error404/error404.component';
 import { HabitacionesComponent } from './components/habitaciones/habitaciones.component';
@@ -8,13 +7,14 @@ import { HomeAdminComponent } from './components/home-admin/home-admin.component
 import { HomeComponent } from './components/home/home.component';
 import { HabitHotelComponent } from './components/hoteles-cliente/habit-hotel/habit-hotel.component';
 import { HotelesClienteComponent } from './components/hoteles-cliente/hoteles-cliente.component';
+import { HotelesDesComponent } from './components/hoteles-cliente/hoteles-des/hoteles-des.component';
 import { HotelesComponent } from './components/hoteles/hoteles.component';
 import { NosotrsoComponent } from './components/nosotrso/nosotrso.component';
 import { PreguntasFComponent } from './components/preguntas-f/preguntas-f.component';
 import { PrivacidadComponent } from './components/privacidad/privacidad.component';
+import { PromocionesActivasComponent } from './components/promociones-activas/promociones-activas.component';
 import { PromocionesComponent } from './components/promociones/promociones.component';
 import { ReservacionesHabComponent } from './components/reservaciones-hab/reservaciones-hab.component';
-import { HotelesDesComponent } from './components/hoteles-cliente/hoteles-des/hoteles-des.component';
 
 const routes: Routes = [
   {
@@ -24,7 +24,8 @@ const routes: Routes = [
   },
   {
     path: 'home',
-    component: CarruselComponent
+    title: 'Inicio',
+    component: HomeComponent
   },
   {
     path: 'home-sin-usar',
@@ -32,13 +33,18 @@ const routes: Routes = [
   },
   {
     path: 'hoteles',
+    title: 'Hoteles',
     component: HotelesClienteComponent
   },
   {
     path: 'hoteles/:id_hotel',
+    title: 'Habitaciones por hotel',
     component: HabitHotelComponent
   },
-  
+  {
+    path: 'promociones-activas',
+    component: PromocionesActivasComponent
+  },
   {
     path: 'hoteles-destacados',
     component: HotelesDesComponent
@@ -62,6 +68,10 @@ const routes: Routes = [
   {
     path: 'promociones-admin',
     component: PromocionesComponent
+  },
+  {
+    path: 'reservaciones-admin',
+    component: ReservacionesHabComponent
   },
   {
     path: 'preguntas-frec',

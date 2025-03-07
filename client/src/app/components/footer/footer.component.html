@@ -1,23 +1,23 @@
+<!-- Footer -->
 <footer class="footer">
     <div class="container text-center">
         <!-- Redes Sociales -->
         <div class="social-icons">
-            <a href="/" class="footer-icon">
+            <!-- <a href="/" class="footer-icon">
                 <img src="assets/facebook.png" alt="Facebook" class="social-image" />
-            </a>
-            <a href="/" class="footer-icon">
+            </a> -->
+            <a href="https://www.instagram.com/ralenzo.hospedajes?igsh=MTgxZm5heDk1ZTk5ag==" class="footer-icon" target="_blank" rel="noopener noreferrer">
                 <img src="assets/instagram.png" alt="Instagram" class="social-image" />
             </a>
-            <a href="/" class="footer-icon">
+            <!-- <a href="/" class="footer-icon">
                 <img src="assets/logotipos.png" alt="Twitter" class="social-image" />
-            </a>
+            </a> -->
         </div>
-
         <div class="row mt-4">
             <!-- Sección 1 -->
             <div class="col-md-4">
                 <h5>Enlaces Rápidos</h5>
-                <p><a href="/">Mapa del sitio</a></p>
+                <p><a href="#" data-bs-toggle="modal" data-bs-target="#sitemapModal">Mapa del sitio</a></p>
                 <p><a href="/privacidad">Políticas de privacidad</a></p>
             </div>
 
@@ -39,7 +39,61 @@
 
         <!-- Copyright -->
         <div class="footer-bottom mt-3">
-            <p><strong>&copy; 2025 Ralenzo Hospedaje</strong>. Todos los derechos reservados.</p>
+            <p><strong>&copy; 2025 AlojaNow</strong>. Todos los derechos reservados.</p>
         </div>
     </div>
 </footer>
+
+<!-- Modal del Mapa del Sitio -->
+<div class="modal fade" id="sitemapModal" tabindex="-1" aria-labelledby="sitemapModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg"> <!-- Centrado y tamaño grande -->
+        <div class="modal-content">
+            <!-- Encabezado del Modal -->
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="sitemapModalLabel">Mapa del Sitio</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- Cuerpo del Modal -->
+            <div class="modal-body p-4"> <!-- Padding para evitar que el contenido esté pegado a los bordes -->
+                <div class="sitemap-container">
+                    <!-- Inicio -->
+                    <div class="sitemap-section">
+                        <a href="/" class="sitemap-main-link">Inicio</a>
+                    </div>
+
+                    <!-- Hoteles -->
+                    <div class="sitemap-section">
+                        <a href="#" class="sitemap-main-link">Hoteles</a>
+                        <div class="sitemap-sub">
+                            <a href="/hoteles" class="sitemap-sub-link">Explorar Hoteles</a>
+                            <a href="/hoteles-destacados" class="sitemap-sub-link">Hoteles Destacados</a>
+                        </div>
+                    </div>
+
+                    <!-- Promociones -->
+                    <div class="sitemap-section">
+                        <a href="#" class="sitemap-main-link">Promociones</a>
+                        <div class="sitemap-sub">
+                            <a href="/promociones-activas" class="sitemap-sub-link">Promociones Activas</a>
+                            <!-- <a href="/hoteles-con-descuento" class="sitemap-sub-link">Hoteles con Descuento</a> -->
+                        </div>
+                    </div>
+
+                    <!-- Usuario -->
+                    <!-- <div class="sitemap-section">
+                        <a href="#" class="sitemap-main-link">Usuario</a>
+                        <div class="sitemap-sub">
+                            <a href="/login" class="sitemap-sub-link">Iniciar sesión</a>
+                            <a href="/perfil" class="sitemap-sub-link">Mi perfil</a>
+                            <a href="/reservaciones" class="sitemap-sub-link">Historial de reservaciones</a>
+                            <a href="/comentarios" class="sitemap-sub-link">Historial de comentarios</a>
+                            <a href="/pagos" class="sitemap-sub-link">Historial de pagos</a>
+                            <a href="/logout" class="sitemap-sub-link text-danger">Cerrar sesión</a>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

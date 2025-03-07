@@ -7,7 +7,8 @@ import { Habitaciones } from '../models/modelos';
   providedIn: 'root'
 })
 export class HabitacionesService {
-  API_URI = 'http://localhost:3000/api';
+  // API_URI = 'http://localhost:3000/api';
+  API_URI = 'https://9gc26mcr-3000.usw3.devtunnels.ms/api';
 
   constructor(private http: HttpClient) { }
 

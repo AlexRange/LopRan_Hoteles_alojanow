@@ -83,8 +83,8 @@
 }
 
 .nav-link.dropdown-toggle {
-    color: white !important; 
-    font-family: 'Arial', sans-serif; 
+    color: white !important;
+    font-family: 'Arial', sans-serif;
 }
 
 /* ------------------- Diseño atractivo para los submenús (menús desplegables) ------------------- */
@@ -102,7 +102,8 @@
 
 .nav-link.dropdown-toggle:hover {
     background-color: rgba(0, 0, 0, 0.3);
-    color: #ff5733; /* Cambiar color al pasar el ratón */
+    color: #ff5733;
+    /* Cambiar color al pasar el ratón */
     border-radius: 8px;
 }
 
@@ -171,4 +172,34 @@
         padding: 10px;
         font-size: 1.1rem;
     }
+}
+
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.search-results ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.search-results li {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+}
+
+.search-results li:hover {
+    background-color: #f5f5f5;
 }

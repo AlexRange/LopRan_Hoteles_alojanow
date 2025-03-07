@@ -1,14 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Hoteles } from '../models/modelos';
 import { catchError, Observable, of } from 'rxjs';
+import { Hoteles } from '../models/modelos';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HotelesService {
 
-  API_URI = 'http://localhost:3000/api';
+  // API_URI = 'http://localhost:3000/api';
+  API_URI = 'https://9gc26mcr-3000.usw3.devtunnels.ms/api';
   
   constructor(private http: HttpClient) { }
 

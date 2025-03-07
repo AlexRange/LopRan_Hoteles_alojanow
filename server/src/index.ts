@@ -9,10 +9,10 @@ import hotelesRoutes from './routes/hotelesRoutes';
 import loginRoutes from './routes/loginRoutes';
 import pagosRoutes from './routes/PagosRoutes';
 import promocionesRoutes from './routes/promocionesRoutes';
-import reservacionesHabitacionesRoutes from './routes/reservacionesHbitacionesRoutes'
+import reservacionesHabitacionesRoutes from './routes/reservacionesHbitacionesRoutes';
 import reservacionesServiciosRoutes from './routes/reservacionesServiciosRoutes';
-import UsuariosRoutes from './routes/usuariosRoutes';
 import serviciosAdicionalesRoutes from './routes/serviciosAdicionalesRoutes';
+import UsuariosRoutes from './routes/usuariosRoutes';
 
 class Server {
     public app : Application
@@ -46,8 +46,9 @@ class Server {
     }
 
     start() {
-        this.app.listen(this.app.get('port'), () => {
-            console.log('Server on port', this.app.get('port'));
+        const port = this.app.get('port');
+        this.app.listen(port, '0.0.0.0', () => {
+            console.log('Server on port', port);
         });
     }
 

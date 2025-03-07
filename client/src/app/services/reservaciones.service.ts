@@ -23,7 +23,7 @@ export class ReservacionesService {
   saveReservacion(evento: Reservaciones): Observable<any> {
     return this.http.post(`${this.API_URI}/reservaciones`, evento).pipe(
       catchError(error => {
-        console.error('Error al guardar el Service ad', error);
+        console.error('Error al guardar el Service', error);
         return of(null);
       })
     );

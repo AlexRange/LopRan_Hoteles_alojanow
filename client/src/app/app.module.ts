@@ -35,6 +35,7 @@ import { AddRComponent } from './components/reservaciones-hab/add-r/add-r.compon
 import { ReservacionesHabComponent } from './components/reservaciones-hab/reservaciones-hab.component';
 import { UpdateRComponent } from './components/reservaciones-hab/update-r/update-r.component';
 import { PromocionesActivasComponent } from './components/promociones-activas/promociones-activas.component';
+import { ReservacionesClienteComponent } from './components/reservaciones-cliente/reservaciones-cliente.component';
 
 
 @NgModule({
@@ -67,6 +68,7 @@ import { PromocionesActivasComponent } from './components/promociones-activas/pr
     HabitHotelComponent,
     HotelesDesComponent,
     PromocionesActivasComponent,
+    ReservacionesClienteComponent,
   ],
   imports: [
     BrowserModule,

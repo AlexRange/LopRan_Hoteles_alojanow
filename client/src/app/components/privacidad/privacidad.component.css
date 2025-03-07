@@ -74,17 +74,40 @@ p {
     }
 }
 
-/* Contenedor de los breadcrumbs */
+/* Contenedor de migas de pan */
 .breadcrumb-container {
-    margin: 20px;
-    padding: 10px;
-    background-color: #f8f9fa;
+    margin-bottom: 20px;
+    padding: 8px 15px;
+    background-color: #ffffff;
+    border-left: 4px solid #007bff;
     border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: block;
+    width: 100%; /* Asegura que el contenedor ocupe todo el ancho */
 }
 
-/* Breadcrumbs */
 .breadcrumb {
     margin-bottom: 0;
-    padding-left: 15px; /* Puedes ajustar este valor si necesitas más espacio */
-    padding-right: 15px; /* Lo mismo para el lado derecho */
+    padding: 0;
+    background-color: transparent;
+    font-size: 0.9rem;
+}
+
+.breadcrumb-item a {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.breadcrumb-item a:hover {
+    color: #0056b3;
+}
+
+.breadcrumb-item.active {
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.container {
+    background-color: #ffffff;
 }
