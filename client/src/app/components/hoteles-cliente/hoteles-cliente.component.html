@@ -7,43 +7,79 @@
         </ol>
     </nav>
 
-    <!-- Filtro de estrellas -->
-    <!-- <div class="row mb-3">
-        <div class="col-md-6">
-            <label for="filtroEstrellas" class="form-label">Filtrar por estrellas:</label>
-            <select id="filtroEstrellas" class="form-select" [(ngModel)]="filtroEstrellas" (change)="filtrarHotelesPorEstrellas()">
-                <option value="0">Todas</option>
-                <option *ngFor="let estrella of [1, 2, 3, 4, 5]" [value]="estrella">{{ estrella }} Estrella(s)</option>
-            </select>
-        </div>
-        <div class="col-md-6 d-flex align-items-end">
-            <button class="btn btn-secondary w-100" (click)="resetearFiltro()">Restablecer filtro</button>
-        </div>
-    </div> -->
-
     <!-- Listado de hoteles -->
     <div class="row">
         <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let hotel of hoteles">
-            <div class="card hotel-card">
+            <div class="card hotel-card mb-4 position-relative">
+                <!-- Botón de comentar en la esquina superior derecha -->
+                <button class="btn btn-sm btn-outline-secondary position-absolute top-0 end-0 m-2"
+                    (click)="abrirModal(hotel.id_hotel)">
+                    <i class="fas fa-comment"></i>
+                </button>
+
                 <!-- Imagen responsiva -->
                 <img [src]="hotel.imagen_hotel" class="card-img-top" [alt]="hotel.nombre" />
                 <div class="card-body">
                     <h5 class="card-title">{{ hotel.nombre }}</h5>
                     <p class="hotel-location">
-                        <i class="fas fa-map-marker-alt"></i> {{ hotel.direccion }}, {{ hotel.ciudad }}, {{ hotel.pais }}
+                        <i class="fas fa-map-marker-alt"></i> {{ hotel.direccion }}, {{ hotel.ciudad }}, {{ hotel.pais
+                        }}
                     </p>
                     <p class="card-text">{{ hotel.descripcion }}</p>
                     <div class="d-flex justify-content-between align-items-center">
                         <!-- Estrellas -->
                         <div class="star-rating">
                             <span *ngFor="let star of [1, 2, 3, 4, 5]; let i = index">
-                                <i class="fas fa-star" [ngClass]="{'text-warning': i < hotel.estrellas, 'text-secondary': i >= hotel.estrellas}"></i>
+                                <i class="fas fa-star"
+                                    [ngClass]="{'text-warning': i < hotel.estrellas, 'text-secondary': i >= hotel.estrellas}"></i>
                             </span>
                         </div>
                     </div>
-                    <a [routerLink]="['/hoteles', hotel.id_hotel]" class="btn btn-primary mt-3">Ver habitaciones</a>
+                    <div class="d-flex justify-content-center mt-3">
+                        <a [routerLink]="['/hoteles', hotel.id_hotel]" class="btn btn-primary">Ver habitaciones</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Modal de comentarios -->
+    <div class="modal fade show" [ngClass]="{'d-block': mostrarModal}" *ngIf="mostrarModal" tabindex="-1" role="dialog"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Agregar Comentario</h5>
+                    <button type="button" class="close" (click)="cerrarModal()" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="comentario">Comentario</label>
+                            <textarea class="form-control" id="comentario" rows="3"
+                                [(ngModel)]="nuevoComentario.comentario" name="comentario"
+                                placeholder="Escribe tu experiencia con este hotel..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Calificación</label>
+                            <div class="star-rating">
+                                <span *ngFor="let star of [1, 2, 3, 4, 5]; let i = index">
+                                    <i class="fas fa-star fa-2x"
+                                        [ngClass]="{'text-warning': i < nuevoComentario.calificacion, 'text-secondary': i >= nuevoComentario.calificacion}"
+                                        (click)="seleccionarCalificacion(i + 1)"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" (click)="guardarComentario()">Guardar
+                        Comentario</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show" *ngIf="mostrarModal"></div>
 </div>

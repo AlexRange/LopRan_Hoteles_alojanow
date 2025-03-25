@@ -1,0 +1,134 @@
+/* Contenedor del perfil */
+.perfil-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f3f4f6, #ffffff);
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Tarjeta de perfil */
+.perfil-card {
+    text-align: center;
+}
+
+/* Imagen del perfil */
+.perfil-img-container {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid #007bff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Información del usuario */
+.perfil-header h2 {
+    color: #333;
+    font-weight: 600;
+}
+
+.perfil-email {
+    color: #777;
+    font-size: 1rem;
+}
+
+/* Botones de navegación */
+.perfil-actions {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.btn {
+    padding: 0.8rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.btn-navigate {
+    background: #17a2b8;
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-navigate:hover {
+    background: #138496;
+}
+
+.btn-edit {
+    background: #007bff;
+    color: white;
+}
+
+.btn-edit:hover {
+    background: #0056b3;
+}
+
+/* Sección de edición */
+.edit-section {
+    margin-top: 2rem;
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.edit-section h3 {
+    text-align: center;
+}
+
+/* Botón de guardar */
+.btn-save {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-save:hover {
+    background-color: #218838;
+}
+
+/* Estilos de carga */
+.loading-container {
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.btn-logout {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.btn-logout:hover {
+    background-color: #c82333;
+}
+
+/* Asegúrate de que los botones se vean bien en el contenedor */
+.perfil-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}

@@ -1,0 +1,76 @@
+<div class="perfil-container" *ngIf="!isLoading; else loading">
+    <div class="perfil-card">
+        <!-- Encabezado del perfil -->
+        <div class="perfil-header">
+            <div class="perfil-img-container">
+                <img [src]="usuario.imagen_usuario || './../assets/cuenta.png'" 
+                    alt="Imagen de perfil" 
+                    class="profile-image">
+            </div>
+            <h2>{{ usuario.nombre }}</h2>
+            <p class="perfil-email">{{ usuario.email }}</p>
+        </div>
+
+        <!-- Información del usuario -->
+        <div class="perfil-info">
+            <div class="info-item">
+                <label>Teléfono:</label>
+                <span>{{ usuario.telefono || 'No proporcionado' }}</span>
+            </div>
+        </div>
+
+        <!-- Botones de navegación -->
+        <div class="perfil-actions">
+            <button class="btn btn-navigate" routerLink="/mis-reservaciones">Historial de Reservaciones</button>
+            <button class="btn btn-navigate" routerLink="/mis-comentarios">Historial de Comentarios</button>
+            <button class="btn btn-navigate" routerLink="/pagos">Historial de Pagos</button>
+            <button class="btn btn-edit" (click)="toggleEdit()">
+                {{ isEditing ? 'Cancelar' : 'Editar Perfil' }}
+            </button>
+            <button class="btn btn-logout" (click)="logout()">
+                Cerrar sesión
+            </button>
+        </div>
+    </div>
+
+    <!-- Formulario de edición -->
+    <div class="edit-section" *ngIf="isEditing">
+        <h3>Editar Información</h3>
+        <form (ngSubmit)="guardarCambios()" #editForm="ngForm">
+            <div class="form-group">
+                <label for="telefono">Teléfono:</label>
+                <input type="tel" id="telefono" name="telefono" 
+                        [(ngModel)]="editUsuario.telefono">
+            </div>
+
+            <div class="form-group">
+                <label for="contrasena">Nueva Contraseña:</label>
+                <input type="password" id="contrasena" name="contrasena" 
+                        [(ngModel)]="editUsuario.contrasena">
+                <small class="text-muted">Dejar en blanco para no cambiar</small>
+            </div>
+
+            <div class="form-group">
+                <label for="imagen">Imagen de Perfil:</label>
+                <input type="file" id="imagen" accept="image/*" 
+                        (change)="onFileChange($event)">
+                <div *ngIf="editUsuario.imagen_usuario" class="image-preview">
+                    <img [src]="editUsuario.imagen_usuario" alt="Vista previa">
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-save" 
+                        [disabled]="editForm.invalid || isSaving">
+                    {{ isSaving ? 'Guardando...' : 'Guardar Cambios' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<ng-template #loading>
+    <div class="loading-container">
+        <p>Cargando información del usuario...</p>
+    </div>
+</ng-template>

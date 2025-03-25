@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AuthModule } from '@auth0/auth0-angular';
+import { NgxCaptchaModule } from 'ngx-captcha';
 
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -36,6 +37,10 @@ import { ReservacionesHabComponent } from './components/reservaciones-hab/reserv
 import { UpdateRComponent } from './components/reservaciones-hab/update-r/update-r.component';
 import { PromocionesActivasComponent } from './components/promociones-activas/promociones-activas.component';
 import { ReservacionesClienteComponent } from './components/reservaciones-cliente/reservaciones-cliente.component';
+import { LoginComponent } from './components/login/login.component';
+import { RegistroComponent } from './components/login/registro/registro.component';
+import { PerfilComponent } from './components/perfil/perfil.component';
+import { ReservasComponent } from './components/historiales/reservas/reservas.component';
 
 
 @NgModule({
@@ -69,6 +74,10 @@ import { ReservacionesClienteComponent } from './components/reservaciones-client
     HotelesDesComponent,
     PromocionesActivasComponent,
     ReservacionesClienteComponent,
+    LoginComponent,
+    RegistroComponent,
+    PerfilComponent,
+    ReservasComponent,
   ],
   imports: [
     BrowserModule,
@@ -76,13 +85,7 @@ import { ReservacionesClienteComponent } from './components/reservaciones-client
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
-    AuthModule.forRoot({
-      domain: 'dev-zyk6nh13wox8caf4.us.auth0.com', // Reemplaza con tu dominio de Auth0
-      clientId: 'AUxGSgxECVmubohSz4hzHMjCsk9Odje3', // Reemplaza con tu Client ID de Auth0
-      authorizationParams: {
-        redirect_uri: window.location.origin, // URL de redirección después del login
-      },
-    }),
+    NgxCaptchaModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -9,12 +9,15 @@ import { HabitHotelComponent } from './components/hoteles-cliente/habit-hotel/ha
 import { HotelesClienteComponent } from './components/hoteles-cliente/hoteles-cliente.component';
 import { HotelesDesComponent } from './components/hoteles-cliente/hoteles-des/hoteles-des.component';
 import { HotelesComponent } from './components/hoteles/hoteles.component';
+import { LoginComponent } from './components/login/login.component';
 import { NosotrsoComponent } from './components/nosotrso/nosotrso.component';
 import { PreguntasFComponent } from './components/preguntas-f/preguntas-f.component';
 import { PrivacidadComponent } from './components/privacidad/privacidad.component';
 import { PromocionesActivasComponent } from './components/promociones-activas/promociones-activas.component';
 import { PromocionesComponent } from './components/promociones/promociones.component';
 import { ReservacionesHabComponent } from './components/reservaciones-hab/reservaciones-hab.component';
+import { PerfilComponent } from './components/perfil/perfil.component';
+import { ReservasComponent } from './components/historiales/reservas/reservas.component';
 
 const routes: Routes = [
   {
@@ -24,21 +27,14 @@ const routes: Routes = [
   },
   {
     path: 'home',
-    title: 'Inicio',
     component: HomeComponent
   },
   {
-    path: 'home-sin-usar',
-    component: HomeComponent
-  },
-  {
-    path: 'hoteles',
-    title: 'Hoteles',
+    path: 'explorar-hoteles',
     component: HotelesClienteComponent
   },
   {
     path: 'hoteles/:id_hotel',
-    title: 'Habitaciones por hotel',
     component: HabitHotelComponent
   },
   {
@@ -84,6 +80,23 @@ const routes: Routes = [
   {
     path: 'nosotros',
     component: NosotrsoComponent
+  },
+  {
+    path: 'login',
+    component: LoginComponent
+  },
+  {
+    path: 'mi-perfil',
+    component: PerfilComponent
+  },
+  {
+    path: 'mis-reservaciones',
+    component: ReservasComponent
+  },
+  
+  {
+    path: 'mis-comentarios',
+    component: ComentariosComponent
   },
   {
     path: '**',

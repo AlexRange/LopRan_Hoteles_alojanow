@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import reservacionesServiciosController from '../controllers/reservacionesServiciosController';
+import reservacionesServiciosController from '../controllers/serviciosAdicionalesController';
 
 class ReservacionesServiciosRoutes {
     public router: Router = Router();

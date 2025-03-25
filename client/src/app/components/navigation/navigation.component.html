@@ -13,22 +13,25 @@
                             <a class="nav-link dropdown-toggle" href="#" id="hotelesDropdown" role="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">Hoteles</a>
                             <ul class="dropdown-menu" aria-labelledby="hotelesDropdown">
-                                <li><a class="dropdown-item" href="/hoteles">Explorar Hoteles</a></li>
-                                <li><a class="dropdown-item" href="/hoteles-destacados">Hoteles Destacados</a></li>
+                                <li><a class="dropdown-item" routerLink="/explorar-hoteles">Explorar Hoteles</a></li>
+                                <li><a class="dropdown-item" routerLink="/hoteles-destacados">Hoteles Destacados</a>
+                                </li>
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="promocionesDropdown" role="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">Promociones</a>
                             <ul class="dropdown-menu" aria-labelledby="promocionesDropdown">
-                                <li><a class="dropdown-item" href="/promociones-activas">Promociones Activas</a></li>
-                                <li><a class="dropdown-item" href="#">Hoteles con Descuento</a></li>
+                                <li><a class="dropdown-item" routerLink="/promociones-activas">Promociones Activas</a>
+                                </li>
+                                <li><a class="dropdown-item" routerLink="#">Hoteles con Descuento</a></li>
                             </ul>
                         </li>
                     </ul>
                     <div class="search-box">
                         <form (submit)="onSearch($event)">
-                            <input type="text" placeholder="Search" [(ngModel)]="searchQuery" name="searchQuery" (input)="onInputChange()">
+                            <input type="text" placeholder="Ir a" [(ngModel)]="searchQuery" name="searchQuery"
+                                (input)="onInputChange()">
                             <button type="submit"><i class="fa fa-search"></i></button>
                         </form>
                         <div class="search-results" *ngIf="showResults">
@@ -39,24 +42,31 @@
                             </ul>
                         </div>
                     </div>
-                    <div *ngIf="!(auth.isAuthenticated$ | async)" class="d-flex">
-                        <button type="button" class="btn-login" (click)="login()">Iniciar sesión</button>
+
+                    <!-- Mostrar botón de login solo si no hay sesión activa y no está en la página de login -->
+                    <div *ngIf="!(isAuthenticated$ | async) && !isLoginPage" class="d-flex">
+                        <button type="button" class="btn-login" routerLink="/login">Iniciar sesión</button>
                     </div>
-                    <div *ngIf="auth.isAuthenticated$ | async" class="user-menu d-flex align-items-center">
-                        <span class="user-name me-2 d-none d-md-block" style="color: white;">{{ userName }}</span>
+
+                    <!-- Mostrar info del usuario si hay sesión activa y no está en la página de perfil -->
+                    <div *ngIf="(isAuthenticated$ | async) && !isProfilePage" class="user-menu d-flex align-items-center">
+                        <span class="user-name me-2 d-none d-md-block" style="color: white;">
+                            {{ (currentUser$ | async)?.nombre }}
+                        </span>
                         <div class="dropdown">
-                            <button class="user-button" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img [src]="userPicture" class="user-avatar" alt="User Avatar">
+                            <button class="user-button" type="button" id="userMenu" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <img class="user-avatar"
+                                    [src]="(currentUser$ | async)?.imagen_usuario || './../assets/cuenta.png'"
+                                    alt="User Avatar">
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
-                                <li><a class="dropdown-item" routerLink="/perfil">Mi perfil</a></li>
-                                <li><a class="dropdown-item" routerLink="/reservaciones">Historial de reservaciones</a></li>
-                                <li><a class="dropdown-item" routerLink="/comentarios">Historial de comentarios</a></li>
-                                <li><a class="dropdown-item" routerLink="/pagos">Historial de pagos</a></li>
-                                <li><button class="dropdown-item text-danger" (click)="logout()">Cerrar sesión</button></li>
+                                <li><a class="dropdown-item" routerLink="/mi-perfil">Mi perfil</a></li>
+                                <li><a class="dropdown-item" (click)="logout()">Cerrar sesión</a></li>
                             </ul>
                         </div>
                     </div>
+
                 </div>
             </div>
         </nav>

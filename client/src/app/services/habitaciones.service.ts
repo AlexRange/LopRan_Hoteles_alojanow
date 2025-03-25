@@ -2,26 +2,26 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, of } from 'rxjs';
 import { Habitaciones } from '../models/modelos';
+import { environment } from '../../enviroments/enviroments';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HabitacionesService {
-  // API_URI = 'http://localhost:3000/api';
-  API_URI = 'https://9gc26mcr-3000.usw3.devtunnels.ms/api';
+  private apiUrl = environment.API_URL;
 
   constructor(private http: HttpClient) { }
 
   getHabitacion() {
-    return this.http.get<Habitaciones[]>(`${this.API_URI}/habitaciones`);
+    return this.http.get<Habitaciones[]>(`${this.apiUrl}/habitaciones`);
   }
 
   deleteHabitacion(id_habitacion: string | number) {
-    return this.http.delete(`${this.API_URI}/habitaciones/${id_habitacion}`);
+    return this.http.delete(`${this.apiUrl}/habitaciones/${id_habitacion}`);
   }
 
   saveHabitacion(evento: Habitaciones): Observable<any> {
-    return this.http.post(`${this.API_URI}/habitaciones`, evento).pipe(
+    return this.http.post(`${this.apiUrl}/habitaciones`, evento).pipe(
       catchError(error => {
         console.error('Error al guardar la habitacion', error);
         return of(null);
@@ -30,11 +30,11 @@ export class HabitacionesService {
   }
 
   updateHabitacion(id_habitacion: string | number, update: Habitaciones): Observable<Habitaciones> {
-    return this.http.put<Habitaciones>(`${this.API_URI}/habitaciones/${id_habitacion}`, update);
+    return this.http.put<Habitaciones>(`${this.apiUrl}/habitaciones/${id_habitacion}`, update);
   }
 
   getHabitacionesByHotel(id_hotel: number): Observable<Habitaciones[]> {
-    return this.http.get<Habitaciones[]>(`${this.API_URI}/habitaciones/hotel/${id_hotel}`);
+    return this.http.get<Habitaciones[]>(`${this.apiUrl}/habitaciones/hotel/${id_hotel}`);
   }
   
 }

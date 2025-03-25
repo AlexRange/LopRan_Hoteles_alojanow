@@ -1,91 +1,111 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthService } from '@auth0/auth0-angular';
+import { Component, OnInit } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { filter } from 'rxjs/operators';
+import { Usuarios } from '../../models/modelos';
+import { Auth } from '../../services/auth.service';
 
 @Component({
   selector: 'app-navigation',
   templateUrl: './navigation.component.html',
   standalone: false,
-  styleUrl: './navigation.component.css'
+  styleUrls: ['./navigation.component.css']
 })
-export class NavigationComponent {
-
-  userPicture: string = 'assets/default-avatar.png'; // Imagen por defecto
-  userName: string = 'Usuario';
+export class NavigationComponent implements OnInit {
   searchQuery: string = '';
-  searchResults: { text: string, link?: string, id?: string }[] = [];
+  searchResults: { text: string, link: string }[] = [];
   showResults: boolean = false;
+  isAuthenticated$: Observable<boolean>;
+  currentUser$: Observable<Usuarios | null>;
+  isLoggedIn: boolean = false;
+  isLoginPage: boolean = false;
+  isProfilePage: boolean = false;
 
-  constructor(public auth: AuthService, private router: Router) {
-    // Obtener datos del usuario autenticado
-    this.auth.user$.subscribe(user => {
-      this.userPicture = user?.picture || 'assets/default-avatar.png';
-      this.userName = user?.nickname || 'Usuario';
+  constructor(private router: Router, private authService: Auth) {
+    this.isAuthenticated$ = this.authService.isAuthenticated();
+    this.currentUser$ = this.authService.getCurrentUser();
+    
+    // Suscribirse a los cambios de ruta
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: any) => {
+      this.checkCurrentRoute(event.url);
     });
   }
 
-  // Método para iniciar sesión
-  login() {
-    this.auth.loginWithRedirect();
+  ngOnInit(): void {
+    this.isAuthenticated$.subscribe(isAuth => this.isLoggedIn = isAuth);
+    this.checkCurrentRoute(this.router.url);
   }
 
-  // Método para cerrar sesión
-  logout() {
-    this.auth.logout({ logoutParams: { returnTo: window.location.origin } });
+  // Método para verificar la ruta actual
+  checkCurrentRoute(url: string): void {
+    this.isLoginPage = url.includes('/login');
+    this.isProfilePage = url.includes('/mi-perfil');
   }
 
   // Método para manejar cambios en el input de búsqueda
-  onInputChange() {
+  onInputChange(): void {
     if (this.searchQuery.length > 2) {
-      this.searchResults = this.searchInDOM(this.searchQuery);
+      this.searchResults = [];
+      this.showResults = false;
+      const normalizedQuery = this.searchQuery.toLowerCase().trim();
+      const routes = this.getDynamicRoutes();
+
+      routes.forEach(route => {
+        if (route.toLowerCase().includes('admin')) {
+          return;
+        }
+
+        const linkElement = document.querySelector(`a[href="${route}"]`);
+        if (linkElement) {
+          const linkText = linkElement.textContent?.trim() || '';
+          if (linkText.toLowerCase().includes(normalizedQuery)) {
+            this.searchResults.push({ text: linkText, link: route });
+          }
+        }
+      });
       this.showResults = this.searchResults.length > 0;
     } else {
       this.showResults = false;
     }
   }
 
-  // Método para buscar coincidencias en el DOM
-  searchInDOM(query: string): { text: string, link?: string, id?: string }[] {
-    const results: { text: string, link?: string, id?: string }[] = [];
-    const elements = document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, a');
-
-    elements.forEach(element => {
-      const text = element.textContent?.toLowerCase();
-      if (text && text.includes(query.toLowerCase())) {
-        const link = element.closest('a')?.getAttribute('href');
-        const id = element.getAttribute('id');
-        results.push({
-          text: element.textContent || '',
-          link: link || undefined,
-          id: id || undefined
+  // Método para obtener rutas dinámicamente desde el Router
+  getDynamicRoutes(): string[] {
+    const routes: string[] = [];
+    this.router.config.forEach(route => {
+      if (route.path) {
+        routes.push(`/${route.path}`);
+      }
+      if (route.children) {
+        route.children.forEach(childRoute => {
+          if (childRoute.path) {
+            routes.push(`/${route.path}/${childRoute.path}`);
+          }
         });
       }
     });
-
-    return results;
+    return routes;
   }
 
-  // Método para navegar a la sección encontrada
-  navigateTo(result: { text: string, link?: string, id?: string }) {
-    if (result.link) {
-      // Si hay un enlace, redirigir a la nueva página
-      this.router.navigateByUrl(result.link);
-    } else if (result.id) {
-      // Si hay un ID, desplazarse a la sección en la página actual
-      const element = document.getElementById(result.id);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }
+  // Método para navegar a la página encontrada
+  navigateTo(result: { text: string, link: string }): void {
+    this.router.navigateByUrl(result.link);
     this.showResults = false;
     this.searchQuery = '';
   }
 
   // Método para manejar el envío del formulario de búsqueda
-  onSearch(event: Event) {
+  onSearch(event: Event): void {
     event.preventDefault();
     if (this.searchResults.length > 0) {
       this.navigateTo(this.searchResults[0]);
     }
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/home']);
   }
 }

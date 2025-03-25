@@ -7,8 +7,10 @@ import comentariosRoutes from './routes/comentariosRoutes';
 import habitacionesRoutes from './routes/habitacionesRoutes';
 import hotelesRoutes from './routes/hotelesRoutes';
 import loginRoutes from './routes/loginRoutes';
+import otpRoutes from './routes/optRoutes';
 import pagosRoutes from './routes/PagosRoutes';
 import promocionesRoutes from './routes/promocionesRoutes';
+import recaptchaRoutes from './routes/recaptchaRoutes';
 import reservacionesHabitacionesRoutes from './routes/reservacionesHbitacionesRoutes';
 import reservacionesServiciosRoutes from './routes/reservacionesServiciosRoutes';
 import serviciosAdicionalesRoutes from './routes/serviciosAdicionalesRoutes';
@@ -24,7 +26,7 @@ class Server {
     }
 
     config():void{
-        this.app.set('port',process.env.PORT || 3000);
+        this.app.set('port',process.env.PORT || 4000);
         this.app.use(morgan('dev'));
         this.app.use(cors());
         this.app.use(bodyParser.json({ limit: '10mb' }));
@@ -33,7 +35,7 @@ class Server {
     }
 
     routes(): void {
-        this.app.use('/api/users', UsuariosRoutes);
+        this.app.use('/api/usuarios', UsuariosRoutes);
         this.app.use('/api/login', loginRoutes);
         this.app.use('/api/reservaciones', reservacionesHabitacionesRoutes);
         this.app.use('/api/comentarios', comentariosRoutes);
@@ -43,15 +45,15 @@ class Server {
         this.app.use('/api/promociones', promocionesRoutes);
         this.app.use('/api/reservacionesSer', reservacionesServiciosRoutes);
         this.app.use('/api/serviciosAd', serviciosAdicionalesRoutes);
+        this.app.use('/api/recaptcha', recaptchaRoutes);
+        this.app.use('/api/otp', otpRoutes);
     }
 
     start() {
-        const port = this.app.get('port');
-        this.app.listen(port, '0.0.0.0', () => {
-            console.log('Server on port', port);
+        this.app.listen(this.app.get('port'), () => {
+            console.log('Server on port', this.app.get('port'));
         });
     }
-
 }
 
 const server = new Server();

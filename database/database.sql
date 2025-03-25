@@ -114,6 +114,14 @@ CREATE TABLE verification_codes (
     PRIMARY KEY (id)
 );
 
+CREATE TABLE otp_codes (
+    id INT AUTO_INCREMENT PRIMARY KEY, -- Identificador único del registro
+    email VARCHAR(255) NOT NULL,      -- Correo electrónico del usuario
+    code_otp VARCHAR(10) NOT NULL,         -- Código OTP generado
+    status ENUM('Pendiente', 'Verificado') DEFAULT 'Pendiente', -- Estado del código (pendiente o verificado)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Fecha y hora de creación del código
+    expires_at DATETIME NOT NULL       -- Fecha y hora de expiración del código
+);
 
 -- Triger actualizar estatus a expirado en tabla verification_codes
 

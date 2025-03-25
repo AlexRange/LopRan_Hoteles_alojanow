@@ -20,7 +20,7 @@ export class ReservacionesClienteComponent implements OnInit, OnChanges {
   ) {
     this.reservacionForm = this.fb.group({
       id_habitacion: ['', Validators.required],
-      id_usuario: ['1', Validators.required],
+      id_usuario: ['4', Validators.required],
       fecha_inicio: ['', Validators.required],
       fecha_fin: ['', Validators.required],
       precio_total: ['2000', Validators.required],
@@ -72,11 +72,20 @@ export class ReservacionesClienteComponent implements OnInit, OnChanges {
         });
       },
       error => {
+        let errorMessage = 'Hubo un problema al guardar la reservación.';
+
+        if (error?.error?.error === 'Duplicate entry detected') {
+          errorMessage = 'Ya existe una reservación con esos datos.';
+        } else if (error?.status === 400) {
+          errorMessage = 'Los datos ingresados son incorrectos.';
+        }
+
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'Hubo un problema al guardar la reservación.'
+          text: errorMessage
         });
+
         console.error('Error guardando reservación:', error);
       }
     );

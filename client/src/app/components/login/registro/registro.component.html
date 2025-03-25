@@ -1,0 +1,95 @@
+<div class="card shadow-sm border-light">
+    <div class="card-body border-dark">
+        <div class="modal-header" style="background: #081b16; color: white; border-radius: 5px 5px 0 0;">
+            <h2 class="mb-4 text-center">Crea tu cuenta y sé parte de Ralenzo Hospedaje.</h2>
+        </div>
+        <div class="container p-4">
+            <form [formGroup]="registroForm" (ngSubmit)="onSubmit()">
+                <!-- Nombre Completo -->
+                <div class="form-group mb-4">
+                    <label for="nombre" class="form-label">Nombre Completo:</label>
+                    <input type="text" id="nombre" formControlName="nombre" class="form-control"
+                        placeholder="Ingresa tu nombre completo" />
+                    <small *ngIf="campoNoValido('nombre')" class="text-danger">
+                        El nombre es obligatorio y debe tener al menos 3 caracteres.
+                    </small>
+                </div>
+
+                <!-- Correo Electrónico -->
+                <div class="form-group mb-4">
+                    <label for="email" class="form-label">Correo Electrónico:</label>
+                    <input type="email" id="email" formControlName="email" class="form-control"
+                        placeholder="Ingresa tu correo electrónico" />
+                    <small *ngIf="campoNoValido('email')" class="text-danger">
+                        Ingresa un correo electrónico válido.
+                    </small>
+                </div>
+
+                <!-- Contraseña -->
+                <div class="form-group mb-4">
+                    <label for="contrasena" class="form-label">Contraseña:</label>
+                    <input type="password" id="contrasena" formControlName="contrasena" class="form-control"
+                        placeholder="Ingresa tu contraseña" />
+                    <small *ngIf="campoNoValido('contrasena')" class="text-danger">
+                        <ng-container *ngIf="registroForm.get('contrasena')?.errors?.['missingUpperCase']">Debe contener
+                            al menos una letra mayúscula.</ng-container>
+                        <ng-container *ngIf="registroForm.get('contrasena')?.errors?.['missingLowerCase']">Debe contener
+                            al menos una letra minúscula.</ng-container>
+                        <ng-container *ngIf="registroForm.get('contrasena')?.errors?.['missingNumber']">Debe contener al
+                            menos un número.</ng-container>
+                        <ng-container *ngIf="registroForm.get('contrasena')?.errors?.['missingSpecialChar']">Debe
+                            contener al menos un carácter especial.</ng-container>
+                    </small>
+                </div>
+
+                <!-- Confirmar Contraseña -->
+                <div class="form-group mb-4">
+                    <label for="confirmarContrasena" class="form-label">Confirmar Contraseña:</label>
+                    <input type="password" id="confirmarContrasena" formControlName="confirmarContrasena"
+                        class="form-control" placeholder="Confirma tu contraseña" />
+                    <small
+                        *ngIf="registroForm.hasError('passwordsMismatch') && registroForm.get('confirmarContrasena')?.touched"
+                        class="text-danger">
+                        Las contraseñas no coinciden.
+                    </small>
+                </div>
+
+                <!-- Teléfono -->
+                <div class="form-group mb-4">
+                    <label for="telefono" class="form-label">Teléfono:</label>
+                    <input type="text" id="telefono" formControlName="telefono" class="form-control"
+                        placeholder="Ingresa tu número de teléfono" />
+                    <small *ngIf="campoNoValido('telefono')" class="text-danger">
+                        El teléfono debe contener 10 dígitos.
+                    </small>
+                </div>
+
+                <!-- Imagen de Perfil -->
+                <div class="form-group mb-4">
+                    <label for="imagen_usuario" class="form-label">Imagen de Perfil:</label>
+                    <input type="file" id="imagen_usuario" formControlName="imagen_usuario" class="form-control"
+                        (change)="onFileChange($event)" />
+                </div>
+
+                <!-- reCAPTCHA -->
+                <div class="form-outline mb-4">
+                    <label class="form-label">Marca la casilla para asegurar que no eres un robot</label>
+                    <ngx-recaptcha2 [siteKey]="siteKey" (success)="captchaResolved($event)" (expired)="resetCaptcha()"
+                        (error)="resetCaptcha()" formControlName="recaptcha">
+                    </ngx-recaptcha2>
+                </div>
+
+                <!-- Botón de Enviar -->
+                <div class="container mt-4">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button class="btn btn-success btn-block" [disabled]="registroForm.invalid" type="submit">
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
