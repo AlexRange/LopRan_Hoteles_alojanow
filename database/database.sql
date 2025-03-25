@@ -16,6 +16,7 @@ CREATE TABLE hoteles (
     id_hotel INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     direccion VARCHAR(255) NOT NULL,
+    zona VARCHAR(50) NOT NULL,
     ciudad VARCHAR(100) NOT NULL,
     pais VARCHAR(100) NOT NULL,
     descripcion TEXT,
@@ -29,6 +30,7 @@ CREATE TABLE hoteles (
 CREATE TABLE habitaciones (
     id_habitacion INT AUTO_INCREMENT PRIMARY KEY,
     id_hotel INT NOT NULL,
+    num_habitacion int NOT NULL,
     tipo_habitacion VARCHAR(50) NOT NULL,
     descripcion TEXT,
     capacidad INT NOT NULL,
