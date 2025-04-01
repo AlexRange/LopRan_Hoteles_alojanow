@@ -19,120 +19,105 @@ export class LoginComponent {
   contrasena: string = '';
   mostrarModalOtp: boolean = false;
   otp_code: string = '';
-  tempUserData: any;
 
   constructor(
     private authService: Auth,
     private router: Router,
     private modal: NgbModal,
     private otpService: OtpService
-  ) {}
+  ) { }
 
   login(): void {
+    if (!this.email || !this.contrasena) {
+      this.showError('Por favor ingrese email y contraseña');
+      return;
+    }
+
     this.authService.loginToServer(this.email, this.contrasena).subscribe({
-      next: (response: any) => {
-        if (response && response.success && response.usuario) {
-          // Solo guardamos temporalmente los datos del usuario
-          this.tempUserData = response.usuario;
+      next: (response) => {
+        if (response?.success) {
           this.mostrarModalOtp = true;
           this.enviarOtp();
         } else {
-          this.showError(response?.message || 'Correo o contraseña incorrectos. Por favor, inténtalo de nuevo.');
+          this.showError(response?.message || 'Credenciales incorrectas');
         }
       },
       error: (err) => {
-        this.showError('Hubo un problema al iniciar sesión. Por favor, inténtalo de nuevo.');
-        console.error('Login error:', err);
-      },
+        console.error('Error en login:', err);
+        this.showError(err.error?.message || 'Error en el servidor. Intente nuevamente.');
+      }
     });
   }
 
   enviarOtp(): void {
     this.otpService.sendOtp(this.email).subscribe({
-      next: (response) => {
+      next: () => {
         Swal.fire({
           position: 'top-end',
           icon: 'success',
-          title: 'El código ha sido enviado a tu correo electrónico',
+          title: 'Código enviado a tu correo',
           toast: true,
           showConfirmButton: false,
-          timer: 3000,
-          customClass: {
-            popup: 'small-toast'
-          }
+          timer: 3000
         });
       },
       error: (err) => {
         Swal.fire({
           position: 'top-end',
           icon: 'error',
-          title: 'No se pudo enviar el código al correo electrónico',
+          title: 'Error al enviar OTP',
+          text: err.error?.message || 'Intente nuevamente',
           toast: true,
           showConfirmButton: false,
-          timer: 3000,
-          customClass: {
-            popup: 'small-toast'
-          }
+          timer: 3000
         });
       }
     });
   }
 
   verificarOtp(): void {
+    if (!this.otp_code) {
+      this.showError('Por favor ingrese el código OTP');
+      return;
+    }
+
     this.otpService.verifyOtp(this.email, this.otp_code).subscribe({
       next: (response) => {
-        if (response.success) {
-          // SOLO AQUÍ establecemos al usuario como autenticado
-          this.authService.setCurrentUser(this.tempUserData);
-          this.authService.setLoggedInStatus(true);
-          this.mostrarModalOtp = false;
+        if (response?.success) {
+          this.authService.completeLogin();
           this.completarInicioSesion();
-          
-          Swal.fire({
-            position: 'top-end',
-            icon: 'success',
-            title: 'Inicio de sesión exitoso',
-            toast: true,
-            showConfirmButton: false,
-            timer: 3000
-          });
         } else {
-          this.showError(response.message || 'Código OTP inválido');
+          this.showError(response?.message || 'Código OTP inválido');
         }
       },
       error: (err) => {
-        this.showError(err.error.message || 'Error al verificar OTP');
+        console.error('Error en verificación OTP:', err);
+        this.showError(err.error?.message || 'Error al verificar OTP');
       }
     });
   }
 
   completarInicioSesion(): void {
-    this.authService.getCurrentUser().subscribe({
-      next: (usuario: Usuarios | null) => {
-        if (usuario && usuario.tipo) {
-          this.datosUsuario.emit(usuario);
-          
-          switch(usuario.tipo.toLowerCase()) {
-            case 'cliente':
-              this.router.navigate(['/home']);
-              break;
-            case 'admin':
-              this.router.navigate(['/home-admin']);
-              break;
-            default:
-              this.showError('Tipo de usuario no reconocido: ' + usuario.tipo);
-              this.authService.logout();
-          }
-        } else {
-          this.showError('No se pudo obtener la información del usuario. Contacta al administrador.');
-          this.authService.logout();
-        }
-      },
-      error: (err) => {
-        this.showError('Error al obtener información del usuario');
-        this.authService.logout();
+    const user = this.authService.getCurrentUserValue();
+    if (user?.tipo) {
+      this.datosUsuario.emit(user);
+      this.mostrarModalOtp = false;
+
+      switch (user.tipo.toLowerCase()) {
+        case 'admin':
+          this.router.navigate(['/home-admin']);
+          break;
+        case 'cliente':
+          this.router.navigate(['/home']);
+          break;
+        default:
+          this.authService.logout().subscribe();
+          this.showError('Tipo de usuario no válido');
       }
-    });
+    } else {
+      this.authService.logout().subscribe();
+      this.showError('Error al obtener datos del usuario');
+    }
   }
 
   private showError(message: string): void {
@@ -149,10 +134,10 @@ export class LoginComponent {
 
   cerrarModalOtp(): void {
     this.mostrarModalOtp = false;
-    this.tempUserData = null;
+    this.otp_code = '';
   }
 
-  openModal() {
+  openModal(): void {
     this.modal.open(RegistroComponent, {
       backdrop: 'static',
       size: 'lg',

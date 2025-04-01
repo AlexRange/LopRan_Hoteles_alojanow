@@ -140,3 +140,56 @@
         height: 220px;
     }
 }
+
+/* Estilos mejorados para la sección de comentarios */
+.comentarios-container {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: 
+        max-height 0.5s ease-in-out, 
+        opacity 0.3s ease-in-out,
+        padding 0.3s ease-in-out;
+    padding: 0 15px;
+    margin-top: 0;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.comentarios-container.visible {
+    max-height: 2000px; /* Valor suficientemente grande para contener todos los comentarios */
+    opacity: 1;
+    padding: 20px 15px;
+    margin-top: 20px;
+}
+
+/* Estilos para los comentarios individuales */
+.comentario-item {
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeInUp 0.4s ease forwards;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.comentario-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Retraso en la aparición de cada comentario */
+.comentario-item:nth-child(1) { animation-delay: 0.1s; }
+.comentario-item:nth-child(2) { animation-delay: 0.2s; }
+.comentario-item:nth-child(3) { animation-delay: 0.3s; }
+.comentario-item:nth-child(4) { animation-delay: 0.4s; }
+.comentario-item:nth-child(5) { animation-delay: 0.5s; }

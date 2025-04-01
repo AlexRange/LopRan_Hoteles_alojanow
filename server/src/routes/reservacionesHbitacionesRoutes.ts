@@ -12,6 +12,7 @@ class ReservacionesHabitacionesRoutes {
     config(): void {
         this.router.get('/', reservacionesHabitacionesController.list);
         this.router.get('/:id_reservacion',reservacionesHabitacionesController.getOne);
+        this.router.get('/usuario/:id_usuario',reservacionesHabitacionesController.getReservacionesByIdUsuario);
         this.router.post('/',reservacionesHabitacionesController.create);
         this.router.put('/:id_reservacion',reservacionesHabitacionesController.update);
         this.router.delete('/:id_reservacion',reservacionesHabitacionesController.delete);

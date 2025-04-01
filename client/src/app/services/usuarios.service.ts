@@ -14,9 +14,8 @@ export class UsuariosService {
 
   // Obtener todos los usuarios
   getUsuarios(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/usuarios`);
+    return this.http.get<Usuarios[]>(`${this.apiUrl}/usuarios`);
   }
-
   // Obtener un usuario por ID
   getUsuario(id_usuario: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/usuarios/${id_usuario}`);

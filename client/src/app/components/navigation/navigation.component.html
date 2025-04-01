@@ -14,20 +14,19 @@
                                 data-bs-toggle="dropdown" aria-expanded="false">Hoteles</a>
                             <ul class="dropdown-menu" aria-labelledby="hotelesDropdown">
                                 <li><a class="dropdown-item" routerLink="/explorar-hoteles">Explorar Hoteles</a></li>
-                                <li><a class="dropdown-item" routerLink="/hoteles-destacados">Hoteles Destacados</a>
-                                </li>
+                                <li><a class="dropdown-item" routerLink="/hoteles-destacados">Hoteles Destacados</a></li>
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="promocionesDropdown" role="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">Promociones</a>
                             <ul class="dropdown-menu" aria-labelledby="promocionesDropdown">
-                                <li><a class="dropdown-item" routerLink="/promociones-activas">Promociones Activas</a>
-                                </li>
+                                <li><a class="dropdown-item" routerLink="/promociones-activas">Promociones Activas</a></li>
                                 <li><a class="dropdown-item" routerLink="#">Hoteles con Descuento</a></li>
                             </ul>
                         </li>
                     </ul>
+                    
                     <div class="search-box">
                         <form (submit)="onSearch($event)">
                             <input type="text" placeholder="Ir a" [(ngModel)]="searchQuery" name="searchQuery"
@@ -43,21 +42,21 @@
                         </div>
                     </div>
 
-                    <!-- Mostrar botón de login solo si no hay sesión activa y no está en la página de login -->
-                    <div *ngIf="!(isAuthenticated$ | async) && !isLoginPage" class="d-flex">
+                    <!-- Login Button -->
+                    <div *ngIf="!isAuthenticated && !isLoginPage" class="d-flex">
                         <button type="button" class="btn-login" routerLink="/login">Iniciar sesión</button>
                     </div>
 
-                    <!-- Mostrar info del usuario si hay sesión activa y no está en la página de perfil -->
-                    <div *ngIf="(isAuthenticated$ | async) && !isProfilePage" class="user-menu d-flex align-items-center">
+                    <!-- User Menu -->
+                    <div *ngIf="isAuthenticated && !isProfilePage" class="user-menu d-flex align-items-center">
                         <span class="user-name me-2 d-none d-md-block" style="color: white;">
-                            {{ (currentUser$ | async)?.nombre }}
+                            {{ currentUser?.nombre }}
                         </span>
                         <div class="dropdown">
                             <button class="user-button" type="button" id="userMenu" data-bs-toggle="dropdown"
                                 aria-expanded="false">
                                 <img class="user-avatar"
-                                    [src]="(currentUser$ | async)?.imagen_usuario || './../assets/cuenta.png'"
+                                    [src]="currentUser?.imagen_usuario || './../assets/cuenta.png'"
                                     alt="User Avatar">
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
@@ -66,7 +65,6 @@
                             </ul>
                         </div>
                     </div>
-
                 </div>
             </div>
         </nav>

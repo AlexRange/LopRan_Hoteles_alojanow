@@ -4,57 +4,59 @@ import poolPromise from '../database';
 class PagosController {
     public async list(req: Request, res: Response): Promise<void> {
         try {
-            const connection = await poolPromise;
-            const pagos = await connection.query('SELECT * FROM pagos');
-            res.json(pagos);
+            const pool = await poolPromise;
+            const result = await pool.query('SELECT * FROM pagos');
+            res.json(result);
         } catch (error) {
-            res.status(500).json({ text: 'Error al obtener los pagos', error });
+            res.status(500).json({ message: 'Error al obtener los pagos' });
         }
     }
 
-    public async getOne(req: Request, res: Response): Promise<any> {
+    public async getOne(req: Request, res: Response): Promise<void> {
         const { id_pago } = req.params;
         try {
-            const connection = await poolPromise;
-            const pago = await connection.query('SELECT * FROM pagos WHERE id = ?', [id_pago]);
-            if (pago.length > 0) {
-                return res.json(pago[0]);
+            const pool = await poolPromise;
+            const result = await pool.query('SELECT * FROM pagos WHERE id_pago = ?', [id_pago]);
+            
+            if (result && result.length) {
+                res.json(result[0]);
+            } else {
+                res.status(404).json({ message: "No se encontró el pago" });
             }
-            res.status(404).json({ text: "El pago no existe" });
         } catch (error) {
-            res.status(500).json({ text: 'Error al obtener el pago', error });
+            res.status(500).json({ message: 'Error al buscar el pago' });
         }
     }
 
     public async create(req: Request, res: Response): Promise<void> {
         try {
-            const connection = await poolPromise;
-            await connection.query('INSERT INTO pagos set ?', [req.body]);
-            res.json({ message: 'Pago Guardado' });
+            const pool = await poolPromise;
+            await pool.query('INSERT INTO pagos SET ?', [req.body]);
+            res.json({ message: 'Pago registrado correctamente' });
         } catch (error) {
-            res.status(500).json({ text: 'Error al guardar el pago', error });
+            res.status(500).json({ message: 'Error al registrar el pago' });
         }
     }
 
     public async delete(req: Request, res: Response): Promise<void> {
         const { id_pago } = req.params;
         try {
-            const connection = await poolPromise;
-            await connection.query('DELETE FROM pagos WHERE id_pago = ?', [id_pago]);
-            res.json({ message: "El pago fue eliminado" });
+            const pool = await poolPromise;
+            await pool.query('DELETE FROM pagos WHERE id_pago = ?', [id_pago]);
+            res.json({ message: "Pago eliminado correctamente" });
         } catch (error) {
-            res.status(500).json({ text: 'Error al eliminar el pago', error });
+            res.status(500).json({ message: 'Error al eliminar el pago' });
         }
     }
 
     public async update(req: Request, res: Response): Promise<void> {
         const { id_pago } = req.params;
         try {
-            const connection = await poolPromise;
-            await connection.query('UPDATE pagos set ? WHERE id_pago = ?', [req.body, id_pago]);
-            res.json({ message: "El pago fue actualizado" });
+            const pool = await poolPromise;
+            await pool.query('UPDATE pagos SET ? WHERE id_pago = ?', [req.body, id_pago]);
+            res.json({ message: "Pago actualizado correctamente" });
         } catch (error) {
-            res.status(500).json({ text: 'Error al actualizar el pago', error });
+            res.status(500).json({ message: 'Error al actualizar el pago' });
         }
     }
 }

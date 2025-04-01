@@ -1,66 +1,75 @@
-/* Estilos generales */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f4;
-}
-
-/* Contenedor principal del footer */
+/* Estilos generales del footer */
 .footer {
     background: linear-gradient(135deg, #1a1a1a, #000000);
     color: #fff;
-    padding: 40px 20px;
-    text-align: center;
+    padding: 40px 0;
     width: 100%;
-    position: relative;
-    bottom: 0;
-    left: 0;
+}
+
+/* Contenedor principal */
+.footer .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
 }
 
 /* Redes Sociales */
 .social-icons {
-    margin-bottom: 20px;
     display: flex;
     justify-content: center;
+    margin: 0 auto 30px;
+    max-width: fit-content;
     gap: 20px;
 }
 
-.footer-icon {
-    transition: transform 0.3s;
-}
-
-/* Ajusta las imágenes de las redes sociales */
 .social-image {
-    width: 30px; /* Tamaño pequeño de la imagen */
-    height: 30px; /* Mantenemos la proporción de la imagen */
+    width: 30px;
+    height: 30px;
     transition: transform 0.3s, filter 0.3s;
 }
 
 .social-image:hover {
     transform: scale(1.1);
-    filter: brightness(1.2); /* Efecto para que resalten al pasar el ratón */
+    filter: brightness(1.2);
 }
 
-/* Estilo de las secciones */
+/* Estructura de columnas */
+.footer .row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 0 -15px;
+}
+
+.footer .col-md-4 {
+    padding: 0 15px;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    .footer .col-md-4 {
+        width: 33.333%;
+        margin-bottom: 0;
+    }
+}
+
+/* Estilos de contenido */
 .footer h5 {
     margin-bottom: 15px;
     font-weight: bold;
     text-transform: uppercase;
-    color: #d4af37; /* Dorado */
+    color: #d4af37;
+    font-size: 1.1rem;
 }
 
-/* Enlaces */
 .footer p, .footer a {
     color: #ddd;
     text-decoration: none;
-    font-size: 15px;
-    margin: 5px 0;
+    font-size: 0.95rem;
+    margin: 8px 0;
     display: block;
+    transition: color 0.3s;
 }
 
 .footer a:hover {
@@ -68,92 +77,41 @@ body {
     text-decoration: underline;
 }
 
-/* Línea divisoria superior */
+/* Sección de copyright */
 .footer-bottom {
     border-top: 1px solid rgba(255, 255, 255, 0.2);
-    margin-top: 20px;
-    padding-top: 15px;
-    font-size: 14px;
+    padding-top: 20px;
+    margin-top: 30px;
+    font-size: 0.9rem;
     color: #bbb;
+    text-align: center;
 }
 
-/* Estilos para hacer las imágenes responsivas */
-@media (max-width: 768px) {
-    .social-icons {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .social-image {
-        width: 25px; /* Reducir el tamaño en pantallas pequeñas */
-        height: 25px;
-    }
-
-    .footer h5 {
-        font-size: 18px;
-    }
-
-    .footer p, .footer a {
-        font-size: 14px;
-    }
-}
-
-/* Estilos para el Modal con Submenús */
+/* Estilos para el modal */
 .modal-content {
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
-    margin: auto; /* Centra el modal horizontalmente */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .modal-header {
     background: linear-gradient(135deg, #004d99, #002b66);
     color: white;
     border-bottom: none;
-    padding: 15px;
-    text-align: center;
+    padding: 15px 20px;
 }
 
 .modal-title {
-    font-size: 22px;
+    font-size: 1.3rem;
     font-weight: bold;
-    text-transform: uppercase;
 }
 
 .modal-body {
-    background-color: #f0f0f0;
+    background-color: #f8f9fa;
     padding: 20px;
-    color: #333;
 }
 
-.modal-footer {
-    background-color: #f0f0f0;
-    border-top: none;
-    padding: 10px;
-    text-align: center;
-}
-
-/* Botón de cierre personalizado */
-.btn-close {
-    filter: invert(1);
-    opacity: 0.8;
-    transition: opacity 0.3s;
-}
-
-.btn-close:hover {
-    opacity: 1;
-}
-
-/* Asegurar el centrado horizontal y vertical */
-.modal-dialog {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh; /* Asegura que el modal esté centrado verticalmente */
-    margin: 0 auto; /* Centra el modal horizontalmente */
-}
-
-/* Estilos para los submenús */
+/* Mapa del sitio */
 .sitemap-container {
     display: flex;
     flex-direction: column;
@@ -162,13 +120,13 @@ body {
 
 .sitemap-section {
     background: white;
-    padding: 10px 15px;
+    padding: 12px 15px;
     border-radius: 8px;
-    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
 .sitemap-main-link {
-    font-size: 18px;
+    font-size: 1.1rem;
     font-weight: bold;
     color: #004d99;
     text-decoration: none;
@@ -178,16 +136,17 @@ body {
 
 .sitemap-sub {
     margin-left: 15px;
-    margin-top: 5px;
+    margin-top: 8px;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 6px;
 }
 
 .sitemap-sub-link {
-    font-size: 16px;
+    font-size: 1rem;
     color: #333;
     text-decoration: none;
+    transition: color 0.3s;
 }
 
 .sitemap-sub-link:hover {
@@ -195,15 +154,17 @@ body {
     text-decoration: underline;
 }
 
-/* Ajuste responsivo */
-@media (max-width: 768px) {
+/* Responsive */
+@media (max-width: 767px) {
+    .footer .col-md-4 {
+        text-align: center !important;
+    }
+    
+    .modal-dialog {
+        margin: 20px;
+    }
+    
     .modal-title {
-        font-size: 18px;
-    }
-    .modal-body {
-        padding: 15px;
-    }
-    .sitemap-section {
-        padding: 8px 12px;
+        font-size: 1.1rem;
     }
 }

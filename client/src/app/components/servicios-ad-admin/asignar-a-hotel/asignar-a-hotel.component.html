@@ -1,0 +1,64 @@
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Gestión de Servicio en Hoteles</h5>
+            <button type="button" class="btn-close" (click)="closeModal()" aria-label="Cerrar"></button>
+        </div>
+        <div class="card-body">
+            <div *ngIf="isLoading" class="text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+
+            <div *ngIf="!isLoading">
+                <!-- Sección de Hoteles CON el servicio -->
+                <div class="mb-4 border-bottom pb-3">
+                    <h5>Hoteles con este servicio ({{hotelesConServicio.length}})</h5>
+                    <div *ngIf="hotelesConServicio.length === 0" class="alert alert-info">
+                        Ningún hotel tiene este servicio asignado actualmente.
+                    </div>
+                    <div *ngIf="hotelesConServicio.length > 0">
+                        <div class="list-group mb-3">
+                            <div *ngFor="let hotel of hotelesConServicio" 
+                                 class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ hotel.nombre }} - {{ hotel.ciudad }}
+                                <button class="btn btn-sm btn-outline-danger" 
+                                        (click)="desasignarServicio(hotel.id_hotel)">
+                                    Desasignar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección de Hoteles SIN el servicio -->
+                <div class="mb-4">
+                    <h5>Hoteles sin este servicio ({{hotelesSinServicio.length}})</h5>
+                    <div *ngIf="hotelesSinServicio.length === 0" class="alert alert-info">
+                        Todos los hoteles ya tienen este servicio asignado.
+                    </div>
+                    <div *ngIf="hotelesSinServicio.length > 0">
+                        <div class="mb-3">
+                            <label class="form-label">Seleccionar Hoteles</label>
+                            <select class="form-select" multiple size="8" [(ngModel)]="hotelesSeleccionados">
+                                <option *ngFor="let hotel of hotelesSinServicio" [ngValue]="hotel.id_hotel">
+                                    {{ hotel.nombre }} - {{ hotel.ciudad }}
+                                </option>
+                            </select>
+                            <small class="text-muted">Mantén presionada Ctrl (Windows) o Command (Mac) para selección múltiple</small>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary" 
+                                    (click)="asignarServicio()" 
+                                    [disabled]="!hotelesSeleccionados.length">
+                                Asignar a hoteles seleccionados
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

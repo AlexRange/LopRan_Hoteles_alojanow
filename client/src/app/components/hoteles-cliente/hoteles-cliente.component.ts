@@ -4,6 +4,7 @@ import { ComentariosCalificaciones } from '../../models/modelos';
 import { Auth } from '../../services/auth.service';
 import { ComentariosService } from '../../services/comentarios.service';
 import { HotelesService } from '../../services/hoteles.service';
+import { ReservacionesService } from '../../services/reservaciones.service'; // Importar el servicio de reservaciones
 
 @Component({
   selector: 'app-hoteles-cliente',
@@ -18,16 +19,37 @@ export class HotelesClienteComponent implements OnInit {
   nuevoComentario: ComentariosCalificaciones = { id_comentario: 0, id_usuario: 0, id_hotel: 0, comentario: '', calificacion: 0, fecha_comentario: '' };
   usuarioId: number | null = null;
   mostrarModal: boolean = false;
+  hotelesReservados: number[] = []; // Almacenará los IDs de hoteles donde el usuario ha reservado
 
   @ViewChild('comentarioModal', { static: false }) comentarioModal!: ElementRef;
 
-  constructor(private hotelService: HotelesService, private comentariosService: ComentariosService, private authService: Auth) {}
+  constructor(
+    private hotelService: HotelesService, 
+    private comentariosService: ComentariosService, 
+    private authService: Auth,
+    private reservacionesService: ReservacionesService // Inyectar el servicio
+  ) {}
 
   ngOnInit(): void {
     this.obtenerHoteles();
     this.authService.getCurrentUser().subscribe(user => {
-      if (user) this.usuarioId = user.id_usuario;
+      if (user) {
+        this.usuarioId = user.id_usuario;
+        this.obtenerReservacionesUsuario(user.id_usuario);
+      }
     });
+  }
+
+  obtenerReservacionesUsuario(idUsuario: number): void {
+    this.reservacionesService.getReservacionesByIdUsuario(idUsuario).subscribe(
+      (reservaciones) => {
+        // Extraer IDs únicos de hoteles donde ha reservado
+        this.hotelesReservados = [...new Set(reservaciones.map(r => r.id_hotel))];
+      },
+      (error) => {
+        console.error('Error al obtener reservaciones del usuario', error);
+      }
+    );
   }
 
   obtenerHoteles(): void {
@@ -43,14 +65,48 @@ export class HotelesClienteComponent implements OnInit {
   }
 
   abrirModal(id_hotel: number | null): void {
-    if (id_hotel) this.nuevoComentario.id_hotel = id_hotel;
+    if (!id_hotel) return;
+    
+    if (!this.usuarioId) {
+      Swal.fire({
+        position: 'top-end',
+        icon: 'warning',
+        title: 'Debes iniciar sesión para comentar',
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        customClass: {
+          popup: 'small-toast'
+        }
+      });
+      return;
+    }
+
+    // Verificar si el usuario ha reservado en este hotel
+    if (!this.hotelesReservados.includes(id_hotel)) {
+      Swal.fire({
+        position: 'top-end',
+        icon: 'info',
+        title: 'Solo puedes comentar hoteles donde hayas realizado reservaciones',
+        text: 'Reserva una habitación en este hotel para compartir tu experiencia',
+        toast: true,
+        showConfirmButton: false,
+        timer: 4000,
+        customClass: {
+          popup: 'medium-toast'
+        }
+      });
+      return;
+    }
+
+    this.nuevoComentario.id_hotel = id_hotel;
     this.nuevoComentario.comentario = '';
     this.nuevoComentario.calificacion = 0;
-    this.mostrarModal = true;  // Hacemos visible el modal
+    this.mostrarModal = true;
   }
 
   cerrarModal(): void {
-    this.mostrarModal = false;  // Hacemos invisible el modal
+    this.mostrarModal = false;
   }
 
   seleccionarCalificacion(estrellas: number): void {
@@ -116,7 +172,6 @@ export class HotelesClienteComponent implements OnInit {
       response => {
         console.log('Comentario guardado:', response);
   
-        // Mostrar la notificación de éxito
         Swal.fire({
           position: 'top-end',
           icon: 'success',
@@ -129,7 +184,6 @@ export class HotelesClienteComponent implements OnInit {
           }
         });
   
-        // Cerrar el modal inmediatamente después de guardar el comentario
         this.cerrarModal();
       },
       error => {

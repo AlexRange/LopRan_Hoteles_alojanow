@@ -19,8 +19,13 @@
                 </div>
 
                 <div class="form-group mb-4">
+                    <label for="num_habitacion" class="form-label">Número de Habitación:</label>
+                    <input type="number" id="num_habitacion" formControlName="num_habitacion" class="form-control" placeholder="Número único de habitación" required min="1" />
+                </div>
+
+                <div class="form-group mb-4">
                     <label for="descripcion" class="form-label">Descripción:</label>
-                    <textarea id="descripcion" formControlName="descripcion" class="form-control" placeholder="Ingresa una breve descripción" required></textarea>
+                    <textarea id="descripcion" formControlName="descripcion" class="form-control" placeholder="Ingresa una breve descripción"></textarea>
                 </div>
 
                 <div class="form-group mb-4">

@@ -3,6 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { ComentariosComponent } from './components/comentarios/comentarios.component';
 import { Error404Component } from './components/error404/error404.component';
 import { HabitacionesComponent } from './components/habitaciones/habitaciones.component';
+import { ComentariosCComponent } from './components/historiales/comentarios-c/comentarios-c.component';
+import { ReservasComponent } from './components/historiales/reservas/reservas.component';
 import { HomeAdminComponent } from './components/home-admin/home-admin.component';
 import { HomeComponent } from './components/home/home.component';
 import { HabitHotelComponent } from './components/hoteles-cliente/habit-hotel/habit-hotel.component';
@@ -11,13 +13,13 @@ import { HotelesDesComponent } from './components/hoteles-cliente/hoteles-des/ho
 import { HotelesComponent } from './components/hoteles/hoteles.component';
 import { LoginComponent } from './components/login/login.component';
 import { NosotrsoComponent } from './components/nosotrso/nosotrso.component';
+import { PerfilComponent } from './components/perfil/perfil.component';
 import { PreguntasFComponent } from './components/preguntas-f/preguntas-f.component';
 import { PrivacidadComponent } from './components/privacidad/privacidad.component';
 import { PromocionesActivasComponent } from './components/promociones-activas/promociones-activas.component';
 import { PromocionesComponent } from './components/promociones/promociones.component';
 import { ReservacionesHabComponent } from './components/reservaciones-hab/reservaciones-hab.component';
-import { PerfilComponent } from './components/perfil/perfil.component';
-import { ReservasComponent } from './components/historiales/reservas/reservas.component';
+import { ServiciosAdAdminComponent } from './components/servicios-ad-admin/servicios-ad-admin.component';
 
 const routes: Routes = [
   {
@@ -70,6 +72,10 @@ const routes: Routes = [
     component: ReservacionesHabComponent
   },
   {
+    path: 'serviciosAd-admin',
+    component: ServiciosAdAdminComponent
+  },
+  {
     path: 'preguntas-frec',
     component: PreguntasFComponent
   },
@@ -93,10 +99,9 @@ const routes: Routes = [
     path: 'mis-reservaciones',
     component: ReservasComponent
   },
-  
   {
     path: 'mis-comentarios',
-    component: ComentariosComponent
+    component: ComentariosCComponent
   },
   {
     path: '**',

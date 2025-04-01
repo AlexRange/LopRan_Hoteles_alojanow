@@ -1,8 +1,9 @@
 <div class="container mt-5" style="background-color: #F8F8F8;">
-    <nav aria-label="breadcrumb">
+    <!-- Migas de pan mejoradas -->
+    <nav aria-label="breadcrumb" class="breadcrumb-container">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item">Inicio Ad</li>
-            <li class="breadcrumb-item active" aria-current="page">Administrar Comentarios</li>
+            <li class="breadcrumb-item"><a href="/home-admin">Inicio</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Administracion de comentarios</li>
         </ol>
     </nav>
 
@@ -22,34 +23,97 @@
 
     <div class="row mt-3">
         <div class="col-md-12">
-            <table class="table-responsive table table-bordered table-hover">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>ID Comentario</th>
-                        <th>ID Usuario</th>
-                        <th>ID Hotel</th>
-                        <th>Comentario</th>
-                        <th>Calificación</th>
-                        <th>Fecha Comentario</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let comentario of comentariosget">
-                        <td>{{ comentario.id_comentario }}</td>
-                        <td>{{ comentario.id_usuario }}</td>
-                        <td>{{ comentario.id_hotel }}</td>
-                        <td>{{ comentario.comentario || 'Sin comentario' }}</td>
-                        <td>{{ comentario.calificacion }}</td>
-                        <td>{{ comentario.fecha_comentario | date:'dd/MM/yyyy' }}</td>
-                        <td class="text-center">
-                            <button class="btn btn-danger btn-sm" (click)="deleteComentario(comentario.id_comentario)">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="form-group mb-0">
+                    <label for="itemsPerPage" class="mr-2">Mostrar:</label>
+                    <select id="itemsPerPage" class="form-control form-control-sm d-inline-block" style="width: 70px;"
+                        [(ngModel)]="itemsPerPage" (change)="onItemsPerPageChange()">
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                    </select>
+                    <span class="ml-2">registros por página</span>
+                </div>
+                <div>
+                    <span class="mr-2">
+                        Mostrando {{ (currentPage - 1) * itemsPerPage + 1 }} -
+                        {{ getEndIndex() }} de {{ totalItems }} registros
+                    </span>
+                </div>
+            </div>
+
+            <div class="table-responsive-xl" style="overflow-x: auto; max-width: 100%;">
+                <table class="table table-bordered table-hover" style="min-width: 1000px;">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th class="sticky-col">ID Comentario</th>
+                            <th>ID Usuario</th>
+                            <th>ID Hotel</th>
+                            <th>Comentario</th>
+                            <th>Calificación</th>
+                            <th>Fecha Comentario</th>
+                            <th class="sticky-col-right">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let comentario of filteredComentarios">
+                            <td class="sticky-col">{{ comentario.id_comentario }}</td>
+                            <td>{{ comentario.id_usuario }}</td>
+                            <td>{{ comentario.id_hotel }}</td>
+                            <td style="min-width: 200px;">
+                                <div [class.expanded]="expandedDesc[comentario.id_comentario]" class="description-container">
+                                    {{ comentario.comentario || 'Sin comentario' }}
+                                </div>
+                                <span *ngIf="comentario.comentario" class="toggle-description" 
+                                        (click)="toggleExpandDesc(comentario.id_comentario)">
+                                    {{ expandedDesc[comentario.id_comentario] ? 'Ver menos' : 'Ver más' }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-warning text-dark">
+                                    {{ comentario.calificacion }} <i class="fas fa-star"></i>
+                                </span>
+                            </td>
+                            <td>{{ comentario.fecha_comentario | date:'dd/MM/yyyy' }}</td>
+                            <td class="sticky-col-right">
+                                <div class="d-flex justify-content-center gap-2">
+                                    <button class="btn btn-danger btn-sm" ngbTooltip="Eliminar comentario"
+                                        (click)="deleteComentario(comentario.id_comentario)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr *ngIf="filteredComentarios.length === 0">
+                            <td colspan="7" class="text-center">No hay registros para mostrar</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="d-flex justify-content-center mt-3" *ngIf="totalPages > 1">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <li class="page-item" [class.disabled]="currentPage === 1">
+                            <a class="page-link" href="javascript:void(0)" (click)="pageChanged(currentPage - 1)"
+                                [class.disabled-link]="currentPage === 1">
+                                &laquo; Anterior
+                            </a>
+                        </li>
+                        <li class="page-item" *ngFor="let page of getPages()" [class.active]="page === currentPage">
+                            <a class="page-link" href="javascript:void(0)" (click)="pageChanged(page)">
+                                {{ page }}
+                            </a>
+                        </li>
+                        <li class="page-item" [class.disabled]="currentPage === totalPages">
+                            <a class="page-link" href="javascript:void(0)" (click)="pageChanged(currentPage + 1)"
+                                [class.disabled-link]="currentPage === totalPages">
+                                Siguiente &raquo;
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </div>
     </div>
 </div>

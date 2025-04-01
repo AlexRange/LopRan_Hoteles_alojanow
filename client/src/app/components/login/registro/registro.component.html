@@ -2,6 +2,9 @@
     <div class="card-body border-dark">
         <div class="modal-header" style="background: #081b16; color: white; border-radius: 5px 5px 0 0;">
             <h2 class="mb-4 text-center">Crea tu cuenta y sé parte de Ralenzo Hospedaje.</h2>
+            <button type="button" class="close" (click)="close()" aria-label="Close">
+                <span aria-hidden="true" style="color: white;">&times;</span>
+            </button>
         </div>
         <div class="container p-4">
             <form [formGroup]="registroForm" (ngSubmit)="onSubmit()">
@@ -31,14 +34,19 @@
                     <input type="password" id="contrasena" formControlName="contrasena" class="form-control"
                         placeholder="Ingresa tu contraseña" />
                     <small *ngIf="campoNoValido('contrasena')" class="text-danger">
+                        <!-- Mostrar error de longitud mínima -->
+                        <ng-container *ngIf="registroForm.get('contrasena')?.errors?.['minlength']">
+                            La contraseña debe tener al menos 8 caracteres.
+                        </ng-container>
+                        <!-- Mostrar otros errores de validación -->
                         <ng-container *ngIf="registroForm.get('contrasena')?.errors?.['missingUpperCase']">Debe contener
-                            al menos una letra mayúscula.</ng-container>
+                            al menos una letra mayúscula.<br></ng-container>
                         <ng-container *ngIf="registroForm.get('contrasena')?.errors?.['missingLowerCase']">Debe contener
-                            al menos una letra minúscula.</ng-container>
+                            al menos una letra minúscula.<br></ng-container>
                         <ng-container *ngIf="registroForm.get('contrasena')?.errors?.['missingNumber']">Debe contener al
-                            menos un número.</ng-container>
+                            menos un número.<br></ng-container>
                         <ng-container *ngIf="registroForm.get('contrasena')?.errors?.['missingSpecialChar']">Debe
-                            contener al menos un carácter especial.</ng-container>
+                            contener al menos un carácter especial.<br></ng-container>
                     </small>
                 </div>
 

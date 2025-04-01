@@ -1,9 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import Swal from 'sweetalert2';
 import { Usuarios } from '../models/modelos';
 
 @Injectable({
@@ -12,109 +11,228 @@ import { Usuarios } from '../models/modelos';
 export class Auth {
   private currentUserSubject: BehaviorSubject<Usuarios | null>;
   public currentUser$: Observable<Usuarios | null>;
-  private apiUrl = 'http://localhost:4000/api'; // Ajusta según tu configuración
+  private apiUrl = 'http://localhost:4000/api';
+  private tokenExpirationTimer: any;
+  private tempAuthData: { email: string, contrasena: string, userData?: any, token?: string } | null = null;
+
+  private inactivityTimeout = 30 * 60 * 1000; // 30 minutos de inactividad
+  private inactivityTimer: any;
+  private activityEvents = ['mousemove', 'keypress', 'scroll', 'click'];
 
   constructor(private http: HttpClient, private router: Router) {
-    const storedUser = localStorage.getItem('currentUser');
-    this.currentUserSubject = new BehaviorSubject<Usuarios | null>(
-      storedUser ? JSON.parse(storedUser) : null
-    );
+    this.currentUserSubject = new BehaviorSubject<Usuarios | null>(this.getStoredUser());
     this.currentUser$ = this.currentUserSubject.asObservable();
+    this.setupInactivityListener();
   }
 
-  // Método para establecer el estado de autenticación
-  setLoggedInStatus(status: boolean): void {
-    if (!status) {
+  private getStoredUser(): Usuarios | null {
+    try {
+      const storedUser = localStorage.getItem('currentUser');
+      const storedToken = localStorage.getItem('token');
+      return storedUser && storedToken ? JSON.parse(storedUser) : null;
+    } catch (e) {
+      console.error('Error parsing stored user data', e);
+      this.clearAuthData();
+      return null;
+    }
+  }
+
+  private setupInactivityListener(): void {
+    this.resetInactivityTimer();
+    this.activityEvents.forEach(event => {
+      window.addEventListener(event, this.resetInactivityTimer.bind(this));
+    });
+  }
+
+  private resetInactivityTimer(): void {
+    if (this.getCurrentUserValue()) {
+      clearTimeout(this.inactivityTimer);
+      this.inactivityTimer = setTimeout(() => {
+        this.logoutDueToInactivity();
+      }, this.inactivityTimeout);
+    }
+  }
+
+  private logoutDueToInactivity(): void {
+    console.log('Sesión cerrada por inactividad');
+    this.logout().subscribe({
+      next: () => this.router.navigate(['/login'], { queryParams: { sessionExpired: true } }),
+      error: (err) => {
+        console.error('Error al cerrar sesión por inactividad:', err);
+        this.clearAuthData();
+        this.router.navigate(['/login']);
+      }
+    });
+  }
+
+  setAuth(user: Usuarios, token: string): void {
+    if (!user || !token) {
+      console.error('Intento de autenticación con datos inválidos');
+      return;
+    }
+
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    localStorage.setItem('token', token);
+    this.currentUserSubject.next(user);
+
+    try {
+      const decodedToken = this.decodeToken(token);
+      if (decodedToken?.exp) {
+        const expiresIn = decodedToken.exp * 1000 - Date.now();
+        this.setLogoutTimer(expiresIn);
+      }
+    } catch (e) {
+      console.error('Error al decodificar token:', e);
       this.clearAuthData();
     }
-    // No hacemos nada si es true, porque solo debe establecerse mediante setCurrentUser
+
+    this.resetInactivityTimer();
   }
 
-  // Método para iniciar sesión (solo verifica credenciales, NO establece sesión)
-  loginToServer(email: string, contrasena: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/login`, { email, contrasena }).pipe(
+  loginToServer(email: string, contrasena: string): Observable<{ success: boolean, usuario?: Usuarios, token?: string, message?: string }> {
+    return this.http.post<{ success: boolean, usuario: Usuarios, token: string }>(
+      `${this.apiUrl}/login`,
+      { email, contrasena }
+    ).pipe(
+      tap(response => {
+        if (response.success) {
+          this.tempAuthData = { email, contrasena, userData: response.usuario, token: response.token };
+        }
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  completeLogin(): void {
+    if (this.tempAuthData?.userData && this.tempAuthData.token) {
+      this.setAuth(this.tempAuthData.userData, this.tempAuthData.token);
+      this.tempAuthData = null;
+    }
+  }
+
+  logout(): Observable<any> {
+    const token = this.getToken();
+    const headers = new HttpHeaders(token ? { 'Authorization': `Bearer ${token}` } : {});
+
+    return this.http.post(`${this.apiUrl}/login/logout`, {}, { headers }).pipe(
+      tap(() => this.cleanupAfterLogout()),
       catchError(error => {
-        this.showErrorToast('Error al iniciar sesión');
+        this.cleanupAfterLogout();
         return throwError(() => error);
       })
     );
   }
 
-  // Método para establecer el usuario actual y completar el inicio de sesión
-  setCurrentUser(user: Usuarios): void {
-    localStorage.setItem('currentUser', JSON.stringify(user));
-    this.currentUserSubject.next(user);
-    this.setLoggedInStatus(true);
-    this.showSuccessToast('Inicio de sesión exitoso');
-  }
-
-  // Método para cerrar sesión
-  logout(): void {
+  private cleanupAfterLogout(): void {
     this.clearAuthData();
-    this.router.navigate(['/login']);
-    this.showSuccessToast('Sesión cerrada correctamente');
+    this.clearTempAuthData();
+    this.router.navigate(['/home']);
   }
 
-  // Método para verificar estado de autenticación
-  isAuthenticated(): Observable<boolean> {
-    return this.currentUser$.pipe(
-      map(user => !!user)
+  public clearAuthData(): void {
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('token');
+    this.currentUserSubject.next(null);
+    clearTimeout(this.tokenExpirationTimer);
+    clearTimeout(this.inactivityTimer);
+  }
+
+  private clearTempAuthData(): void {
+    this.tempAuthData = null;
+  }
+
+  private setLogoutTimer(expirationDuration: number): void {
+    clearTimeout(this.tokenExpirationTimer);
+    this.tokenExpirationTimer = setTimeout(() => this.logout().subscribe(), expirationDuration);
+  }
+
+  validateToken(): Observable<boolean> {
+    const token = this.getToken();
+    if (!token) return of(false);
+
+    const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
+    return this.http.get<{ valid: boolean }>(`${this.apiUrl}/login/validate-token`, { headers }).pipe(
+      map(response => {
+        if (response.valid) {
+          const decodedToken = this.decodeToken(token);
+          if (decodedToken?.exp) {
+            this.setLogoutTimer(decodedToken.exp * 1000 - Date.now());
+          }
+          return true;
+        }
+        this.clearAuthData();
+        return false;
+      }),
+      catchError(error => {
+        console.error('Error validating token:', error);
+        this.clearAuthData();
+        return of(false);
+      })
     );
   }
 
-  // Método para obtener el usuario actual (síncrono)
+  private decodeToken(token: string): any {
+    try {
+      return JSON.parse(atob(token.split('.')[1]));
+    } catch (e) {
+      console.error('Error decoding token:', e);
+      return null;
+    }
+  }
+
+  getToken(): string | null {
+    try {
+      return localStorage.getItem('token');
+    } catch (e) {
+      console.error('Error getting token:', e);
+      return null;
+    }
+  }
+
+  isAuthenticated(): Observable<boolean> {
+    return this.getToken() ? this.validateToken() : of(false);
+  }
+
   getCurrentUserValue(): Usuarios | null {
     return this.currentUserSubject.value;
   }
 
-  // Método para obtener el observable del usuario
   getCurrentUser(): Observable<Usuarios | null> {
     return this.currentUser$;
   }
 
-  // Limpiar datos de autenticación
-  private clearAuthData(): void {
-    localStorage.removeItem('currentUser');
-    this.currentUserSubject.next(null);
-  }
-
-  // Mostrar notificación de éxito
-  private showSuccessToast(message: string): void {
-    Swal.fire({
-      position: 'top-end',
-      icon: 'success',
-      title: message,
-      showConfirmButton: false,
-      timer: 2000
-    });
-  }
-
-  // Mostrar notificación de error
-  private showErrorToast(message: string): void {
-    Swal.fire({
-      position: 'top-end',
-      icon: 'error',
-      title: message,
-      showConfirmButton: false,
-      timer: 2000
-    });
-  }
-
   updateUser(userData: Partial<Usuarios>): Observable<Usuarios> {
     const currentUser = this.currentUserSubject.value;
-    if (!currentUser) {
-      return throwError(() => new Error('No user logged in'));
-    }
-  
-    return this.http.put<Usuarios>(`${this.apiUrl}/usuarios/${currentUser.id_usuario}`, userData).pipe(
+    if (!currentUser) return throwError(() => new Error('No user logged in'));
+
+    const headers = new HttpHeaders({ 'Authorization': `Bearer ${this.getToken()}` });
+    return this.http.put<Usuarios>(`${this.apiUrl}/usuarios/${currentUser.id_usuario}`, userData, { headers }).pipe(
       tap(updatedUser => {
-        this.setCurrentUser(updatedUser);
-        this.showSuccessToast('Datos actualizados correctamente');
+        // Combinar los datos existentes con los nuevos, preservando valores no modificados
+        const mergedUser = {
+          ...currentUser,
+          ...updatedUser,
+          // Asegurar que los campos críticos no sean sobrescritos con undefined
+          telefono: updatedUser.telefono !== undefined ? updatedUser.telefono : currentUser.telefono,
+          imagen_usuario: updatedUser.imagen_usuario !== undefined ? updatedUser.imagen_usuario : currentUser.imagen_usuario
+        };
+
+        localStorage.setItem('currentUser', JSON.stringify(mergedUser));
+        this.currentUserSubject.next(mergedUser);
       }),
-      catchError(error => {
-        this.showErrorToast('Error al actualizar los datos');
-        return throwError(() => error);
-      })
+      catchError(this.handleError)
     );
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    console.error('An error occurred:', error);
+    return throwError(() => error);
+  }
+
+  ngOnDestroy(): void {
+    this.activityEvents.forEach(event => {
+      window.removeEventListener(event, this.resetInactivityTimer.bind(this));
+    });
+    this.clearAuthData();
   }
 }

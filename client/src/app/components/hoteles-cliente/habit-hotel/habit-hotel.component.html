@@ -1,5 +1,5 @@
 <div class="container mt-4">
-    <!-- Migas de pan con el nombre del hotel -->
+    <!-- Migas de pan -->
     <nav aria-label="breadcrumb" class="breadcrumb-container">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a routerLink="/home">Inicio</a></li>
@@ -24,6 +24,18 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Botón y sección de comentarios -->
+    <div class="text-center mt-4">
+        <button class="btn btn-primary" id="toggleComentariosBtn">
+            Ver Comentarios del Hotel
+        </button>
+    </div>
+
+    <!-- Sección de comentarios (vacía, se llenará con DOM) -->
+    <div id="comentariosContainer" class="mt-4 comentarios-container">
+        <!-- El contenido se generará dinámicamente -->
     </div>
 </div>
 

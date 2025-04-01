@@ -1,1 +1,159 @@
-<p>reservas works!</p>
+<div class="container mt-4" *ngIf="!loading; else loadingReservations">
+    <!-- Migas de pan mejoradas -->
+    <nav aria-label="breadcrumb" class="breadcrumb-container">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/home">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="/mi-perfil">Mi perfil</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Mis Reservaciones</li>
+        </ol>
+    </nav>
+
+    <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+    <!-- Pending Reservations -->
+    <div *ngIf="pendingReservations.length > 0" class="mb-5">
+        <h3 class="mb-3">Reservaciones Pendientes</h3>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Hotel</th>
+                        <th>Habitación</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Precio Total</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let res of pendingReservations" [class]="getStatusClass(res.estado || '')">
+                        <td>{{ res.nombreHotel }}</td>
+                        <td>{{ res.id_habitacion }}</td>
+                        <td>{{ res.fecha_inicio | date:'mediumDate' }}</td>
+                        <td>{{ res.fecha_fin | date:'mediumDate' }}</td>
+                        <td>${{ res.precio_total | number:'1.2-2' }}</td>
+                        <td>
+                            <span class="badge" [ngClass]="{
+                                'bg-warning': res.estado === 'pendiente',
+                                'bg-success': res.estado === 'confirmada',
+                                'bg-danger': res.estado === 'cancelada'
+                            }">{{ res.estado }}</span>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-info me-2"
+                                (click)="openServicesModal(servicesModal, res.id_hotel, res.id_reservacion)">
+                                Agregar Servicios
+                            </button>
+                            <button class="btn btn-sm btn-danger" (click)="cancelReservation(res.id_reservacion)">
+                                Cancelar
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Other Reservations -->
+    <div *ngIf="otherReservations.length > 0">
+        <h3 class="mb-3">Otras Reservaciones</h3>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Hotel</th>
+                        <th>Habitación</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Precio Total</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let res of otherReservations" [class]="getStatusClass(res.estado || '')">
+                        <td>{{ res.nombreHotel }}</td>
+                        <td>{{ res.id_habitacion }}</td>
+                        <td>{{ res.fecha_inicio | date:'mediumDate' }}</td>
+                        <td>{{ res.fecha_fin | date:'mediumDate' }}</td>
+                        <td>${{ res.precio_total | number:'1.2-2' }}</td>
+                        <td>
+                            <span class="badge" [ngClass]="{
+                                'bg-warning': res.estado === 'pendiente',
+                                'bg-success': res.estado === 'confirmada',
+                                'bg-danger': res.estado === 'cancelada'
+                            }">{{ res.estado }}</span>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-info" disabled>
+                                Servicios Confirmados
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<ng-template #loadingReservations>
+    <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p class="mt-2">Cargando tus reservaciones...</p>
+    </div>
+</ng-template>
+
+<!-- Modal para agregar servicios -->
+<ng-template #servicesModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Servicios Adicionales del Hotel</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+    </div>
+    <div class="modal-body">
+        <div *ngIf="loadingServicios" class="text-center py-3">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p>Cargando servicios...</p>
+        </div>
+
+        <div *ngIf="!loadingServicios && serviciosAdicionales.length === 0" class="alert alert-info">
+            Este hotel no tiene servicios adicionales disponibles.
+        </div>
+
+        <div *ngIf="!loadingServicios && serviciosAdicionales.length > 0">
+            <div class="mb-3">
+                <p>Selecciona los servicios adicionales que deseas agregar a tu reservación:</p>
+            </div>
+            
+            <div class="list-group">
+                <div *ngFor="let servicio of serviciosAdicionales" class="list-group-item mb-2">
+                    <div class="form-check d-flex justify-content-between align-items-center">
+                        <div>
+                            <input class="form-check-input" type="checkbox" 
+                                [id]="'servicio-' + servicio.id_servicio"
+                                [checked]="selectedServices[servicio.id_servicio] || false"
+                                (change)="toggleServiceSelection(servicio.id_servicio)">
+                            <label class="form-check-label ms-2" [for]="'servicio-' + servicio.id_servicio">
+                                <h5>{{ servicio.nombre }}</h5>
+                            </label>
+                            <p *ngIf="servicio.descripcion" class="mb-0 ms-4">{{ servicio.descripcion }}</p>
+                        </div>
+                        <span class="badge bg-primary rounded-pill">${{ servicio.precio | number:'1.2-2' }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Cancelar</button>
+        <button type="button" class="btn btn-primary" 
+            (click)="saveSelectedServices()"
+            [disabled]="loadingServicios || getSelectedServicesCount() === 0">
+            Confirmar Reservación
+        </button>
+    </div>
+</ng-template>

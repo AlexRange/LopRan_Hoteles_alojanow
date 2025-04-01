@@ -1,57 +1,111 @@
 <div class="card shadow-sm border-light">
-    
     <div class="card-body border-dark">
         <div class="modal-header" style="background: #04ac84; color: white; border-radius: 5px 5px 0 0;">
             <h2 class="mb-4 text-center">Agregar Nuevo Hotel</h2>
         </div>
         <div class="container p-4">
             <form [formGroup]="hotelForm" (ngSubmit)="onSubmit()">
-                <div class="form-group mb-4">
-                    <label for="nombre" class="form-label">Nombre del Hotel:</label>
-                    <input type="text" id="nombre" formControlName="nombre" class="form-control" placeholder="Ingresa el nombre del hotel" required />
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-4">
+                            <label for="nombre" class="form-label">Nombre del Hotel:</label>
+                            <input type="text" id="nombre" formControlName="nombre" class="form-control"
+                                placeholder="Ingresa el nombre del hotel" required />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-4">
+                            <label for="zona" class="form-label">Zona del hotel:</label>
+                            <select id="zona" formControlName="zona" class="form-control" required>
+                                <option value="" disabled selected>Seleccione una zona...</option>
+                                <option value="Centro_Ciudad">Centro de la ciudad</option>
+                                <option value="Playa">Frente a la playa</option>
+                                <option value="Montaña">Zona de montaña</option>
+                                <option value="Centro_Historico">Casco histórico</option>
+                                <option value="Distrito_Financiero">Distrito financiero</option>
+                                <option value="Zxona_Comercial">Zona comercial</option>
+                                <option value="Residencial">Área residencial</option>
+                                <option value="Aeropuerto">Cerca del aeropuerto</option>
+                                <option value="Rural">Entorno rural</option>
+                                <option value="Suburbio">Zona suburbana</option>
+                                <option value="Lago">A orillas de lago</option>
+                                <option value="Complejo_Turistico">Complejo turístico</option>
+                                <option value="Parque_Tematico">Cerca de parque temático</option>
+                                <option value="Puerto_Deportivo">Puerto deportivo</option>
+                                <option value="Estación_Esqui">Cerca de estación de esquí</option>
+                                <option value="Termal">Zona termal</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
-
                 <div class="form-group mb-4">
                     <label for="direccion" class="form-label">Dirección:</label>
-                    <input type="text" id="direccion" formControlName="direccion" class="form-control" placeholder="Ingresa la dirección del hotel" required />
+                    <input type="text" id="direccion" formControlName="direccion" class="form-control"
+                        placeholder="Ingresa la dirección completa" required />
                 </div>
 
-                <div class="form-group mb-4">
-                    <label for="ciudad" class="form-label">Ciudad:</label>
-                    <input type="text" id="ciudad" formControlName="ciudad" class="form-control" placeholder="Ingresa la ciudad" required />
-                </div>
-
-                <div class="form-group mb-4">
-                    <label for="pais" class="form-label">País:</label>
-                    <input type="text" id="pais" formControlName="pais" class="form-control" placeholder="Ingresa el país" required />
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-4">
+                            <label for="ciudad" class="form-label">Ciudad:</label>
+                            <input type="text" id="ciudad" formControlName="ciudad" class="form-control"
+                                placeholder="Ingresa la ciudad" required />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-4">
+                            <label for="pais" class="form-label">País:</label>
+                            <input type="text" id="pais" formControlName="pais" class="form-control"
+                                placeholder="Ingresa el país" required />
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group mb-4">
                     <label for="descripcion" class="form-label">Descripción:</label>
-                    <textarea id="descripcion" formControlName="descripcion" class="form-control" placeholder="Ingresa una breve descripción" required></textarea>
+                    <textarea id="descripcion" formControlName="descripcion" class="form-control" rows="3"
+                        placeholder="Ingresa una descripción detallada del hotel" required></textarea>
                 </div>
 
-                <div class="form-group mb-4">
-                    <label for="estrellas" class="form-label">Estrellas:</label>
-                    <select id="estrellas" formControlName="estrellas" class="form-control" required>
-                        <option *ngFor="let estrella of [1,2,3,4,5]" [value]="estrella">{{ estrella }} Estrella(s)</option>
-                    </select>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-4">
+                            <label for="estrellas" class="form-label">Categoría (Estrellas):</label>
+                            <select id="estrellas" formControlName="estrellas" class="form-control" required>
+                                <option value="" disabled selected>Seleccione...</option>
+                                <option *ngFor="let estrella of [1,2,3,4,5]" [value]="estrella">
+                                    {{ estrella }} Estrella(s)
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-4">
+                            <label for="descripcion_imagen_hot" class="form-label">Descripción de la Imagen:</label>
+                            <input type="text" id="descripcion_imagen_hot" formControlName="descripcion_imagen_hot"
+                                class="form-control" placeholder="Ej: Vista frontal del hotel" required />
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group mb-4">
                     <label for="imagen_hotel" class="form-label">Imagen del Hotel:</label>
-                    <input type="file" id="imagen_hotel" (change)="onFileChange($event)" class="form-control" required />
-                </div>
-
-                <div class="form-group mb-4">
-                    <label for="descripcion_imagen_hot" class="form-label">Descripción de la Imagen:</label>
-                    <input type="text" id="descripcion_imagen_hot" formControlName="descripcion_imagen_hot" class="form-control" placeholder="Describe la imagen" />
+                    <input type="file" id="imagen_hotel" (change)="onFileChange($event)" class="form-control"
+                        accept="image/*" required />
+                    <small class="form-text text-muted">Formatos aceptados: JPG, PNG, JPEG</small>
                 </div>
 
                 <div class="container mt-4">
                     <div class="row">
-                        <div class="col-md-12">
-                            <button class="btn btn-success btn-block" type="submit">Guardar Hotel</button>
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-secondary btn-block"
+                                (click)="close()">Cancelar</button>
+                        </div>
+                        <div class="col-md-6">
+                            <button class="btn btn-success btn-block" type="submit"
+                                [disabled]="hotelForm.invalid || !imagenHotelBase64">
+                                Guardar Hotel
+                            </button>
                         </div>
                     </div>
                 </div>

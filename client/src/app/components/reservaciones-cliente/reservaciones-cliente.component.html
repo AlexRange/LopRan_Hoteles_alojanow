@@ -4,18 +4,33 @@
             <form [formGroup]="reservacionForm" (ngSubmit)="onSubmit()">
                 <div class="form-group mb-4">
                     <label for="fecha_inicio" class="form-label">Fecha de Inicio:</label>
-                    <input type="date" id="fecha_inicio" formControlName="fecha_inicio" class="form-control" required />
+                    <input type="date" id="fecha_inicio" formControlName="fecha_inicio" class="form-control" required
+                        (change)="onFechaChange()" />
                 </div>
 
                 <div class="form-group mb-4">
                     <label for="fecha_fin" class="form-label">Fecha de Fin:</label>
-                    <input type="date" id="fecha_fin" formControlName="fecha_fin" class="form-control" required />
+                    <input type="date" id="fecha_fin" formControlName="fecha_fin" class="form-control" required
+                        (change)="onFechaChange()" />
+                </div>
+
+                <div class="form-group mb-4" *ngIf="numNoches > 0">
+                    <h5>Detalles de la reservación</h5>
+                    <p>Número de noches: {{ numNoches }}</p>
+                    <p>Precio habitación por noche: {{ precioHabitacion | currency }}</p>
+                    <p>Total reservación: {{ precioHabitacion * numNoches | currency }}</p>
                 </div>
 
                 <div class="container mt-4">
                     <div class="row">
                         <div class="col-md-12">
-                            <button class="btn btn-success btn-block" type="submit">Guardar Reservación</button>
+                            <button class="btn btn-success btn-block" type="submit" [disabled]="loading">
+                                <span *ngIf="!loading">Guardar Reservación</span>
+                                <span *ngIf="loading">
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    Procesando...
+                                </span>
+                            </button>
                         </div>
                     </div>
                 </div>

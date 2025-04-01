@@ -1,0 +1,104 @@
+<div class="container mt-4" *ngIf="!loading; else loadingComments">
+    <!-- Migas de pan -->
+    <nav aria-label="breadcrumb" class="breadcrumb-container">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/home">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="/mi-perfil">Mi perfil</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Mis Comentarios</li>
+        </ol>
+    </nav>
+
+    <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+    <!-- Lista de comentarios -->
+    <div *ngIf="comentarios.length > 0">
+        <h3 class="mb-3">Mis Comentarios</h3>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Hotel</th>
+                        <th>Calificación</th>
+                        <th>Comentario</th>
+                        <th>Fecha</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let comentario of comentarios">
+                        <td>{{ comentario.nombreHotel }}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="star-rating me-2">
+                                    <span *ngFor="let star of [1,2,3,4,5]">
+                                        <i class="bi bi-star-fill fs-5"
+                                            [class.text-warning]="star <= (comentario.calificacion || 0)"
+                                            [class.text-muted]="star > (comentario.calificacion || 0)"></i>
+                                    </span>
+                                </div>
+                                <span class="badge bg-primary rounded-pill fs-6">
+                                    {{ comentario.calificacion }}/5
+                                </span>
+                            </div>
+                        </td>
+                        <td class="text-wrap" style="max-width: 300px;">{{ comentario.comentario || 'Sin comentario' }}</td>
+                        <td>{{ comentario.fecha_comentario | date:'dd-MM-yyyy' }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-primary me-2" (click)="startEdit(comentario)">
+                                <i class="bi bi-pencil"></i> Editar
+                            </button>
+                            <button class="btn btn-sm btn-danger" (click)="deleteComentario(comentario.id_comentario)">
+                                <i class="bi bi-trash"></i> Eliminar
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Mensaje cuando no hay comentarios -->
+    <div *ngIf="comentarios.length === 0 && !loading" class="alert alert-info">
+        No has realizado ningún comentario todavía.
+    </div>
+
+    <!-- Formulario de edición -->
+    <div *ngIf="showEditForm" class="card mt-4">
+        <div class="card-header">
+            <h4>Editar Comentario</h4>
+        </div>
+        <div class="card-body">
+            <form #editForm="ngForm" (ngSubmit)="submitEdit(editForm)">
+                <div class="mb-3">
+                    <label for="calificacion" class="form-label">Calificación</label>
+                    <select class="form-select" id="calificacion" name="calificacion"
+                        [(ngModel)]="editingComment!.calificacion" required>
+                        <option [ngValue]="1">1 Estrella</option>
+                        <option [ngValue]="2">2 Estrellas</option>
+                        <option [ngValue]="3">3 Estrellas</option>
+                        <option [ngValue]="4">4 Estrellas</option>
+                        <option [ngValue]="5">5 Estrellas</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="comentario" class="form-label">Comentario</label>
+                    <textarea class="form-control" id="comentario" name="comentario" rows="3"
+                        [(ngModel)]="editingComment!.comentario" required></textarea>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button type="button" class="btn btn-secondary me-2" (click)="cancelEdit()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" [disabled]="!editForm.valid">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<ng-template #loadingComments>
+    <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p class="mt-2">Cargando tus comentarios...</p>
+    </div>
+</ng-template>

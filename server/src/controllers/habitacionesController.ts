@@ -5,27 +5,32 @@ class HabitacionesController {
     public async list(req: Request, res: Response): Promise<void> {
         try {
             const pool = await poolPromise;
-            const habitaciones = await pool.query('SELECT * FROM habitaciones');
-            res.json(habitaciones);
+            const result = await pool.query('SELECT * FROM habitaciones');
+            res.json(result);
         } catch (err) {
             res.status(500).json({ message: 'Error al obtener habitaciones', error: err });
         }
     }
 
-    public async getOne(req: Request, res: Response): Promise<Response> {
+    public async getOne(req: Request, res: Response): Promise<void> {
         const { id_habitacion } = req.params;
         try {
-            const connection = await poolPromise;
-            const Habitacion = await connection.query('SELECT * FROM habitaciones WHERE id_habitacion = ?', [id_habitacion]);
-            if (Habitacion.length > 0) {
-                return res.json(Habitacion[0]);
+            const pool = await poolPromise;
+            const result = await pool.query(
+                'SELECT * FROM habitaciones WHERE id_habitacion = ?', 
+                [id_habitacion]
+            );
+            
+            if (result && result.length) {
+                res.json(result[0]);
+            } else {
+                res.status(404).json({ text: "The habitacion doesn't exist" });
             }
-            return res.status(404).json({ text: "La habitación no existe" });
-        } catch (err) {
-            return res.status(500).json({ message: 'Error al obtener la habitación', error: err });
+    
+        } catch (error) {
+            res.status(500).json({ error: 'Error retrieving habitacion' });
         }
     }
-    
 
     public async create(req: Request, res: Response): Promise<void> {
         try {
@@ -50,21 +55,14 @@ class HabitacionesController {
 
     public async update(req: Request, res: Response): Promise<void> {
         const { id_habitacion } = req.params;
-        const oldHotel = req.body;
         try {
             const pool = await poolPromise;
-            const result = await pool.query(
+            await pool.query(
                 'UPDATE habitaciones SET ? WHERE id_habitacion = ?',
                 [req.body, id_habitacion]
             );
-
-            if (result.affectedRows > 0) {
-                res.json({ message: "El registro de la habitación fue actualizado" });
-            } else {
-                res.status(404).json({ message: "Habitación no encontrada" });
-            }
+            res.json({ message: "El registro de la habitación fue actualizado" });
         } catch (error) {
-            console.error('Error al actualizar la habitación:', error);
             res.status(500).json({ message: 'Error al actualizar la habitación' });
         }
     }
@@ -73,16 +71,15 @@ class HabitacionesController {
         const { id_hotel } = req.params;
         try {
             const pool = await poolPromise;
-            const habitaciones = await pool.query(
+            const result = await pool.query(
                 'SELECT * FROM habitaciones WHERE id_hotel = ?',
                 [id_hotel]
             );
-            res.json(habitaciones);
+            res.json(result);
         } catch (err) {
             res.status(500).json({ message: 'Error al obtener habitaciones del hotel', error: err });
         }
     }
-    
 }
 
 const habitacionesController = new HabitacionesController();

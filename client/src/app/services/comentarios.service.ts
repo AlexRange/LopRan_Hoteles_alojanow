@@ -16,8 +16,8 @@ export class ComentariosService {
     return this.http.get<ComentariosCalificaciones[]>(`${this.apiUrl}/comentarios`);
   }
 
-  deleteComentario(id_habitacion: string | number) {
-    return this.http.delete(`${this.apiUrl}/comentarios/${id_habitacion}`);
+  deleteComentario(id_comentario: string | number) {
+    return this.http.delete(`${this.apiUrl}/comentarios/${id_comentario}`);
   }
 
   saveComentario(evento: ComentariosCalificaciones): Observable<any> {
@@ -29,7 +29,7 @@ export class ComentariosService {
     );
   }
 
-  updateComentario(id_habitacion: string | number, update: ComentariosCalificaciones): Observable<ComentariosCalificaciones> {
-    return this.http.put<ComentariosCalificaciones>(`${this.apiUrl}/comentarios/${id_habitacion}`, update);
+  updateComentario(id_comentario: string | number, update: ComentariosCalificaciones): Observable<ComentariosCalificaciones> {
+    return this.http.put<ComentariosCalificaciones>(`${this.apiUrl}/comentarios/${id_comentario}`, update);
   }
 }

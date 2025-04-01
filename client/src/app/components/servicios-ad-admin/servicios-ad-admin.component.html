@@ -1,0 +1,121 @@
+<div class="container mt-5" style="background-color: #F8F8F8;">
+    <!-- Migas de pan mejoradas -->
+    <nav aria-label="breadcrumb" class="breadcrumb-container">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/home-admin">Inicio</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Administracion de Servicios Adicionales</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h1>Administrar Servicios Adicionales</h1>
+            <p class="lead">Gestión de servicios adicionales</p>
+            <hr class="my-4">
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12 d-flex justify-content-between">
+            <h4>Lista de Servicios</h4>
+            <button class="btn btn-primary" ngbTooltip="Agregar nuevo servicio" (click)="openModal()">
+                <i class="fas fa-plus"></i> Agregar Servicio
+            </button>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="form-group mb-0">
+                    <label for="itemsPerPage" class="mr-2">Mostrar:</label>
+                    <select id="itemsPerPage" class="form-control form-control-sm d-inline-block" style="width: 70px;"
+                        [(ngModel)]="itemsPerPage" (change)="onItemsPerPageChange()">
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                    </select>
+                    <span class="ml-2">registros por página</span>
+                </div>
+                <div>
+                    <span class="mr-2">
+                        Mostrando {{ (currentPage - 1) * itemsPerPage + 1 }} -
+                        {{ getEndIndex() }} de {{ totalItems }} registros
+                    </span>
+                </div>
+            </div>
+
+            <div class="table-responsive-xl custom-table-responsive">
+                <table class="table table-bordered table-hover custom-service-table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th class="col-id">ID</th>
+                            <th class="col-nombre">Nombre</th>
+                            <th class="col-descripcion">Descripción</th>
+                            <th class="col-precio">Costo</th>
+                            <th class="col-acciones">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let serv of filteredServicios">
+                            <td class="col-id">{{ serv.id_servicio }}</td>
+                            <td class="col-nombre">{{ serv.nombre }}</td>
+                            <td class="col-descripcion">
+                                <div [class.expanded]="expanded[serv.id_servicio]" class="description-container">
+                                    {{ serv.descripcion }}
+                                </div>
+                                <span class="toggle-description" (click)="toggleExpand(serv.id_servicio)">
+                                    {{ expanded[serv.id_servicio] ? 'Ver menos' : 'Ver más' }}
+                                </span>
+                            </td>
+                            <td class="col-precio">{{ serv.precio | currency }}</td>
+                            <td class="col-acciones">
+                                <div class="d-flex justify-content-center gap-2">
+                                    <button class="btn btn-info btn-sm" ngbTooltip="Asignar a hoteles" 
+                                            (click)="openAssignModal(serv.id_servicio)">
+                                        <i class="fas fa-hotel"></i>
+                                    </button>
+                                    <button class="btn btn-success btn-sm" ngbTooltip="Editar servicio" 
+                                            (click)="openModalEdit(serv)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" ngbTooltip="Eliminar servicio" 
+                                            (click)="deleteReservacion(serv.id_servicio)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr *ngIf="filteredServicios.length === 0">
+                            <td colspan="5" class="text-center">No hay registros para mostrar</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="d-flex justify-content-center mt-3" *ngIf="totalPages > 1">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <li class="page-item" [class.disabled]="currentPage === 1">
+                            <a class="page-link" href="javascript:void(0)" (click)="pageChanged(currentPage - 1)"
+                                [class.disabled-link]="currentPage === 1">
+                                &laquo; Anterior
+                            </a>
+                        </li>
+                        <li class="page-item" *ngFor="let page of getPages()" [class.active]="page === currentPage">
+                            <a class="page-link" href="javascript:void(0)" (click)="pageChanged(page)">
+                                {{ page }}
+                            </a>
+                        </li>
+                        <li class="page-item" [class.disabled]="currentPage === totalPages">
+                            <a class="page-link" href="javascript:void(0)" (click)="pageChanged(currentPage + 1)"
+                                [class.disabled-link]="currentPage === totalPages">
+                                Siguiente &raquo;
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>

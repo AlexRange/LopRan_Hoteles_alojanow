@@ -1,0 +1,161 @@
+/* Estilos para la tabla responsiva */
+.table-responsive-xl {
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    position: relative;
+    margin-bottom: 20px;
+}
+
+/* Columnas fijas */
+.sticky-col {
+    position: sticky;
+    left: 0;
+    background-color: #f8f9fa;
+    z-index: 1;
+    width: 80px;
+}
+
+.sticky-col-right {
+    position: sticky;
+    right: 0;
+    background-color: #f8f9fa;
+    z-index: 1;
+    width: 150px;
+}
+
+/* Cabecera de tabla */
+.table th {
+    background-color: #343a40;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    white-space: nowrap;
+    border-bottom: 2px solid #454d55;
+    padding: 12px 8px;
+    text-align: center;
+}
+
+/* Efecto hover */
+.table-hover tbody tr:hover td {
+    background-color: rgba(0, 123, 255, 0.05);
+}
+
+/* Scrollbar personalizado */
+.table-responsive-xl::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+}
+
+.table-responsive-xl::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.table-responsive-xl::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+.table-responsive-xl::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Estilo para la descripción */
+.description-container {
+    max-height: 50px;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out;
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+.description-container.expanded {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+/* Botón ver más/menos */
+.toggle-description {
+    display: block;
+    text-align: right;
+    margin-top: 5px;
+    color: #007bff;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+/* Ajustes generales de celdas */
+td {
+    vertical-align: top;
+    white-space: normal;
+    padding: 8px;
+}
+
+/* Estilos para la paginación */
+.pagination {
+    margin-bottom: 0;
+    flex-wrap: wrap;
+}
+
+.page-item {
+    margin: 2px;
+}
+
+.page-item.active .page-link {
+    background-color: #343a40;
+    border-color: #343a40;
+}
+
+.page-link {
+    color: #343a40;
+    border: 1px solid #dee2e6;
+    min-width: 38px;
+    text-align: center;
+}
+
+.page-link:hover {
+    color: #343a40;
+    background-color: #f8f9fa;
+}
+
+/* Estilo para enlaces deshabilitados */
+.disabled-link {
+    pointer-events: none;
+    cursor: default;
+    color: #6c757d !important;
+    background-color: #e9ecef !important;
+}
+
+/* Estilos para el selector de items por página */
+.form-control-sm {
+    height: calc(1.5em + 0.5rem + 2px);
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    display: inline-block;
+    width: auto;
+}
+
+/* Asegurar que los controles de paginación se vean bien en móviles */
+@media (max-width: 576px) {
+    .d-flex.justify-content-between.align-items-center {
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+    
+    .form-group.mb-0 {
+        margin-bottom: 1rem !important;
+    }
+    
+    .pagination {
+        justify-content: center;
+    }
+}
+
+/* Mensaje cuando no hay registros */
+.text-center {
+    padding: 20px;
+    font-style: italic;
+    color: #6c757d;
+}

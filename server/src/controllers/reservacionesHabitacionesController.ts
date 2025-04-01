@@ -2,84 +2,92 @@ import { Request, Response } from 'express';
 import poolPromise from '../database';
 
 class ReservacionesHabitacionesController {
-    public async list(req: Request, res: Response): Promise<Response> {
+    public async list(req: Request, res: Response): Promise<void> {
         try {
             const pool = await poolPromise;
-            const [reservaciones] = await pool.query('SELECT * FROM reservaciones');
-            return res.json(reservaciones);
+            const result = await pool.query('SELECT * FROM reservaciones');
+            res.json(result);
         } catch (error) {
-            console.error('Error retrieving reservations:', error);
-            return res.status(500).json({ error: 'Error retrieving reservations' });
+            res.status(500).json({ message: 'Error al obtener las reservaciones' });
         }
     }
 
-    public async getOne(req: Request, res: Response): Promise<Response> {
+    public async getOne(req: Request, res: Response): Promise<void> {
+        const { id_reservacion } = req.params;
+        
         try {
-            const { id_reservacion } = req.params;
             const pool = await poolPromise;
-            const [reservaciones] = await pool.query('SELECT * FROM reservaciones WHERE id_reservacion = ?', [id_reservacion]);
+            const result = await pool.query(
+                'SELECT * FROM reservaciones WHERE id_reservacion = ?', 
+                [id_reservacion]
+            );
 
-            if (Array.isArray(reservaciones) && reservaciones.length > 0) {
-                return res.json(reservaciones[0]);
+            if (result && result.length) {
+                res.json(result[0]);
             } else {
-                return res.status(404).json({ text: "The reservation doesn't exist" });
+                res.status(404).json({ message: "Reservación no encontrada" });
             }
         } catch (error) {
-            console.error('Error retrieving reservation:', error);
-            return res.status(500).json({ error: 'Error retrieving reservation' });
+            res.status(500).json({ message: 'Error al buscar la reservación' });
         }
     }
 
-    public async create(req: Request, res: Response): Promise<Response> {
+    public async getReservacionesByIdUsuario(req: Request, res: Response): Promise<void> {
+        try {
+            const { id_usuario } = req.params;
+            const pool = await poolPromise;
+            const result = await pool.query(
+                'SELECT * FROM reservaciones WHERE id_usuario = ? ORDER BY fecha_inicio DESC',
+                [id_usuario]
+            );
+    
+            if (result && result.length) {
+                res.json(result);
+            } else {
+                res.status(404).json({ message: 'No se encontraron reservaciones' });
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'Error al obtener reservaciones' });
+        }
+    }
+
+    public async create(req: Request, res: Response): Promise<void> {
         try {
             const pool = await poolPromise;
             await pool.query('INSERT INTO reservaciones SET ?', [req.body]);
-            return res.status(201).json({ message: 'Reservation Saved' });
-        } catch (error: any) {
-            console.error('Error saving reservation:', error);
-
-            let errorMessage = 'Error saving reservation';
-            if (error.code === 'ER_DUP_ENTRY') {
-                errorMessage = 'Duplicate entry detected';
-            } else if (error.code === 'ER_BAD_FIELD_ERROR') {
-                errorMessage = 'Invalid field in request body';
-            }
-
-            return res.status(500).json({ error: errorMessage });
+            res.json({ message: 'Reservación registrada exitosamente' });
+        } catch (error) {
+            res.status(500).json({ message: 'Error al registrar la reservación' });
         }
     }
 
-    public async delete(req: Request, res: Response): Promise<Response> {
+    public async delete(req: Request, res: Response): Promise<void> {
+        const { id_reservacion } = req.params;
+        
         try {
-            const { id_reservacion } = req.params;
             const pool = await poolPromise;
-            const result = await pool.query('DELETE FROM reservaciones WHERE id_reservacion = ?', [id_reservacion]);
-
-            if (result.affectedRows > 0) {
-                return res.json({ message: 'The reservation was deleted' });
-            } else {
-                return res.status(404).json({ error: 'Reservation not found' });
-            }
+            await pool.query(
+                'DELETE FROM reservaciones WHERE id_reservacion = ?', 
+                [id_reservacion]
+            );
+            res.json({ message: 'Reservación eliminada correctamente' });
         } catch (error) {
-            console.error('Error deleting reservation:', error);
-            return res.status(500).json({ error: 'Error deleting reservation' });
+            res.status(500).json({ message: 'Error al eliminar la reservación' });
         }
     }
 
-    public async update(req: Request, res: Response): Promise<Response> {
+    public async update(req: Request, res: Response): Promise<void> {
+        const { id_reservacion } = req.params;
+        
         try {
-            const { id_reservacion } = req.params;
             const pool = await poolPromise;
-            const result = await pool.query('UPDATE reservaciones SET ? WHERE id_reservacion = ?', [req.body, id_reservacion]);
-
-            if (result.affectedRows > 0) {
-                return res.json({ message: 'The reservation was updated' });
-            } else {
-                return res.status(404).json({ error: 'Reservation not found' });
-            }
+            await pool.query(
+                'UPDATE reservaciones SET ? WHERE id_reservacion = ?', 
+                [req.body, id_reservacion]
+            );
+            res.json({ message: 'Reservación actualizada con éxito' });
         } catch (error) {
-            console.error('Error updating reservation:', error);
-            return res.status(500).json({ error: 'Error updating reservation' });
+            res.status(500).json({ message: 'Error al actualizar la reservación' });
         }
     }
 }

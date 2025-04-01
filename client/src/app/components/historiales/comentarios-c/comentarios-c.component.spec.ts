@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ComentariosComponent } from './comentarios.component';
+import { ComentariosCComponent } from './comentarios-c.component';
 
-describe('ComentariosComponent', () => {
-  let component: ComentariosComponent;
-  let fixture: ComponentFixture<ComentariosComponent>;
+describe('ComentariosCComponent', () => {
+  let component: ComentariosCComponent;
+  let fixture: ComponentFixture<ComentariosCComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ComentariosComponent]
+      declarations: [ComentariosCComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ComentariosComponent);
+    fixture = TestBed.createComponent(ComentariosCComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

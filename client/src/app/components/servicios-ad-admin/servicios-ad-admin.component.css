@@ -1,0 +1,129 @@
+/* Contenedor responsivo */
+.custom-table-responsive {
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    overflow-x: auto;
+}
+
+/* Estilos base de la tabla */
+.custom-service-table {
+    width: 100%;
+    table-layout: fixed;
+    margin-bottom: 0;
+}
+
+/* Cabeceras - Estilo unificado */
+.custom-service-table thead th {
+    background-color: #343a40;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 2px solid #454d55;
+    padding: 12px 8px;
+    text-align: center;
+}
+
+/* Columnas fijas - Estilo corregido */
+.sticky-col, .sticky-col-right {
+    position: sticky;
+    z-index: 5;
+    background-color: white;
+}
+
+.sticky-col {
+    left: 0;
+    border-right: 1px solid #dee2e6;
+}
+
+.sticky-col-right {
+    right: 0;
+    border-left: 1px solid #dee2e6;
+}
+
+/* Anchuras específicas */
+.custom-service-table .col-id {
+    width: 80px;
+    min-width: 80px;
+}
+
+.custom-service-table .col-nombre {
+    width: 150px;
+    min-width: 150px;
+}
+
+.custom-service-table .col-descripcion {
+    width: 350px;
+    min-width: 350px;
+}
+
+.custom-service-table .col-precio {
+    width: 120px;
+    min-width: 120px;
+}
+
+.custom-service-table .col-acciones {
+    width: 120px;
+    min-width: 120px;
+}
+
+/* Contenido de celdas */
+.custom-service-table td {
+    padding: 8px;
+    vertical-align: top;
+    background-color: white;
+}
+
+/* Nombre con texto truncado */
+.text-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Descripción con scroll */
+.description-container {
+    max-height: 50px;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out;
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+.description-container.expanded {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.toggle-description {
+    display: block;
+    text-align: right;
+    margin-top: 5px;
+    color: #007bff;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+/* Efecto hover */
+.custom-service-table tbody tr:hover td {
+    background-color: rgba(0, 123, 255, 0.05);
+}
+
+/* Scrollbar */
+.custom-table-responsive::-webkit-scrollbar {
+    height: 8px;
+}
+
+.custom-table-responsive::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.custom-table-responsive::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+.custom-table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

@@ -1,41 +1,39 @@
-<section class="login-section">
+<section class="login-section d-flex align-items-center justify-content-center vh-100">
     <div class="container">
-        <div class="row justify-content-center align-items-center">
+        <div class="row justify-content-center">
             <div class="col-md-8 col-lg-6">
-                <div class="card login-card">
+                <div class="card login-card shadow-lg border-0">
                     <div class="row g-0">
+                        <!-- Imagen decorativa -->
+                        <div class="col-md-6 d-none d-md-flex align-items-center justify-content-center bg-primary">
+                            <img src="../../../assets/ice-107124-photo.aspx_did=2692_brochureid=107124_publicid=46556082_instanceid=2_resizing=4K-image.jpg" alt="Login" class="img-fluid login-image" />
+                        </div>
                         <!-- Formulario de inicio de sesión -->
-                        <div class="col-md-6 d-flex align-items-center justify-content-center p-4">
+                        <div class="col-md-6 p-4">
                             <div class="card-body">
                                 <h2 class="fw-bold mb-4 text-center text-primary">Inicia sesión</h2>
                                 <form (ngSubmit)="login()">
-                                    <div class="form-outline mb-4">
-                                        <input type="email" [(ngModel)]="email" name="email"
-                                            placeholder="Correo Electrónico" class="form-control form-control-lg"
-                                            required />
+                                    <div class="mb-3">
                                         <label class="form-label">Correo Electrónico</label>
+                                        <input type="email" [(ngModel)]="email" name="email"
+                                            class="form-control form-control-lg" placeholder="Ingresa tu correo"
+                                            required />
                                     </div>
-                                    <div class="form-outline mb-4">
-                                        <input type="password" [(ngModel)]="contrasena" name="contrasena"
-                                            placeholder="Contraseña" class="form-control form-control-lg" required />
+                                    <div class="mb-3">
                                         <label class="form-label">Contraseña</label>
+                                        <input type="password" [(ngModel)]="contrasena" name="contrasena"
+                                            class="form-control form-control-lg" placeholder="Ingresa tu contraseña"
+                                            required />
                                     </div>
-
-                                    <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <div class="d-flex justify-content-between mb-3">
                                         <a href="#" class="link-primary">¿Olvidaste tu contraseña?</a>
                                     </div>
                                     <button type="submit" class="btn btn-primary btn-lg w-100">Iniciar Sesión</button>
                                 </form>
-                                <br>
-                                <div class="text-center">
-                                    <p>¿Aún no tienes una cuenta? <a (click)="openModal()"
-                                            class="link-primary">Regístrate aquí</a></p>
+                                <div class="text-center mt-3">
+                                    <p>¿Aún no tienes una cuenta? <a (click)="openModal()" class="link-primary">Regístrate aquí</a></p>
                                 </div>
                             </div>
-                        </div>
-                        <!-- Imagen decorativa -->
-                        <div class="col-md-6 d-none d-md-block">
-                            <img src="assets/login.jpg" alt="Login" class="img-fluid login-image" />
                         </div>
                     </div>
                 </div>
@@ -47,7 +45,7 @@
 <!-- Modal OTP -->
 <div class="modal fade show" tabindex="-1" role="dialog" [ngClass]="{ 'd-block': mostrarModalOtp }">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content otp-modal">
+        <div class="modal-content otp-modal shadow-lg border-0">
             <div class="modal-header border-0">
                 <h5 class="modal-title mx-auto fw-bold text-primary">Verificación de Código OTP</h5>
                 <button type="button" class="btn-close" aria-label="Close" (click)="cerrarModalOtp()"></button>
@@ -55,7 +53,7 @@
             <div class="modal-body">
                 <p>Se ha enviado un código OTP a tu correo. Ingrésalo a continuación:</p>
                 <form (ngSubmit)="verificarOtp()">
-                    <div class="form-group mb-3">
+                    <div class="mb-3">
                         <input type="text" [(ngModel)]="otp_code" name="otpCode" class="form-control otp-input"
                             placeholder="Ingresa el código OTP" required />
                     </div>

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 import { environment } from '../../enviroments/enviroments';
 import { Hoteles } from '../models/modelos';
 
@@ -12,24 +12,47 @@ export class HotelesService {
   
   constructor(private http: HttpClient) { }
 
-  getHotel() {
-    return this.http.get<Hoteles[]>(`${this.apiUrl}/hoteles`);
-  }
-
-  deleteHotel(id_hotel: string | number) {
-    return this.http.delete(`${this.apiUrl}/hoteles/${id_hotel}`);
-  }
-
-  saveHotel(evento: Hoteles): Observable<any> {
-    return this.http.post(`${this.apiUrl}/hoteles`, evento).pipe(
+  // Obtener todos los hoteles
+  getHotel(): Observable<Hoteles[]> {
+    return this.http.get<any>(`${this.apiUrl}/hoteles`).pipe(
+      map(response => {
+        // Si tu backend devuelve los datos en un campo específico
+        return response.data || response;
+      }),
       catchError(error => {
-        console.error('Error al guardar el hotel:', error);
-        return of(null);
+        console.error('Error fetching hotels:', error);
+        return of([]);
       })
     );
   }
 
-  updateHotel(id_hotel: string | number, update: Hoteles): Observable<Hoteles> {
-    return this.http.put<Hoteles>(`${this.apiUrl}/hoteles/${id_hotel}`, update);
+  // Eliminar un hotel
+  deleteHotel(id_hotel: string | number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/hoteles/${id_hotel}`).pipe(
+      catchError(error => {
+        console.error(`Error deleting hotel with ID ${id_hotel}:`, error);
+        return of({ message: 'Error deleting hotel' });
+      })
+    );
+  }
+
+  // Crear un nuevo hotel
+  saveHotel(hotel: Hoteles): Observable<any> {
+    return this.http.post(`${this.apiUrl}/hoteles`, hotel).pipe(
+      catchError(error => {
+        console.error('Error saving hotel:', error);
+        return of({ message: 'Error saving hotel' });
+      })
+    );
+  }
+
+  // Actualizar un hotel existente
+  updateHotel(id_hotel: string | number, hotel: Hoteles): Observable<any> {
+    return this.http.put(`${this.apiUrl}/hoteles/${id_hotel}`, hotel).pipe(
+      catchError(error => {
+        console.error(`Error updating hotel with ID ${id_hotel}:`, error);
+        return of({ message: 'Error updating hotel' });
+      })
+    );
   }
 }

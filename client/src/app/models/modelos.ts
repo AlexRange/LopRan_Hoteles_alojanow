@@ -9,6 +9,7 @@ export interface Usuarios {
     fecha_registro: string;
     tipo: 'cliente' | 'admin';
     estatus: boolean;
+    token: string;
 }
 
 // Interface para tabla Hoteles
@@ -16,6 +17,7 @@ export interface Hoteles {
     id_hotel: number;
     nombre: string;
     direccion: string;
+    zona: string;
     ciudad: string;
     pais: string;
     descripcion?: string;
@@ -31,6 +33,7 @@ export interface Habitaciones {
     id_hotel: number;
     tipo_habitacion: string;
     descripcion?: string;
+    num_habitacion: number;
     capacidad: number;
     precio_noche: number;
     disponibilidad: boolean;
@@ -43,6 +46,7 @@ export interface Reservaciones {
     id_reservacion: number;
     id_usuario: number;
     id_habitacion: number;
+    id_hotel: number,
     fecha_inicio: string;
     fecha_fin: string;
     precio_total: number;
@@ -58,8 +62,14 @@ export interface ServiciosAdicionales {
     precio: number;
 }
 
+export interface HotelServicios {
+    id_servicio: number;
+    id_hotel: number;
+}
+
 // Interface para tabla ReservacionesServicios
 export interface ReservacionesServicios {
+    id_reserva_servicio?: number;
     id_reservacion: number;
     id_servicio: number;
     cantidad: number;

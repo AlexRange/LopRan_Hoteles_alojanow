@@ -33,12 +33,13 @@ export class RegistroComponent {
       imagen_usuario: ['', Validators.required],
       fecha_registro: [new Date().toISOString()],
       tipo: ['cliente', Validators.required],
-      estatus: 'Activo',
+      estatus: [0], // Cambiado de 'Activo' a 0 (numérico)
+      token: [null], // Agrega este campo para que coincida con la tabla
       recaptcha: ['', Validators.required],
     },
-    {
-      validators: this.matchPasswords,  // Aplicar validación al formulario completo
-    });
+      {
+        validators: this.matchPasswords,  // Aplicar validación al formulario completo
+      });
   }
 
   ngOnInit(): void { }
@@ -50,7 +51,12 @@ export class RegistroComponent {
         return null;
       }
 
+
       const errors: any = {};
+      if (!value || value.length < 8) {
+        errors.missingUpperCase = 'Debe contener al menos 8 caracteres de longitud';
+        return null;
+      }
       if (!/[A-Z]/.test(value)) {
         errors.missingUpperCase = 'Debe contener al menos una letra mayúscula';
       }
@@ -90,7 +96,7 @@ export class RegistroComponent {
       });
       return;
     }
-  
+
     // Validación del formulario
     if (this.registroForm.invalid) {
       this.registroForm.markAllAsTouched();
@@ -101,7 +107,7 @@ export class RegistroComponent {
       });
       return;
     }
-  
+
     // Verificar el token del reCAPTCHA con el backend
     this.captchaService.verifyRecaptcha(this.captchaToken).subscribe(
       (response) => {
@@ -113,7 +119,7 @@ export class RegistroComponent {
           });
           return;
         }
-  
+
         // Eliminar el campo confirmarContrasena del formulario
         this.registroForm.removeControl('confirmarContrasena');
         this.registroForm.removeControl('recaptcha');
@@ -125,7 +131,7 @@ export class RegistroComponent {
           imagen_usuario: this.imagenUserBase64 || null,
           estatus: true, // o true según tu lógica
         };
-  
+
         // Enviar el código de verificación al email del usuario
         this.usuariosService.enviarCodigo(usuario.email).subscribe(
           () => {
@@ -153,9 +159,9 @@ export class RegistroComponent {
                 });
                 return;
               }
-  
+
               const codigo = result.value.trim();
-  
+
               // Verificar el código ingresado con el backend
               this.usuariosService.verificarCodigo(usuario.email, codigo).subscribe(
                 (verificacionResponse) => {
@@ -223,7 +229,24 @@ export class RegistroComponent {
   }
 
   close() {
-    this.modal.dismiss();
+    if (this.registroForm.dirty) {
+      Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'Los cambios no guardados se perderán',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#081b16',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, salir',
+        cancelButtonText: 'Cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.modal.dismiss();
+        }
+      });
+    } else {
+      this.modal.dismiss();
+    }
   }
 
   onFileChange(event: any) {

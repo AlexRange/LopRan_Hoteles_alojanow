@@ -1,38 +1,39 @@
 import { Request, Response } from 'express';
-import pool from '../database';
+import poolPromise from '../database';
 
 class HotelesController {
     public async list(req: Request, res: Response): Promise<void> {
         try {
-            // Usar await para obtener la consulta de la base de datos
-            const hoteles = await pool.then(poolInstance => poolInstance.query('SELECT * FROM hoteles'));
+            const pool = await poolPromise;
+            const hoteles = await pool.query('SELECT * FROM hoteles');
             res.json(hoteles);
         } catch (error) {
-            console.error('Error fetching hotels:', error);
             res.status(500).json({ message: 'Error fetching hotels' });
         }
     }
 
-    public async getOne(req: Request, res: Response): Promise<Response> {
+    public async getOne(req: Request, res: Response): Promise<void> {
         const { id_hotel } = req.params;
         try {
-            const hoteles = await pool.then(poolInstance => poolInstance.query('SELECT * FROM hoteles WHERE id_hotel = ?', [id_hotel]));
-            if (hoteles.length > 0) {
-                return res.json(hoteles[0]);
+            const pool = await poolPromise;
+            const result = await pool.query('SELECT * FROM hoteles WHERE id_hotel = ?', [id_hotel]);
+            
+            if (result && result.length) {
+                res.json(result[0]);
+            } else {
+                res.status(404).json({ text: "The hotel doesn't exist" });
             }
-            return res.status(404).json({ message: "The hotel doesn't exist" });
         } catch (error) {
-            console.error('Error fetching hotel:', error);
-            return res.status(500).json({ message: 'Error fetching hotel' });
+            res.status(500).json({ error: 'Error retrieving hotel' });
         }
     }
     
     public async create(req: Request, res: Response): Promise<void> {
         try {
-            const result = await pool.then(poolInstance => poolInstance.query('INSERT INTO hoteles SET ?', [req.body]));
-            res.json({ message: 'Hotel Saved', id: result.insertId });
+            const pool = await poolPromise;
+            await pool.query('INSERT INTO hoteles SET ?', [req.body]);
+            res.json({ message: 'Hotel Saved' });
         } catch (error) {
-            console.error('Error saving hotel:', error);
             res.status(500).json({ message: 'Error saving hotel' });
         }
     }
@@ -40,30 +41,21 @@ class HotelesController {
     public async delete(req: Request, res: Response): Promise<void> {
         const { id_hotel } = req.params;
         try {
-            const result = await pool.then(poolInstance => poolInstance.query('DELETE FROM hoteles WHERE id_hotel = ?', [id_hotel]));
-            if (result.affectedRows > 0) {
-                res.json({ message: 'The hotel was deleted' });
-            } else {
-                res.status(404).json({ message: "Hotel not found" });
-            }
+            const pool = await poolPromise;
+            await pool.query('DELETE FROM hoteles WHERE id_hotel = ?', [id_hotel]);
+            res.json({ message: 'The hotel was deleted' });
         } catch (error) {
-            console.error('Error deleting hotel:', error);
             res.status(500).json({ message: 'Error deleting hotel' });
         }
     }
 
     public async update(req: Request, res: Response): Promise<void> {
         const { id_hotel } = req.params;
-        const oldHotel = req.body;
         try {
-            const result = await pool.then(poolInstance => poolInstance.query('UPDATE hoteles SET ? WHERE id_hotel = ?', [req.body, id_hotel]));
-            if (result.affectedRows > 0) {
-                res.json({ message: 'The hotel was updated' });
-            } else {
-                res.status(404).json({ message: "Hotel not found" });
-            }
+            const pool = await poolPromise;
+            await pool.query('UPDATE hoteles SET ? WHERE id_hotel = ?', [req.body, id_hotel]);
+            res.json({ message: 'The hotel was updated' });
         } catch (error) {
-            console.error('Error updating hotel:', error);
             res.status(500).json({ message: 'Error updating hotel' });
         }
     }

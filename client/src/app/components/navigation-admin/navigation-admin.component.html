@@ -1,17 +1,52 @@
 <div class="page-container">
     <header class="header-custom">
-        <nav class="navbar navbar-light navbar-expand-md">
+        <nav class="navbar navbar-expand-lg navbar-light">
             <div class="container">
-                <a class="navbar-brand custom-brand" routerLink="/">AlojaNow</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navcol-1" aria-controls="navcol-1" aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand custom-brand" routerLink="/home-admin">AlojaNow</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div>
-                    <div class="dropdown">
-                        <div >
-                            <a class="dropdown-item text-color white">Cerrar sesión</a>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <div class="search-box">
+                        <form (submit)="onSearch($event)">
+                            <input type="text" placeholder="Ir a" [(ngModel)]="searchQuery" name="searchQuery"
+                                (input)="onInputChange()">
+                            <button type="submit"><i class="fa fa-search"></i></button>
+                        </form>
+                        <div class="search-results" *ngIf="showResults">
+                            <ul>
+                                <li *ngFor="let result of searchResults" (click)="navigateTo(result)">
+                                    {{ result.text }}
+                                </li>
+                            </ul>
                         </div>
                     </div>
+
+                    <!-- Mostrar botón de login solo si no hay sesión activa y no está en la página de login -->
+                    <div *ngIf="!(isAuthenticated$ | async) && !isLoginPage" class="d-flex">
+                        <button type="button" class="btn-login" routerLink="/login">Iniciar sesión</button>
+                    </div>
+
+                    <!-- Mostrar info del usuario si hay sesión activa y no está en la página de perfil -->
+                    <div *ngIf="(isAuthenticated$ | async) && !isProfilePage" class="user-menu d-flex align-items-center">
+                        <span class="user-name me-2 d-none d-md-block" style="color: white;">
+                            {{ (currentUser$ | async)?.nombre }}
+                        </span>
+                        <div class="dropdown">
+                            <button class="user-button" type="button" id="userMenu" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <img class="user-avatar"
+                                    [src]="(currentUser$ | async)?.imagen_usuario || './../assets/cuenta.png'"
+                                    alt="User Avatar">
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+                                <li><a class="dropdown-item" routerLink="/mi-perfil">Mi perfil</a></li>
+                                <li><a class="dropdown-item" (click)="logout()">Cerrar sesión</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </nav>

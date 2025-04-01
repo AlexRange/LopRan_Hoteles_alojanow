@@ -41,6 +41,11 @@ import { LoginComponent } from './components/login/login.component';
 import { RegistroComponent } from './components/login/registro/registro.component';
 import { PerfilComponent } from './components/perfil/perfil.component';
 import { ReservasComponent } from './components/historiales/reservas/reservas.component';
+import { ServiciosAdAdminComponent } from './components/servicios-ad-admin/servicios-ad-admin.component';
+import { AddSComponent } from './components/servicios-ad-admin/add-s/add-s.component';
+import { UpdateSComponent } from './components/servicios-ad-admin/update-s/update-s.component';
+import { AsignarAHotelComponent } from './components/servicios-ad-admin/asignar-a-hotel/asignar-a-hotel.component';
+import { ComentariosCComponent } from './components/historiales/comentarios-c/comentarios-c.component';
 
 
 @NgModule({
@@ -78,6 +83,11 @@ import { ReservasComponent } from './components/historiales/reservas/reservas.co
     RegistroComponent,
     PerfilComponent,
     ReservasComponent,
+    ServiciosAdAdminComponent,
+    AddSComponent,
+    UpdateSComponent,
+    AsignarAHotelComponent,
+    ComentariosCComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,14 +1,14 @@
--- Tabla de Usuarios
 CREATE TABLE usuarios (
     id_usuario INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     contrasena VARCHAR(255) NOT NULL,
-    imagen_usuario LONGTEXT NOT NULL,
-    telefono VARCHAR(15),
+    imagen_usuario LONGTEXT,
+    telefono VARCHAR(10),
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    tipo ENUM('cliente', 'admin') DEFAULT 'cliente',
-    estatus BOOLEAN DEFAULT 0
+    tipo ENUM('cliente', 'admin') DEFAULT 'cliente', 
+    estatus TINYINT(1) DEFAULT 0 COMMENT '1=Activo, 0=Inactivo',
+    token VARCHAR(255) DEFAULT NULL
 );
 
 -- Tabla de Hoteles
@@ -46,6 +46,7 @@ CREATE TABLE reservaciones (
     id_reservacion INT AUTO_INCREMENT PRIMARY KEY,
     id_usuario INT NOT NULL,
     id_habitacion INT NOT NULL,
+    id_hotel INT NOT NULL,
     fecha_inicio DATE NOT NULL,
     fecha_fin DATE NOT NULL,
     precio_total DECIMAL(10, 2) NOT NULL,
@@ -53,6 +54,7 @@ CREATE TABLE reservaciones (
     fecha_reservacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
     FOREIGN KEY (id_habitacion) REFERENCES habitaciones(id_habitacion) ON DELETE CASCADE
+    FOREIGN KEY (id_hotel) REFERENCES habitaciones(id_hotel) ON DELETE CASCADE
 );
 
 -- Tabla de Servicios Adicionales
@@ -65,12 +67,12 @@ CREATE TABLE servicios_adicionales (
 
 -- Tabla de Reservaciones con Servicios Adicionales
 CREATE TABLE reservaciones_servicios (
+    id_reserva_servicio SERIAL PRIMARY KEY,
     id_reservacion INT NOT NULL,
     id_servicio INT NOT NULL,
-    cantidad INT DEFAULT 1,
-    PRIMARY KEY (id_reservacion, id_servicio),
+    cantidad INT NOT NULL DEFAULT 1 CHECK (cantidad > 0),
     FOREIGN KEY (id_reservacion) REFERENCES reservaciones(id_reservacion) ON DELETE CASCADE,
-    FOREIGN KEY (id_servicio) REFERENCES servicios_adicionales(id_servicio) ON DELETE CASCADE
+    FOREIGN KEY (id_servicio) REFERENCES servicios_adicionales(id_servicio) ON DELETE RESTRICT
 );
 
 -- Tabla de Comentarios y Calificaciones
@@ -123,6 +125,15 @@ CREATE TABLE otp_codes (
     status ENUM('Pendiente', 'Verificado') DEFAULT 'Pendiente', -- Estado del código (pendiente o verificado)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Fecha y hora de creación del código
     expires_at DATETIME NOT NULL       -- Fecha y hora de expiración del código
+);
+
+-- Tabla de Relación entre Hoteles y Servicios Adicionales
+CREATE TABLE hotel_servicios (
+    id_hotel INT,
+    id_servicio INT,
+    PRIMARY KEY (id_hotel, id_servicio),
+    FOREIGN KEY (id_hotel) REFERENCES hoteles(id_hotel) ON DELETE CASCADE,
+    FOREIGN KEY (id_servicio) REFERENCES servicios_adicionales(id_servicio) ON DELETE CASCADE
 );
 
 -- Triger actualizar estatus a expirado en tabla verification_codes

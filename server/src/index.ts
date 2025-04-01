@@ -6,6 +6,7 @@ import morgan from 'morgan';
 import comentariosRoutes from './routes/comentariosRoutes';
 import habitacionesRoutes from './routes/habitacionesRoutes';
 import hotelesRoutes from './routes/hotelesRoutes';
+import hotelesServiciosRoutes from './routes/hotelServiciosRoutes';
 import loginRoutes from './routes/loginRoutes';
 import otpRoutes from './routes/optRoutes';
 import pagosRoutes from './routes/PagosRoutes';
@@ -45,6 +46,7 @@ class Server {
         this.app.use('/api/promociones', promocionesRoutes);
         this.app.use('/api/reservacionesSer', reservacionesServiciosRoutes);
         this.app.use('/api/serviciosAd', serviciosAdicionalesRoutes);
+        this.app.use('/api/hoteles-servicios', hotelesServiciosRoutes);
         this.app.use('/api/recaptcha', recaptchaRoutes);
         this.app.use('/api/otp', otpRoutes);
     }
