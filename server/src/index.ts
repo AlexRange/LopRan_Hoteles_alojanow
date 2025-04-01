@@ -13,9 +13,9 @@ import pagosRoutes from './routes/PagosRoutes';
 import promocionesRoutes from './routes/promocionesRoutes';
 import recaptchaRoutes from './routes/recaptchaRoutes';
 import reservacionesHabitacionesRoutes from './routes/reservacionesHbitacionesRoutes';
-import reservacionesServiciosRoutes from './routes/reservacionesServiciosRoutes';
-import serviciosAdicionalesRoutes from './routes/serviciosAdicionalesRoutes';
 import UsuariosRoutes from './routes/usuariosRoutes';
+const reservacionesServiciosRoutes = require('./routes/reservacionesServiciosRoutes');
+const serviciosAdicionalesRoutes = require('./routes/serviciosAdicionalesRoutes');
 
 class Server {
     public app : Application
