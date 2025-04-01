@@ -47,6 +47,8 @@ class Server {
         this.app.use('/api/promociones', promocionesRoutes);
         this.app.use('/api/reservacionesSer', reservacionesServiciosRoutes);
         this.app.use('/api/serviciosAd', serviciosAdicionalesRoutes);
+        // this.app.use('/api/reservacionesSer', reservacionesServiciosRoutes);
+        // this.app.use('/api/serviciosAd', serviciosAdicionalesRoutes);
         this.app.use('/api/hoteles-servicios', hotelesServiciosRoutes);
         this.app.use('/api/recaptcha', recaptchaRoutes);
         this.app.use('/api/otp', otpRoutes);

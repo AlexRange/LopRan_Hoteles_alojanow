@@ -1,5 +1,4 @@
 import { Router } from 'express';
-
 import serviciosAdicionalesController from '../controllers/serviciosAdicionalesController';
 
 class ServiciosAdicionalesRoutes {
