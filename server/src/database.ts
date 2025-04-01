@@ -7,7 +7,7 @@ poolPromise.then(pool => {
     return pool.getConnection()
         .then(connection => {
             connection.release();
-            console.log('DB is Connected');
+            console.log('DB is Connected to Clever Cloud');
         });
 }).catch(err => {
     console.error('Error connecting to the database:', err);
