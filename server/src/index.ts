@@ -29,7 +29,7 @@ class Server {
     config():void{
         this.app.set('port',process.env.PORT || 4000);
         this.app.use(cors({
-            origin: ['https://alojanow.web.app', 'https://alojanow.firebaseapp.com', 'http://localhost:4200'],
+            origin: ['https://alojanow.web.app', 'https://alojanow.firebaseapp.com', 'https://fdd2-2806-264-2441-18b9-cf1-1b48-967a-7f30.ngrok-free.app', 'http://localhost:4200'],
             methods: ['GET', 'POST', 'PUT', 'DELETE'],
             allowedHeaders: ['Content-Type', 'Authorization']
         }));
