@@ -7,8 +7,19 @@ class HotelesController {
             const pool = await poolPromise;
             const hoteles = await pool.query('SELECT * FROM hoteles');
             res.json(hoteles);
-        } catch (error) {
-            res.status(500).json({ message: 'Error fetching hotels' });
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                console.error('Database error:', error.message);
+                res.status(500).json({
+                    message: 'Error fetching hotels',
+                    error: error.message
+                });
+            } else {
+                console.error('Unknown error occurred');
+                res.status(500).json({
+                    message: 'Unknown error occurred'
+                });
+            }
         }
     }
 
@@ -17,7 +28,7 @@ class HotelesController {
         try {
             const pool = await poolPromise;
             const result = await pool.query('SELECT * FROM hoteles WHERE id_hotel = ?', [id_hotel]);
-            
+
             if (result && result.length) {
                 res.json(result[0]);
             } else {
@@ -27,7 +38,7 @@ class HotelesController {
             res.status(500).json({ error: 'Error retrieving hotel' });
         }
     }
-    
+
     public async create(req: Request, res: Response): Promise<void> {
         try {
             const pool = await poolPromise;

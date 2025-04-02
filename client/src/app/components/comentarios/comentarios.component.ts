@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { ComentariosCalificaciones } from '../../models/modelos';
 import { ComentariosService } from '../../services/comentarios.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-comentarios',

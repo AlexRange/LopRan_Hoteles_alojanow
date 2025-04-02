@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import Swal from 'sweetalert2';
+import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Habitaciones, Hoteles } from '../../../models/modelos';
 import { HabitacionesService } from '../../../services/habitaciones.service';
 import { HotelesService } from '../../../services/hoteles.service';

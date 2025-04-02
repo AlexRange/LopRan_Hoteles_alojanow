@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { ReservacionesService } from '../../../services/reservaciones.service';
-import Swal from 'sweetalert2';
+import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Reservaciones } from '../../../models/modelos';
+import { ReservacionesService } from '../../../services/reservaciones.service';
 
 @Component({
   selector: 'app-add-r',

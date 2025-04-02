@@ -1,7 +1,6 @@
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import express, { Application } from 'express';
-import morgan from 'morgan';
 
 import comentariosRoutes from './routes/comentariosRoutes';
 import habitacionesRoutes from './routes/habitacionesRoutes';
@@ -29,7 +28,11 @@ class Server {
 
     config():void{
         this.app.set('port',process.env.PORT || 4000);
-        this.app.use(morgan('dev'));
+        this.app.use(cors({
+            origin: ['https://alojanow.web.app', 'https://alojanow.firebaseapp.com', 'http://localhost:4200'],
+            methods: ['GET', 'POST', 'PUT', 'DELETE'],
+            allowedHeaders: ['Content-Type', 'Authorization']
+        }));
         this.app.use(cors());
         this.app.use(bodyParser.json({ limit: '10mb' }));
         this.app.use(express.json());

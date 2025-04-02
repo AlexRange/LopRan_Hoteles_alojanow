@@ -3,7 +3,7 @@ import { Habitaciones, Reservaciones } from '../../../models/modelos';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ReservacionesService } from '../../../services/reservaciones.service';
-import Swal from 'sweetalert2';
+import Swal from 'sweetalert2/dist/sweetalert2.js';
 
 @Component({
   selector: 'app-update-r',

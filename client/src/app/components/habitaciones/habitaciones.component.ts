@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import Swal from 'sweetalert2';
+import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Habitaciones, Hoteles } from '../../models/modelos';
 import { HabitacionesService } from '../../services/habitaciones.service';
 import { HotelesService } from '../../services/hoteles.service';

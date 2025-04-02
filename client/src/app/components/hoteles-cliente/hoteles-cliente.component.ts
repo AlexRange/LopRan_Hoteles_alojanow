@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import Swal from 'sweetalert2';
+import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { ComentariosCalificaciones } from '../../models/modelos';
 import { Auth } from '../../services/auth.service';
 import { ComentariosService } from '../../services/comentarios.service';
