@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { ComentariosCalificaciones } from '../../models/modelos';
 import { Auth } from '../../services/auth.service';
@@ -20,15 +20,18 @@ export class HotelesClienteComponent implements OnInit {
   usuarioId: number | null = null;
   mostrarModal: boolean = false;
   hotelesReservados: number[] = []; // Almacenará los IDs de hoteles donde el usuario ha reservado
+  showNavigationButtons = false;
+  scrollThreshold = 200;
+  showBottomButton = true;
 
   @ViewChild('comentarioModal', { static: false }) comentarioModal!: ElementRef;
 
   constructor(
-    private hotelService: HotelesService, 
-    private comentariosService: ComentariosService, 
+    private hotelService: HotelesService,
+    private comentariosService: ComentariosService,
     private authService: Auth,
     private reservacionesService: ReservacionesService // Inyectar el servicio
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.obtenerHoteles();
@@ -38,6 +41,7 @@ export class HotelesClienteComponent implements OnInit {
         this.obtenerReservacionesUsuario(user.id_usuario);
       }
     });
+    this.checkScrollPosition();
   }
 
   obtenerReservacionesUsuario(idUsuario: number): void {
@@ -66,7 +70,7 @@ export class HotelesClienteComponent implements OnInit {
 
   abrirModal(id_hotel: number | null): void {
     if (!id_hotel) return;
-    
+
     if (!this.usuarioId) {
       Swal.fire({
         position: 'top-end',
@@ -118,7 +122,7 @@ export class HotelesClienteComponent implements OnInit {
       console.error('Usuario no autenticado');
       return;
     }
-  
+
     if (!this.nuevoComentario.comentario || !this.nuevoComentario.comentario.length
       && this.nuevoComentario.calificacion === 0) {
       Swal.fire({
@@ -134,7 +138,7 @@ export class HotelesClienteComponent implements OnInit {
       });
       return;
     }
-  
+
     if (!this.nuevoComentario.comentario || !this.nuevoComentario.comentario.length) {
       Swal.fire({
         position: 'top-end',
@@ -149,7 +153,7 @@ export class HotelesClienteComponent implements OnInit {
       });
       return;
     }
-  
+
     if (this.nuevoComentario.calificacion === 0) {
       Swal.fire({
         position: 'top-end',
@@ -164,14 +168,14 @@ export class HotelesClienteComponent implements OnInit {
       });
       return;
     }
-  
+
     this.nuevoComentario.id_usuario = this.usuarioId;
     this.nuevoComentario.fecha_comentario = new Date().toISOString();
-  
+
     this.comentariosService.saveComentario(this.nuevoComentario).subscribe(
       response => {
         console.log('Comentario guardado:', response);
-  
+
         Swal.fire({
           position: 'top-end',
           icon: 'success',
@@ -183,7 +187,7 @@ export class HotelesClienteComponent implements OnInit {
             popup: 'small-toast'
           }
         });
-  
+
         this.cerrarModal();
       },
       error => {
@@ -201,5 +205,42 @@ export class HotelesClienteComponent implements OnInit {
         });
       }
     );
+  }
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    this.checkScrollPosition();
+    this.checkBottomPosition();
+  }
+
+  checkBottomPosition() {
+    const windowHeight = window.innerHeight;
+    const documentHeight = document.body.scrollHeight;
+    const scrollPosition = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+
+    // Mostrar el botón de bajar solo si no estamos cerca del final (con un margen de 100px)
+    this.showBottomButton = !(scrollPosition + windowHeight >= documentHeight - 100);
+  }
+
+  checkScrollPosition() {
+    this.showNavigationButtons = window.pageYOffset > this.scrollThreshold;
+  }
+
+  scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }
+
+  scrollToBottom() {
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: 'smooth'
+    });
+    this.showBottomButton = false;
+    setTimeout(() => {
+      this.checkBottomPosition();
+    }, 1000);
   }
 }

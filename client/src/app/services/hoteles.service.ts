@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, of } from 'rxjs';
-import { environment } from '../../enviroments/enviroments';
+import { environment } from '../../environments/environments';
 import { Hoteles } from '../models/modelos';
 
 @Injectable({
@@ -9,26 +9,18 @@ import { Hoteles } from '../models/modelos';
 })
 export class HotelesService {
   private apiUrl = environment.API_URL;
-
+  
   constructor(private http: HttpClient) { }
 
   // Obtener todos los hoteles
   getHotel(): Observable<Hoteles[]> {
     return this.http.get<any>(`${this.apiUrl}/hoteles`).pipe(
       map(response => {
-        // Handle different response structures
-        if (Array.isArray(response)) {
-          return response;
-        } else if (response.data && Array.isArray(response.data)) {
-          return response.data;
-        }
-        throw new Error('Unexpected response format');
+        // Si tu backend devuelve los datos en un campo específico
+        return response.data || response;
       }),
       catchError(error => {
-        console.error('Detailed error fetching hotels:', error);
-        if (error.error && error.error.message) {
-          console.error('Backend error message:', error.error.message);
-        }
+        console.error('Error fetching hotels:', error);
         return of([]);
       })
     );

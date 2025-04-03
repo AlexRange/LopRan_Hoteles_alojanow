@@ -46,6 +46,7 @@ import { AddSComponent } from './components/servicios-ad-admin/add-s/add-s.compo
 import { UpdateSComponent } from './components/servicios-ad-admin/update-s/update-s.component';
 import { AsignarAHotelComponent } from './components/servicios-ad-admin/asignar-a-hotel/asignar-a-hotel.component';
 import { ComentariosCComponent } from './components/historiales/comentarios-c/comentarios-c.component';
+import { RecuperacionContrasenaComponent } from './components/recuperacion-contrasena/recuperacion-contrasena.component';
 
 
 @NgModule({
@@ -88,6 +89,7 @@ import { ComentariosCComponent } from './components/historiales/comentarios-c/co
     UpdateSComponent,
     AsignarAHotelComponent,
     ComentariosCComponent,
+    RecuperacionContrasenaComponent,
   ],
   imports: [
     BrowserModule,

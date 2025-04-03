@@ -18,6 +18,7 @@ import { PreguntasFComponent } from './components/preguntas-f/preguntas-f.compon
 import { PrivacidadComponent } from './components/privacidad/privacidad.component';
 import { PromocionesActivasComponent } from './components/promociones-activas/promociones-activas.component';
 import { PromocionesComponent } from './components/promociones/promociones.component';
+import { RecuperacionContrasenaComponent } from './components/recuperacion-contrasena/recuperacion-contrasena.component';
 import { ReservacionesHabComponent } from './components/reservaciones-hab/reservaciones-hab.component';
 import { ServiciosAdAdminComponent } from './components/servicios-ad-admin/servicios-ad-admin.component';
 
@@ -40,7 +41,7 @@ const routes: Routes = [
     component: HabitHotelComponent
   },
   {
-    path: 'promociones-activas',
+    path: 'promociones-activas-no-admin',
     component: PromocionesActivasComponent
   },
   {
@@ -102,6 +103,10 @@ const routes: Routes = [
   {
     path: 'mis-comentarios',
     component: ComentariosCComponent
+  },
+  {
+    path: 'recupercion-contraseña',
+    component: RecuperacionContrasenaComponent
   },
   {
     path: '**',

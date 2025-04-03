@@ -1,18 +1,7 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { RowDataPacket } from 'mysql2';
 import config from '../config/config';
 import poolPromise from '../database';
-
-interface Usuarios extends RowDataPacket {
-    id_usuario: number;
-    nombre: string;
-    email: string;
-    telefono?: string;
-    tipo: 'cliente' | 'admin';
-    imagen_usuario: string;
-    estatus: boolean;
-}
 
 class LoginController {
     public async login(req: Request, res: Response): Promise<void> {
@@ -20,15 +9,15 @@ class LoginController {
             const { email, contrasena } = req.body;
             const pool = await poolPromise;
 
-            const [rows] = await pool.query<Usuarios[]>(
+            const result = await pool.query(
                 'SELECT id_usuario, nombre, email, telefono, tipo, imagen_usuario, estatus FROM usuarios WHERE email = ? AND contrasena = ?', 
                 [email, contrasena]
             );
             
-            if (rows && rows.length > 0) {
-                const user = rows[0];
+            if (result.length > 0) {
+                const user = result[0];
                 
-                if (user.estatus) {
+                if (user.estatus === 1) {
                     const token = jwt.sign(
                         { 
                             id: user.id_usuario,
@@ -63,7 +52,8 @@ class LoginController {
                 res.status(401).json({ success: false, message: "Credenciales incorrectas" });
             }
         } catch (error) {
-            res.status(500).json({ success: false, message: "Error en el servidor" });
+            console.error('Error en el login:', error);
+            res.status(500).json({ success: false, message: "Error interno del servidor" });
         }
     }
 
@@ -71,16 +61,17 @@ class LoginController {
         try {
             const token = req.header('Authorization')?.replace('Bearer ', '');
             if (!token) {
-                res.status(401).json({ success: false, message: "No se proporcionó token" });
-                return;
+                res.status(401).json({ success: false, message: "Token no proporcionado" });
+                return; // Termina la ejecución
             }
 
             const pool = await poolPromise;
             await pool.query('UPDATE usuarios SET token = NULL WHERE token = ?', [token]);
             
-            res.json({ success: true, message: "Sesión cerrada exitosamente" });
+            res.json({ success: true, message: "Sesión cerrada correctamente" });
         } catch (error) {
-            res.status(500).json({ success: false, message: "Error en el servidor" });
+            console.error('Error en logout:', error);
+            res.status(500).json({ success: false, message: "Error interno del servidor" });
         }
     }
 
@@ -89,18 +80,19 @@ class LoginController {
             const token = req.header('Authorization')?.replace('Bearer ', '');
             if (!token) {
                 res.status(401).json({ valid: false, message: "Token no proporcionado" });
-                return;
+                return; // Termina la ejecución
             }
 
             jwt.verify(token, config.jwtSecret, (err, decoded) => {
                 if (err) {
-                    res.status(401).json({ valid: false, message: "Token inválido" });
+                    res.status(401).json({ valid: false, message: "Token inválido o expirado" });
                     return;
                 }
-                res.json({ valid: true, usuario: decoded });
+                res.json({ valid: true, user: decoded });
             });
         } catch (error) {
-            res.status(500).json({ valid: false, message: "Error en el servidor" });
+            console.error('Error validando token:', error);
+            res.status(500).json({ valid: false, message: "Error interno del servidor" });
         }
     }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Usuarios } from '../../models/modelos';
 import { Auth } from '../../services/auth.service';
 
@@ -9,7 +10,7 @@ import { Auth } from '../../services/auth.service';
   selector: 'app-navigation-admin',
   templateUrl: './navigation-admin.component.html',
   standalone: false,
-  styleUrl: './navigation-admin.component.css'
+  styleUrls: ['./navigation-admin.component.css']
 })
 export class NavigationAdminComponent implements OnInit {
   searchQuery: string = '';
@@ -34,17 +35,19 @@ export class NavigationAdminComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.isAuthenticated$.subscribe(isAuth => this.isLoggedIn = isAuth);
+    this.isAuthenticated$.subscribe(isAuth => {
+      this.isLoggedIn = isAuth;
+      // Verificar ruta actual al cambiar autenticación
+      this.checkCurrentRoute(this.router.url);
+    });
     this.checkCurrentRoute(this.router.url);
   }
 
-  // Método para verificar la ruta actual
   checkCurrentRoute(url: string): void {
     this.isLoginPage = url.includes('/login');
     this.isProfilePage = url.includes('/mi-perfil');
   }
 
-  // Método para manejar cambios en el input de búsqueda
   onInputChange(): void {
     if (this.searchQuery.length > 2) {
       this.searchResults = [];
@@ -71,7 +74,6 @@ export class NavigationAdminComponent implements OnInit {
     }
   }
 
-  // Método para obtener rutas dinámicamente desde el Router
   getDynamicRoutes(): string[] {
     const routes: string[] = [];
     this.router.config.forEach(route => {
@@ -89,14 +91,12 @@ export class NavigationAdminComponent implements OnInit {
     return routes;
   }
 
-  // Método para navegar a la página encontrada
   navigateTo(result: { text: string, link: string }): void {
     this.router.navigateByUrl(result.link);
     this.showResults = false;
     this.searchQuery = '';
   }
 
-  // Método para manejar el envío del formulario de búsqueda
   onSearch(event: Event): void {
     event.preventDefault();
     if (this.searchResults.length > 0) {
@@ -105,7 +105,43 @@ export class NavigationAdminComponent implements OnInit {
   }
 
   logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/home']);
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¿Quieres cerrar tu sesión?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, cerrar sesión',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.authService.logout().subscribe({
+          next: () => {
+            Swal.fire({
+              title: 'Sesión cerrada',
+              text: 'Has cerrado sesión correctamente',
+              icon: 'success',
+              timer: 2000,
+              showConfirmButton: false
+            }).then(() => {
+              this.router.navigate(['/home']);
+            });
+          },
+          error: (err) => {
+            console.error('Error al cerrar sesión:', err);
+            Swal.fire({
+              title: 'Sesión cerrada',
+              text: 'Se cerró la sesión localmente',
+              icon: 'info',
+              timer: 2000,
+              showConfirmButton: false
+            }).then(() => {
+              this.router.navigate(['/home']);
+            });
+          }
+        });
+      }
+    });
   }
 }

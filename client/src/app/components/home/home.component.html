@@ -1,31 +1,31 @@
 <app-carrusel></app-carrusel>
-<!--  Sección 2: Contenido principal -->
-  <!-- <div class="breadcrumb-container">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Inicio</a></li>
-            <li class="breadcrumb-item active"><a></a></li>
-        </ol>
-    </nav>
-    
-  </div> -->
-  <section class="main-content">
-    <h2>Explora el mundo con nosotros</h2>
-    <p>Encuentra los mejores hospedajes en diferentes ciudades del mundo. Viaja, disfruta y vive la mejor experiencia.</p>
-  </section>
-  
-  <!--  Sección 3: Recomendaciones -->
-  <section class="recommendations">
-    <h2 id="recommendations">🏡 Recomendaciones para ti</h2>
-    <div class="cards">
-      <div *ngFor="let place of recommendedPlaces" class="card">
-        <img [src]="place.image" alt="Hospedaje">
-        <div class="info">
-          <h3>{{ place.name }}</h3>
-          <p>{{ place.description }}</p>
-          <span class="price">{{ place.price }}</span>
-          <button>Reservar</button>
-        </div>
+
+<section class="main-content">
+  <h2>Explora el mundo con nosotros</h2>
+  <p>Encuentra los mejores hospedajes en diferentes ciudades del mundo. Viaja, disfruta y vive la mejor experiencia.</p>
+</section>
+
+<section class="recommendations">
+  <h2 id="recommendations">🏡 Recomendaciones para ti</h2>
+  <div class="cards">
+    <div *ngFor="let place of recommendedPlaces" class="card">
+      <img [src]="place.image" alt="Hospedaje">
+      <div class="info">
+        <h3>{{ place.name }}</h3>
+        <p>{{ place.description }}</p>
+        <span class="price">{{ place.price }}</span>
+        <button>Reservar</button>
       </div>
     </div>
-  </section>
+  </div>
+</section>
+
+<!-- Botones de navegación -->
+<div class="navigation-buttons" *ngIf="showNavigationButtons">
+  <button class="nav-button top-button" (click)="scrollToTop()" title="Ir al inicio">
+      ↑
+  </button>
+  <button class="nav-button bottom-button" (click)="scrollToBottom()" title="Ir al final" *ngIf="showBottomButton">
+      ↓
+  </button>
+</div>

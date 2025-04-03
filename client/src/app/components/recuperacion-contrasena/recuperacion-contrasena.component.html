@@ -1,0 +1,37 @@
+<div class="container mt-4">
+    <div class="breadcrumb-container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/home">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="/login">Inicio de sesión</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Recuperación de contraseña</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="password-recovery-container">
+        <div class="password-recovery-card shadow-lg">
+            <div class="password-recovery-header text-center">
+                <h2 class="fw-bold">Recuperación de Contraseña</h2>
+            </div>
+            <div class="password-recovery-content p-4">
+                <p class="text-muted text-center">Ingresa tu correo electrónico y te enviaremos una nueva contraseña.</p>
+                
+                <form [formGroup]="emailForm" (ngSubmit)="requestPasswordReset()">
+                    <div class="form-group mb-4">
+                        <label for="email" class="form-label fw-bold">Correo Electrónico</label>
+                        <input type="email" class="form-control" id="email" formControlName="email"
+                            placeholder="ejemplo@correo.com">
+                    </div>
+                    <div class="d-grid gap-3">
+                        <button type="submit" class="btn btn-primary" [disabled]="loading">
+                            <span *ngIf="!loading">Enviar Nueva Contraseña</span>
+                            <span *ngIf="loading" class="spinner-border spinner-border-sm" role="status"
+                                aria-hidden="true"></span>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" (click)="goBack()">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

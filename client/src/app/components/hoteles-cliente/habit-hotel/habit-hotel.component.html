@@ -53,3 +53,13 @@
         </div>
     </div>
 </div>
+
+<!-- Botones de navegación -->
+<div class="navigation-buttons" *ngIf="showNavigationButtons">
+    <button class="nav-button top-button" (click)="scrollToTop()" title="Ir al inicio">
+        ↑
+    </button>
+    <button class="nav-button bottom-button" (click)="scrollToBottom()" title="Ir al final" *ngIf="showBottomButton">
+        ↓
+    </button>
+</div>
