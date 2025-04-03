@@ -1,47 +1,59 @@
-<div class="breadcrumb-container">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Inicio</a></li>
-            <li class="breadcrumb-item active">Nosotros</li>
-        </ol>
-    </nav>
-</div>
-<div class="conocenos-container">
-    <div class="conocenos-card">
-        <div class="conocenos-header">
-            <img src="assets/logo.png" alt="AlojaNow" class="conocenos-logo" />
-            <h1>Conoce más sobre AlojaNow</h1>
-        </div>
+<div class="container mt-4">
+    <div class="breadcrumb-container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Nosotros</li>
+            </ol>
+        </nav>
+    </div>
 
-        <div class="conocenos-content">
-            <p>
-                <strong>AlojaNow</strong> es una plataforma dedicada a ofrecer las mejores opciones de hospedaje 
-                para que encuentres el alojamiento ideal según tus necesidades. Nos especializamos en conectar a 
-                propietarios con personas en busca de una estancia cómoda, segura y accesible.
-            </p>
+    <div class="about-us-container">
+        <div class="about-us-card">
+            <div class="about-us-header">
+                <img src="assets/logo.png" alt="AlojaNow" class="about-us-logo">
+                <h2>Conoce más sobre AlojaNow</h2>
+            </div>
 
-            <h2>Nuestra Historia</h2>
-            <p>
-                Nacimos con la visión de simplificar el proceso de renta de casas y departamentos, brindando un servicio 
-                transparente y eficiente. Desde nuestros inicios, hemos trabajado en mejorar la experiencia de 
-                nuestros usuarios, ofreciendo una plataforma intuitiva y confiable.
-            </p>
+            <div class="about-us-content">
+                <p>
+                    <strong>AlojaNow</strong> es una plataforma dedicada a ofrecer las mejores opciones de hospedaje
+                    para que encuentres el alojamiento ideal según tus necesidades. Nos especializamos en conectar a
+                    propietarios con personas en busca de una estancia cómoda, segura y accesible.
+                </p>
 
-            <h2>Nuestros Valores</h2>
-            <ul>
-                <li><strong>Confianza:</strong> Propiedades verificadas y proceso seguro.</li>
-                <li><strong>Calidad:</strong> Espacios cómodos y bien equipados.</li>
-                <li><strong>Accesibilidad:</strong> Precios justos y sin costos ocultos.</li>
-                <li><strong>Soporte:</strong> Atención personalizada y asistencia 24/7.</li>
-            </ul>
+                <h4>Nuestra Historia</h4>
+                <p>
+                    Nacimos con la visión de simplificar el proceso de renta de casas y departamentos, brindando un
+                    servicio
+                    transparente y eficiente. Desde nuestros inicios, hemos trabajado en mejorar la experiencia de
+                    nuestros usuarios, ofreciendo una plataforma intuitiva y confiable.
+                </p>
 
-            <h2>¿Qué ofrecemos?</h2>
-            <p>
-                Disponemos de una amplia variedad de propiedades en diferentes ubicaciones, adaptándonos a viajeros, 
-                estudiantes, familias y profesionales. Nuestro objetivo es hacer que la experiencia de hospedaje sea 
-                lo más sencilla y agradable posible.
-            </p>
+                <h4>Nuestros Valores</h4>
+                <ul>
+                    <li><strong>Confianza:</strong> Propiedades verificadas y proceso seguro.</li>
+                    <li><strong>Calidad:</strong> Espacios cómodos y bien equipados.</li>
+                    <li><strong>Accesibilidad:</strong> Precios justos y sin costos ocultos.</li>
+                    <li><strong>Soporte:</strong> Atención personalizada y asistencia 24/7.</li>
+                </ul>
 
+                <h4>¿Qué ofrecemos?</h4>
+                <p>
+                    Disponemos de una amplia variedad de propiedades en diferentes ubicaciones, adaptándonos a viajeros,
+                    estudiantes, familias y profesionales. Nuestro objetivo es hacer que la experiencia de hospedaje sea
+                    lo más sencilla y agradable posible.
+                </p>
+            </div>
         </div>
     </div>
+</div>
+<!-- Botones de navegación -->
+<div class="navigation-buttons" *ngIf="showNavigationButtons">
+    <button class="nav-button top-button" (click)="scrollToTop()" title="Ir al inicio">
+        ↑
+    </button>
+    <button class="nav-button bottom-button" (click)="scrollToBottom()" title="Ir al final">
+        ↓
+    </button>
 </div>

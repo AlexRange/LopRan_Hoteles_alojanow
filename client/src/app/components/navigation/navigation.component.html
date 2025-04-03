@@ -1,78 +1,78 @@
-<div class="page-container">
-    <header class="header-custom">
-        <nav class="navbar navbar-expand-lg navbar-light">
-            <div class="container">
-                <a class="navbar-brand custom-brand" routerLink="/">AlojaNow</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav me-auto">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="hotelesDropdown" role="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">Hoteles</a>
-                            <ul class="dropdown-menu" aria-labelledby="hotelesDropdown">
-                                <li><a class="dropdown-item" routerLink="/explorar-hoteles">Explorar Hoteles</a></li>
-                                <li><a class="dropdown-item" routerLink="/hoteles-destacados">Hoteles Destacados</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="promocionesDropdown" role="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">Promociones</a>
-                            <ul class="dropdown-menu" aria-labelledby="promocionesDropdown">
-                                <li><a class="dropdown-item" routerLink="/promociones-activas">Promociones Activas</a></li>
-                                <li><a class="dropdown-item" routerLink="#">Hoteles con Descuento</a></li>
-                            </ul>
+<nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container">
+        <a class="navbar-brand custom-brand" routerLink="/">AlojaNow</a>
+        <button class="navbar-toggler" type="button" (click)="toggleMenu()">
+            <span class="navbar-toggler-icon">☰</span>
+        </button>
+        <div class="navbar-collapse" [class.show]="menuOpen">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" (click)="toggleDropdown('hotelesDropdown')"
+                        [class.show]="isDropdownOpen('hotelesDropdown')">
+                        Hoteles
+                    </a>
+                    <ul class="dropdown-menu" [class.show]="isDropdownOpen('hotelesDropdown')">
+                        <li><a class="dropdown-item" routerLink="/explorar-hoteles">Explorar Hoteles</a></li>
+                        <!-- <li><a class="dropdown-item" routerLink="/hoteles-destacados">Hoteles Destacados</a></li> -->
+                    </ul>
+                </li>
+                <!-- <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" 
+                        (click)="toggleDropdown('promocionesDropdown')"
+                        [class.show]="isDropdownOpen('promocionesDropdown')">
+                        Promociones
+                    </a>
+                    <ul class="dropdown-menu" [class.show]="isDropdownOpen('promocionesDropdown')">
+                        <li><a class="dropdown-item" routerLink="/promociones-activas">Promociones Activas</a></li>
+                        <li><a class="dropdown-item" routerLink="#">Hoteles con Descuento</a></li>
+                    </ul>
+                </li> -->
+            </ul>
+
+            <div class="search-box">
+                <form (submit)="onSearch($event)">
+                    <input type="text" placeholder="Ir a" [(ngModel)]="searchQuery" name="searchQuery"
+                        (input)="onInputChange()">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                </form>
+                <div class="search-results" *ngIf="showResults">
+                    <ul>
+                        <li *ngFor="let result of searchResults" (click)="navigateTo(result)">
+                            {{ result.text }}
                         </li>
                     </ul>
-                    
-                    <div class="search-box">
-                        <form (submit)="onSearch($event)">
-                            <input type="text" placeholder="Ir a" [(ngModel)]="searchQuery" name="searchQuery"
-                                (input)="onInputChange()">
-                            <button type="submit"><i class="fa fa-search"></i></button>
-                        </form>
-                        <div class="search-results" *ngIf="showResults">
-                            <ul>
-                                <li *ngFor="let result of searchResults" (click)="navigateTo(result)">
-                                    {{ result.text }}
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Login Button -->
-                    <div *ngIf="!isAuthenticated && !isLoginPage" class="d-flex">
-                        <button type="button" class="btn-login" routerLink="/login">Iniciar sesión</button>
-                    </div>
-
-                    <!-- User Menu -->
-                    <div *ngIf="isAuthenticated && !isProfilePage" class="user-menu d-flex align-items-center">
-                        <span class="user-name me-2 d-none d-md-block" style="color: white;">
-                            {{ currentUser?.nombre }}
-                        </span>
-                        <div class="dropdown">
-                            <button class="user-button" type="button" id="userMenu" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                <img class="user-avatar"
-                                    [src]="currentUser?.imagen_usuario || './../assets/cuenta.png'"
-                                    alt="User Avatar">
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
-                                <li><a class="dropdown-item" routerLink="/mi-perfil">Mi perfil</a></li>
-                                <li><a class="dropdown-item" (click)="logout()">Cerrar sesión</a></li>
-                            </ul>
-                        </div>
-                    </div>
                 </div>
             </div>
-        </nav>
-    </header>
-    <main class="content">
-        <router-outlet></router-outlet>
-    </main>
-    <footer>
-        <app-footer></app-footer>
-    </footer>
-</div>
+
+            <!-- Login Button -->
+            <div *ngIf="!isAuthenticated && !isLoginPage" class="d-flex">
+                <button type="button" class="btn-login" routerLink="/login">Iniciar sesión</button>
+            </div>
+
+            <!-- User Menu -->
+            <div *ngIf="isAuthenticated && !isProfilePage" class="user-menu d-flex align-items-center">
+                <span class="user-name me-2 d-none d-md-block" style="color: white;">
+                    {{ currentUser?.nombre }}
+                </span>
+                <div class="dropdown">
+                    <button class="user-button" type="button" id="userMenu" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <img class="user-avatar" [src]="currentUser?.imagen_usuario || './../assets/cuenta.png'"
+                            alt="User Avatar">
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+                        <li><a class="dropdown-item" routerLink="/mi-perfil">Mi perfil</a></li>
+                        <li><a class="dropdown-item" (click)="logout()">Cerrar sesión</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+<main class="content">
+    <router-outlet></router-outlet>
+</main>
+
+<footer>
+    <app-footer></app-footer>
+</footer>

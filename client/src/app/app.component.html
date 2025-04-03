@@ -1,12 +1,16 @@
-<ng-container *ngIf="isAdmin; else regularNavigation">
-  <app-navigation-admin></app-navigation-admin>
-</ng-container>
+<div class="app-wrapper"> <!-- Contenedor nuevo -->
+  <ng-container *ngIf="isAdmin; else regularNavigation">
+    <app-navigation-admin></app-navigation-admin>
+  </ng-container>
 
-<ng-template #regularNavigation>
-  <app-navigation></app-navigation>
-</ng-template>
+  <ng-template #regularNavigation>
+    <app-navigation></app-navigation>
+  </ng-template>
 
-<!-- Contenido principal -->
-<div class="container p-4">
-  <router-outlet></router-outlet>
+  <!-- Contenido principal -->
+  <main class="content-container"> <!-- Cambia el div por main -->
+    <router-outlet></router-outlet>
+  </main>
+
+  <footer class="footer"></footer>
 </div>

@@ -1,3 +1,4 @@
+/* Estilos existentes (sin cambios) */
 * {
     margin: 0;
     padding: 0;
@@ -98,12 +99,12 @@
     font-size: 1rem;
     display: inline-block;
     transition: background-color 0.3s ease, color 0.3s ease;
+    cursor: pointer;
 }
 
 .nav-link.dropdown-toggle:hover {
     background-color: rgba(0, 0, 0, 0.3);
     color: #ff5733;
-    /* Cambiar color al pasar el ratón */
     border-radius: 8px;
 }
 
@@ -121,7 +122,8 @@
     transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-.dropdown:hover .dropdown-menu {
+.dropdown:hover .dropdown-menu,
+.dropdown.show .dropdown-menu {
     display: block;
     opacity: 1;
     visibility: visible;
@@ -147,33 +149,7 @@
     left: auto;
 }
 
-/* ------------------- Efecto adicional de apertura del submenú ------------------- */
-.dropdown-menu.show {
-    opacity: 1;
-    visibility: visible;
-}
-
-@media (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
-        height: auto;
-    }
-
-    .navbar-collapse {
-        width: 100%;
-        text-align: center;
-    }
-
-    .search-box {
-        margin-top: 10px;
-    }
-
-    .nav-link.dropdown-toggle {
-        padding: 10px;
-        font-size: 1.1rem;
-    }
-}
-
+/* ------------------- Search results ------------------- */
 .search-results {
     position: absolute;
     top: 100%;
@@ -202,4 +178,187 @@
 
 .search-results li:hover {
     background-color: #f5f5f5;
+}
+
+/* ------------------- Media Queries para móvil ------------------- */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: row;
+        height: 60px;
+        flex-wrap: wrap;
+        padding: 10px;
+    }
+
+    .navbar-toggler {
+        display: block;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        order: 2;
+    }
+
+    .navbar-brand {
+        order: 1;
+        font-size: 1.3rem;
+    }
+
+    .navbar-collapse {
+        display: none;
+        width: 100%;
+        order: 4;
+        background: rgba(0, 0, 0, 0.9);
+        margin-top: 10px;
+        padding: 10px;
+    }
+
+    .navbar-collapse.show {
+        display: block;
+    }
+
+    .navbar-nav {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .nav-item.dropdown {
+        margin: 5px 0;
+    }
+
+    .dropdown-menu {
+        position: static;
+        display: none;
+        box-shadow: none;
+        border: none;
+        margin-left: 15px;
+        margin-top: 5px;
+    }
+
+    .dropdown.show .dropdown-menu {
+        display: block;
+    }
+
+    .search-box {
+        order: 3;
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    .search-box input {
+        width: 100%;
+    }
+
+    .btn-login, .user-menu {
+        margin-top: 10px;
+    }
+
+    .user-name {
+        display: block !important;
+    }
+}
+
+/* Mantén todos tus estilos existentes y añade estos ajustes */
+
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: row;
+        flex-wrap: wrap;
+        height: auto;
+        padding: 10px 15px;
+    }
+
+    .navbar-toggler {
+        display: block;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        order: 2;
+        cursor: pointer;
+    }
+
+    .navbar-brand {
+        order: 1;
+        flex-grow: 1;
+    }
+
+    .navbar-collapse {
+        display: none;
+        width: 100%;
+        order: 3;
+        background: rgba(0, 0, 0, 0.9);
+        margin-top: 10px;
+        padding: 10px 0;
+    }
+
+    .navbar-collapse.show {
+        display: block;
+    }
+
+    .navbar-nav {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .nav-item.dropdown {
+        position: relative;
+        margin: 5px 0;
+    }
+
+    .dropdown-menu {
+        position: static;
+        display: none;
+        box-shadow: none;
+        border: none;
+        background-color: rgba(0, 0, 0, 0.5);
+        margin-left: 15px;
+        margin-top: 5px;
+        width: calc(100% - 30px);
+    }
+
+    .dropdown-menu.show {
+        display: block;
+    }
+
+    .dropdown-toggle::after {
+        display: inline-block;
+        margin-left: 5px;
+        content: "▼";
+        font-size: 0.7em;
+    }
+
+    .search-box {
+        order: 4;
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    .search-box input {
+        width: 100%;
+    }
+
+    .btn-login, .user-menu {
+        margin: 10px 0;
+    }
+
+    .user-name {
+        display: block !important;
+    }
+}
+
+/* 2. Ajustes específicos para el footer */
+footer {
+    margin-top: auto;
+    width: 100%;
+}
+
+app-footer {
+    display: block;
+}
+
+/* 3. Ajuste responsivo para móviles */
+@media (max-width: 768px) {
+    .content {
+        margin-bottom: 40px;
+    }
 }

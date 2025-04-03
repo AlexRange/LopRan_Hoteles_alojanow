@@ -2,6 +2,7 @@
     <div class="card-body border-dark">
         <div class="modal-header" style="background: #04ac84; color: white; border-radius: 5px 5px 0 0;">
             <h2 class="mb-4 text-center">Agregar Nueva Habitación</h2>
+            <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="close()"></button>
         </div>
         <div class="container p-4">
             <form [formGroup]="habitacionForm" (ngSubmit)="onSubmit()">

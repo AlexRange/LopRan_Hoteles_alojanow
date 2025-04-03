@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Pagos } from '../models/modelos';
 import { catchError, Observable, of } from 'rxjs';
-import { environment } from '../../enviroments/enviroments';
+import { environment } from '../../environments/environments';
+import { Pagos } from '../models/modelos';
 
 @Injectable({
   providedIn: 'root'

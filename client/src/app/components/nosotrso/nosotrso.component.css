@@ -1,5 +1,5 @@
 /* Contenedor principal */
-.conocenos-container {
+.about-us-container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -9,7 +9,7 @@
 }
 
 /* Tarjeta de contenido */
-.conocenos-card {
+.about-us-card {
     background: #ffffff;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
     border-radius: 10px;
@@ -20,18 +20,18 @@
 }
 
 /* Cabecera */
-.conocenos-header {
+.about-us-header {
     text-align: center;
     padding-bottom: 15px;
     border-bottom: 2px solid #ddd;
 }
 
-.conocenos-logo {
+.about-us-logo {
     width: 100px;
     margin-bottom: 10px;
 }
 
-h1 {
+.about-us-header h2 {
     font-size: 24px;
     font-weight: bold;
     margin: 0;
@@ -39,7 +39,7 @@ h1 {
 }
 
 /* Contenido */
-.conocenos-content {
+.about-us-content {
     margin-top: 20px;
     color: #444;
     font-size: 16px;
@@ -47,10 +47,10 @@ h1 {
 }
 
 /* Estilos de títulos */
-h2 {
-    font-size: 20px;
+h4 {
+    font-size: 18px;
     font-weight: bold;
-    margin-top: 20px;
+    margin-top: 25px;
     color: #007bff;
 }
 
@@ -71,17 +71,13 @@ p {
 
 /* Adaptación responsiva */
 @media (max-width: 768px) {
-    .conocenos-card {
+    .about-us-card {
         width: 100%;
         padding: 20px;
     }
 
-    h1 {
+    .about-us-header h2 {
         font-size: 20px;
-    }
-
-    h2 {
-        font-size: 18px;
     }
 
     p {
@@ -89,17 +85,68 @@ p {
     }
 }
 
-/* Contenedor de los breadcrumbs */
+/* Contenedor de migas de pan */
 .breadcrumb-container {
-    margin: 20px;
-    padding: 10px;
-    background-color: #f8f9fa;
+    margin-bottom: 20px;
+    padding: 8px 15px;
+    background-color: #ffffff;
+    border-left: 4px solid #007bff;
     border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: block;
+    width: 100%;
 }
 
-/* Breadcrumbs */
 .breadcrumb {
     margin-bottom: 0;
-    padding-left: 15px; /* Puedes ajustar este valor si necesitas más espacio */
-    padding-right: 15px; /* Lo mismo para el lado derecho */
+    padding: 0;
+    background-color: transparent;
+    font-size: 0.9rem;
+}
+
+.breadcrumb-item a {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.breadcrumb-item a:hover {
+    color: #0056b3;
+}
+
+.breadcrumb-item.active {
+    color: #6c757d;
+    font-weight: 500;
+}
+
+/* Estilos para los botones de navegación */
+.navigation-buttons {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+}
+
+.nav-button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #3f51b5;
+    color: white;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-button:hover {
+    background-color: #303f9f;
+    transform: scale(1.1);
 }

@@ -7,7 +7,7 @@ class UsuariosController {
     public async list(req: Request, res: Response): Promise<void> {
         try {
             const pool = await poolPromise;
-            const [result] = await pool.query('SELECT * FROM usuarios');
+            const result = await pool.query('SELECT * FROM usuarios');
             res.json(result);
         } catch (error) {
             res.status(500).json({ message: 'Error al obtener los usuarios' });
@@ -18,8 +18,8 @@ class UsuariosController {
         const { id_usuario } = req.params;
         try {
             const pool = await poolPromise;
-            const [result] = await pool.query('SELECT * FROM usuarios WHERE id_usuario = ?', [id_usuario]);
-            
+            const result = await pool.query('SELECT * FROM usuarios WHERE id_usuario = ?', [id_usuario]);
+
             if (result && Array.isArray(result) && result.length) {
                 res.json(result[0]);
             } else {
@@ -33,9 +33,9 @@ class UsuariosController {
     public async create(req: Request, res: Response): Promise<void> {
         try {
             const pool = await poolPromise;
-            const [countResult]: any = await pool.query('SELECT COUNT(*) as total FROM usuarios');
-            const count = countResult[0].total;
-            
+            const countResult = await pool.query('SELECT COUNT(*) as total FROM usuarios');
+            const count = Array.isArray(countResult) ? countResult[0].total : countResult[0].total;
+
             const userData = req.body;
 
             if (count === 0) {
@@ -43,7 +43,7 @@ class UsuariosController {
             }
 
             await pool.query('INSERT INTO usuarios SET ?', [userData]);
-            res.json({ 
+            res.json({
                 message: 'Usuario registrado exitosamente',
                 ...(count === 0 && { notice: 'Primer usuario registrado como administrador' })
             });
@@ -76,7 +76,7 @@ class UsuariosController {
 
     public async sendCode(req: Request, res: Response): Promise<void> {
         const { email } = req.body;
-        
+
         try {
             const verificationCode = crypto.randomBytes(3).toString('hex');
             const transporter = nodemailer.createTransport({
@@ -106,7 +106,7 @@ class UsuariosController {
         const { email, code } = req.body;
         try {
             const pool = await poolPromise;
-            const [result] = await pool.query('SELECT * FROM verification_codes WHERE email = ? AND code = ?', [email, code]);
+            const result = await pool.query('SELECT * FROM verification_codes WHERE email = ? AND code = ?', [email, code]);
 
             if (result && Array.isArray(result) && result.length) {
                 await pool.query('UPDATE verification_codes SET estatus = ? WHERE email = ? AND code = ?', ['Verificado', email, code]);
@@ -119,10 +119,29 @@ class UsuariosController {
         }
     }
 
-    public async sendNewPassword(req: Request, res: Response): Promise<void> {
+    public async sendNewPassword(req: Request, res: Response): Promise<Response> {
         const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ message: 'El correo electrónico es requerido' });
+        }
+
         try {
             const newPassword = crypto.randomBytes(4).toString('hex');
+
+            const pool = await poolPromise;
+
+            // 1. Verificar si el usuario existe
+            const [users]: any = await pool.query('SELECT id_usuario FROM usuarios WHERE email = ?', [email]);
+
+            if (users.length === 0) {
+                return res.status(404).json({ message: 'Usuario no encontrado' });
+            }
+
+            // 2. Actualizar la contraseña
+            await pool.query('UPDATE usuarios SET contrasena = ? WHERE email = ?', [newPassword, email]);
+
+            // 3. Enviar el correo
             const transporter = nodemailer.createTransport({
                 service: 'gmail',
                 auth: {
@@ -135,17 +154,19 @@ class UsuariosController {
                 from: 'appnotificaciones68@gmail.com',
                 to: email,
                 subject: 'Nueva contraseña',
-                text: `Tu nueva contraseña es: ${newPassword}`
+                text: `Tu nueva contraseña es: ${newPassword}`,
+                html: `<p>Tu nueva contraseña es: <strong>${newPassword}</strong></p>
+                <p>Por seguridad, te recomendamos cambiarla después de iniciar sesión.</p>`
+                
             });
 
-            const pool = await poolPromise;
-            await pool.query('UPDATE usuarios SET password = ? WHERE email = ?', [newPassword, email]);
-            res.json({ message: 'Nueva contraseña enviada' });
+            return res.json({ message: 'Nueva contraseña enviada correctamente' });
         } catch (error) {
-            res.status(500).json({ message: 'Error al enviar la contraseña' });
+            console.error('Error en sendNewPassword:', error);
+            return res.status(500).json({ message: 'Error al procesar la solicitud' });
         }
     }
 }
 
-const usuariosController = new UsuariosController();
+    const usuariosController = new UsuariosController();
 export default usuariosController;

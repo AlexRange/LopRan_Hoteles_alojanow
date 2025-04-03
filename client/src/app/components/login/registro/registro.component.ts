@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { Component, OnDestroy } from '@angular/core';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators, } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { Subscription, timer } from 'rxjs';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Usuarios } from '../../../models/modelos';
 import { CaptchaService } from '../../../services/captcha.service';
@@ -12,11 +13,14 @@ import { UsuariosService } from '../../../services/usuarios.service';
   templateUrl: './registro.component.html',
   styleUrl: './registro.component.css'
 })
-export class RegistroComponent {
+export class RegistroComponent implements OnDestroy {
   siteKey: string = '6LeHj9oqAAAAAG49-Z2cpiQs9pnnx8iiISQ6kkXz';
   registroForm: FormGroup;
   imagenUserBase64: string = '';
   captchaToken: string | null = null;
+  captchaExpired = false;
+  private captchaRefreshTimer?: Subscription;
+  private verificationTimer?: Subscription;
 
   constructor(
     private fb: FormBuilder,
@@ -28,21 +32,31 @@ export class RegistroComponent {
       nombre: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       contrasena: ['', [Validators.required, Validators.minLength(8), this.passwordValidator()]],
-      confirmarContrasena: ['', Validators.required],  // Agregar el campo confirmarContrasena
+      confirmarContrasena: ['', Validators.required],
       telefono: ['', [Validators.pattern('^[0-9]{10}$')]],
       imagen_usuario: ['', Validators.required],
       fecha_registro: [new Date().toISOString()],
       tipo: ['cliente', Validators.required],
-      estatus: [0], // Cambiado de 'Activo' a 0 (numérico)
-      token: [null], // Agrega este campo para que coincida con la tabla
+      estatus: [0],
+      token: [null],
       recaptcha: ['', Validators.required],
-    },
-      {
-        validators: this.matchPasswords,  // Aplicar validación al formulario completo
-      });
+    }, {
+      validators: this.matchPasswords,
+    });
   }
 
-  ngOnInit(): void { }
+  ngOnDestroy(): void {
+    this.clearTimers();
+  }
+
+  private clearTimers() {
+    if (this.captchaRefreshTimer) {
+      this.captchaRefreshTimer.unsubscribe();
+    }
+    if (this.verificationTimer) {
+      this.verificationTimer.unsubscribe();
+    }
+  }
 
   passwordValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
@@ -50,7 +64,6 @@ export class RegistroComponent {
       if (!value) {
         return null;
       }
-
 
       const errors: any = {};
       if (!value || value.length < 8) {
@@ -87,7 +100,6 @@ export class RegistroComponent {
   }
 
   onSubmit() {
-    // Validación del reCAPTCHA
     if (!this.captchaToken) {
       Swal.fire({
         icon: 'warning',
@@ -97,7 +109,6 @@ export class RegistroComponent {
       return;
     }
 
-    // Validación del formulario
     if (this.registroForm.invalid) {
       this.registroForm.markAllAsTouched();
       Swal.fire({
@@ -117,95 +128,17 @@ export class RegistroComponent {
             title: 'Error de verificación',
             text: 'La verificación de reCAPTCHA ha fallado. Inténtalo de nuevo.',
           });
+          this.resetCaptcha();
           return;
         }
 
-        // Eliminar el campo confirmarContrasena del formulario
-        this.registroForm.removeControl('confirmarContrasena');
-        this.registroForm.removeControl('recaptcha');
-
-        // Preparar el objeto del usuario
-        const usuario: Usuarios = {
-          id_usuario: 0, // O el valor que necesites para un nuevo usuario
-          ...this.registroForm.value,
-          imagen_usuario: this.imagenUserBase64 || null,
-          estatus: true, // o true según tu lógica
-        };
+        // Iniciar temporizador para refrescar el reCAPTCHA después de 2 minutos (tiempo de expiración)
+        this.startCaptchaRefreshTimer();
 
         // Enviar el código de verificación al email del usuario
-        this.usuariosService.enviarCodigo(usuario.email).subscribe(
+        this.usuariosService.enviarCodigo(this.registroForm.value.email).subscribe(
           () => {
-            // Solicitar al usuario que ingrese el código recibido
-            Swal.fire({
-              title: 'Verificación de Código',
-              input: 'text',
-              inputLabel: 'Ingresa el código de verificación enviado a tu correo',
-              inputPlaceholder: 'Código de verificación',
-              showCancelButton: true,
-              confirmButtonText: 'Verificar',
-              cancelButtonText: 'Cancelar',
-              inputValidator: (value) => {
-                if (!value) {
-                  return 'Debes ingresar un código de verificación';
-                }
-                return null;
-              },
-            }).then((result) => {
-              if (!result.value) {
-                Swal.fire({
-                  icon: 'info',
-                  title: 'Proceso cancelado',
-                  text: 'No se completó el registro.',
-                });
-                return;
-              }
-
-              const codigo = result.value.trim();
-
-              // Verificar el código ingresado con el backend
-              this.usuariosService.verificarCodigo(usuario.email, codigo).subscribe(
-                (verificacionResponse) => {
-                  if (verificacionResponse?.success) {
-                    // Código correcto, crear el usuario
-                    this.usuariosService.createUsuario(usuario).subscribe({
-                      next: () => {
-                        Swal.fire({
-                          icon: 'success',
-                          title: 'Usuario registrado',
-                          text: 'El usuario ha sido registrado exitosamente.',
-                        });
-                        this.modal.close(); // Cierra el modal de registro
-                        this.registroForm.reset(); // Limpia el formulario si es necesario
-                        this.captchaToken = null; // Resetea el token del captcha
-                      },
-                      error: (error) => {
-                        console.error('Error al registrar el usuario:', error);
-                        Swal.fire({
-                          icon: 'error',
-                          title: 'Error',
-                          text: 'Hubo un problema al registrar el usuario. Inténtalo nuevamente.',
-                        });
-                      },
-                    });
-                  } else {
-                    // Código incorrecto o ya usado
-                    Swal.fire({
-                      icon: 'error',
-                      title: 'Código incorrecto',
-                      text: 'El código de verificación es incorrecto o ha expirado.',
-                    });
-                  }
-                },
-                (error) => {
-                  console.error('Error en la verificación del código:', error);
-                  Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Hubo un problema al verificar el código. Inténtalo nuevamente.',
-                  });
-                }
-              );
-            });
+            this.showVerificationDialog();
           },
           (error) => {
             console.error('Error al enviar el código:', error);
@@ -228,6 +161,166 @@ export class RegistroComponent {
     );
   }
 
+  private startCaptchaRefreshTimer() {
+    // Limpiar temporizador anterior si existe
+    if (this.captchaRefreshTimer) {
+      this.captchaRefreshTimer.unsubscribe();
+    }
+
+    // Configurar nuevo temporizador para 2 minutos (120000 ms)
+    this.captchaRefreshTimer = timer(120000).subscribe(() => {
+      this.captchaExpired = true;
+      this.resetCaptcha();
+      Swal.fire({
+        icon: 'info',
+        title: 'reCAPTCHA expirado',
+        text: 'El reCAPTCHA ha expirado. Por favor, resuélvelo nuevamente.',
+        timer: 5000,
+        showConfirmButton: false
+      });
+    });
+  }
+
+  private showVerificationDialog() {
+    Swal.fire({
+      title: 'Verificación de Código',
+      html: `
+        <p>Hemos enviado un código de verificación a tu correo electrónico.</p>
+        <p>Si no lo recibes, puedes solicitar uno nuevo.</p>
+        <input type="text" id="verificationCode" class="swal2-input" placeholder="Código de verificación">
+        <small id="timerText" style="display: block; margin-top: 10px;">El código expirará en 5:00</small>
+      `,
+      showCancelButton: true,
+      confirmButtonText: 'Verificar',
+      cancelButtonText: 'Cancelar',
+      allowOutsideClick: false,
+      didOpen: () => {
+        const timerText = document.getElementById('timerText');
+        let timeLeft = 300; // 5 minutos en segundos
+
+        // Actualizar el temporizador cada segundo
+        this.verificationTimer = timer(0, 1000).subscribe(() => {
+          if (timeLeft > 0) {
+            timeLeft--;
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            if (timerText) {
+              timerText.textContent = `El código expirará en ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            }
+          } else {
+            // Tiempo agotado
+            if (this.verificationTimer) {
+              this.verificationTimer.unsubscribe();
+            }
+            Swal.fire({
+              icon: 'error',
+              title: 'Tiempo agotado',
+              text: 'El código de verificación ha expirado. Por favor, solicita uno nuevo.',
+              confirmButtonText: 'OK'
+            }).then(() => {
+              this.onSubmit(); // Volver a enviar el formulario
+            });
+          }
+        });
+      },
+      preConfirm: () => {
+        const inputElement = document.getElementById('verificationCode') as HTMLInputElement;
+        const codigo = inputElement?.value.trim();
+
+        if (!codigo) {
+          Swal.showValidationMessage('Debes ingresar un código de verificación');
+          return null;
+        }
+
+        return codigo;
+      }
+    }).then((result) => {
+      // Limpiar el temporizador cuando se cierra el diálogo
+      if (this.verificationTimer) {
+        this.verificationTimer.unsubscribe();
+      }
+
+      if (result.isConfirmed && result.value) {
+        const codigo = result.value;
+        this.verifyCodeAndRegister(codigo);
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire({
+          icon: 'info',
+          title: 'Proceso cancelado',
+          text: 'No se completó el registro.',
+        });
+      }
+    });
+  }
+
+  private verifyCodeAndRegister(codigo: string) {
+    const email = this.registroForm.value.email;
+    
+    this.usuariosService.verificarCodigo(email, codigo).subscribe(
+      (verificacionResponse) => {
+        if (verificacionResponse?.success) {
+          // Código correcto, proceder con el registro
+          this.completeRegistration();
+        } else {
+          // Código incorrecto o ya usado
+          Swal.fire({
+            icon: 'error',
+            title: 'Código incorrecto',
+            text: 'El código de verificación es incorrecto o ha expirado.',
+          }).then(() => {
+            this.showVerificationDialog(); // Mostrar nuevamente el diálogo de verificación
+          });
+        }
+      },
+      (error) => {
+        console.error('Error en la verificación del código:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Hubo un problema al verificar el código. Inténtalo nuevamente.',
+        }).then(() => {
+          this.showVerificationDialog(); // Mostrar nuevamente el diálogo de verificación
+        });
+      }
+    );
+  }
+
+  private completeRegistration() {
+    // Clonar el formulario para no afectar el original
+    const formData = { ...this.registroForm.value };
+    delete formData.confirmarContrasena;
+    delete formData.recaptcha;
+
+    const usuario: Usuarios = {
+      id_usuario: 0,
+      ...formData,
+      imagen_usuario: this.imagenUserBase64 || null,
+      estatus: true,
+    };
+
+    this.usuariosService.createUsuario(usuario).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Usuario registrado',
+          text: 'El usuario ha sido registrado exitosamente.',
+        });
+        this.modal.close();
+        this.registroForm.reset();
+        this.captchaToken = null;
+        this.clearTimers();
+      },
+      error: (error) => {
+        console.error('Error al registrar el usuario:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Hubo un problema al registrar el usuario. Inténtalo nuevamente.',
+        });
+      },
+    });
+  }
+
   close() {
     if (this.registroForm.dirty) {
       Swal.fire({
@@ -241,10 +334,12 @@ export class RegistroComponent {
         cancelButtonText: 'Cancelar'
       }).then((result) => {
         if (result.isConfirmed) {
+          this.clearTimers();
           this.modal.dismiss();
         }
       });
     } else {
+      this.clearTimers();
       this.modal.dismiss();
     }
   }
@@ -287,11 +382,14 @@ export class RegistroComponent {
 
   captchaResolved(token: string) {
     this.captchaToken = token;
+    this.captchaExpired = false;
     console.log('Token reCAPTCHA obtenido:', this.captchaToken);
   }
 
   resetCaptcha() {
     this.captchaToken = null;
+    this.captchaExpired = true;
+    this.registroForm.get('recaptcha')?.reset();
     console.log('reCAPTCHA reseteado');
   }
 }

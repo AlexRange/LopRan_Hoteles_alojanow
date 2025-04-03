@@ -34,11 +34,9 @@
                     <input type="password" id="contrasena" formControlName="contrasena" class="form-control"
                         placeholder="Ingresa tu contraseña" />
                     <small *ngIf="campoNoValido('contrasena')" class="text-danger">
-                        <!-- Mostrar error de longitud mínima -->
                         <ng-container *ngIf="registroForm.get('contrasena')?.errors?.['minlength']">
                             La contraseña debe tener al menos 8 caracteres.
                         </ng-container>
-                        <!-- Mostrar otros errores de validación -->
                         <ng-container *ngIf="registroForm.get('contrasena')?.errors?.['missingUpperCase']">Debe contener
                             al menos una letra mayúscula.<br></ng-container>
                         <ng-container *ngIf="registroForm.get('contrasena')?.errors?.['missingLowerCase']">Debe contener
@@ -80,12 +78,10 @@
                 </div>
 
                 <!-- reCAPTCHA -->
-                <div class="form-outline mb-4">
-                    <label class="form-label">Marca la casilla para asegurar que no eres un robot</label>
-                    <ngx-recaptcha2 [siteKey]="siteKey" (success)="captchaResolved($event)" (expired)="resetCaptcha()"
-                        (error)="resetCaptcha()" formControlName="recaptcha">
-                    </ngx-recaptcha2>
-                </div>
+                <!-- Modifica el elemento ngx-recaptcha2 -->
+                <ngx-recaptcha2 #recaptchaElem [siteKey]="siteKey" (success)="captchaResolved($event)"
+                    (expired)="resetCaptcha()" (error)="resetCaptcha()" formControlName="recaptcha">
+                </ngx-recaptcha2>
 
                 <!-- Botón de Enviar -->
                 <div class="container mt-4">
