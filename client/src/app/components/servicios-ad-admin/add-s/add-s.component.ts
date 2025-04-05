@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';
 import { ServiciosAdicionales } from '../../../models/modelos';
@@ -7,7 +7,8 @@ import { ServiciosAdicionalesService } from '../../../services/servicios-adicion
 
 @Component({
   selector: 'app-add-s',
-  standalone: false,
+  standalone: true,
+  imports: [FormsModule, ReactiveFormsModule],
   templateUrl: './add-s.component.html',
   styleUrl: './add-s.component.css'
 })

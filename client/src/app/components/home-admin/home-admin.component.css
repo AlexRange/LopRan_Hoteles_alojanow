@@ -1,105 +1,47 @@
-.container {
-    margin-top: 20px;
-}
-
+/* Estilos de los paneles con colores verdes */
 .panel {
-    background-size: cover;
-    background-position: center;
-    color: white;
-    height: 250px;
-    /* Asegura que todos los paneles tengan la misma altura */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 1em 2em;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    letter-spacing: 3px;
+    text-transform: uppercase;
     cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: #2faa4c; /* Verde oscuro */
+    transition: all 1000ms;
+    font-size: 18px;
     position: relative;
     overflow: hidden;
-    /* Asegura que la imagen no se desborde */
-}
-
-.panel h3 {
-    z-index: 1;
-    font-size: 1.5rem;
-    font-weight: bold;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-}
-
-.panel:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
-}
-
-.panel:active {
-    transform: translateY(2px);
-}
-
-.row {
+    outline: 2px solid #2faa4c; /* Verde oscuro */
+    text-align: center;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-}
-
-.col-12 {
-    margin-bottom: 15px;
-}
-
-@media (min-width: 768px) {
-    .col-md-6 {
-        flex: 1 1 calc(50% - 15px);
-        margin-right: 15px;
-    }
-
-    .col-md-6:last-child {
-        margin-right: 0;
-    }
-}
-
-/* Agregar imágenes de fondo específicas para cada panel */
-.panel:nth-child(1) {
-    background-image: url('../../../assets/web-hoteles.jpg');
-}
-
-.panel:nth-child(2) {
-    background-image: url('../../../assets/web-hoteles.jpg');
-}
-
-.panel:nth-child(3) {
-    background-image: url('../../../assets/web-hoteles.jpg');
-}
-
-.panel:nth-child(4) {
-    background-image: url('../../../assets/web-hoteles.jpg');
-}
-
-.panel:nth-child(5) {
-    background-image: url('../../../assets/web-hoteles.jpg');
-}
-
-.panel:nth-child(6) {
-    background-image: url('../../../assets/web-hoteles.jpg');
-}
-
-.panel:nth-child(7) {
-    background-image: url('../../../assets/web-hoteles.jpg');
-}
-
-.panel:nth-child(8) {
-    background-image: url('../../../assets/web-hoteles.jpg');
-}
-
-/* Efecto de opacidad sobre la imagen para mejorar la visibilidad del texto */
-.panel:before {
-    content: '';
+    align-items: center;
+    justify-content: center;
+    height: 150px; /* Ajusta según necesidad */
+    margin: 10px 0;
+  }
+  
+  .panel:hover {
+    color: #ffffff;
+    transform: scale(1.05);
+    outline: 2px solid #63c76a; /* Verde más claro */
+    box-shadow: 4px 5px 17px -4px #3e8d4e; /* Sombra en verde oscuro */
+  }
+  
+  .panel::before {
+    content: "";
     position: absolute;
+    left: -50px;
     top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.3);
-    /* Añade un filtro de opacidad */
-    z-index: 0;
-}
+    width: 0;
+    height: 100%;
+    background-color: #2faa4c; /* Verde oscuro */
+    transform: skewX(45deg);
+    z-index: -1;
+    transition: width 1000ms;
+  }
+  
+  .panel:hover::before {
+    width: 250%;
+  }
+  

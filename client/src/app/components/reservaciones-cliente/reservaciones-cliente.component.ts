@@ -1,13 +1,15 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { Reservaciones } from '../../models/modelos';
 import { Auth } from '../../services/auth.service';
 import { ReservacionesService } from '../../services/reservaciones.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-reservaciones-cliente',
-  standalone: false,
+  standalone: true,
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './reservaciones-cliente.component.html',
   styleUrl: './reservaciones-cliente.component.css'
 })

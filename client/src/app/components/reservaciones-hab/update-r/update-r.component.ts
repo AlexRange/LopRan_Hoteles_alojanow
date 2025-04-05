@@ -4,10 +4,12 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ReservacionesService } from '../../../services/reservaciones.service';
 import Swal from 'sweetalert2';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-update-r',
-  standalone: false,
+  standalone: true,
+  imports: [ReactiveFormsModule],
   templateUrl: './update-r.component.html',
   styleUrl: './update-r.component.css'
 })

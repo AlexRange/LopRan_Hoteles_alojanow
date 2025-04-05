@@ -4,10 +4,13 @@ import Swal from 'sweetalert2';
 import { Hoteles } from '../../../models/modelos';
 import { HotelesService } from '../../../services/hoteles.service';
 import { ServiciosAdicionalesService } from '../../../services/servicios-adicionales.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-asignar-a-hotel',
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './asignar-a-hotel.component.html',
   styleUrl: './asignar-a-hotel.component.css'
 })

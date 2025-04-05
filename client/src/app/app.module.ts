@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AuthModule } from '@auth0/auth0-angular';
 import { NgxCaptchaModule } from 'ngx-captcha';
-
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
@@ -46,6 +45,7 @@ import { AddSComponent } from './components/servicios-ad-admin/add-s/add-s.compo
 import { UpdateSComponent } from './components/servicios-ad-admin/update-s/update-s.component';
 import { AsignarAHotelComponent } from './components/servicios-ad-admin/asignar-a-hotel/asignar-a-hotel.component';
 import { ComentariosCComponent } from './components/historiales/comentarios-c/comentarios-c.component';
+import { CategoryBarComponent } from './components/category-bar/category-bar.component';
 
 
 @NgModule({
@@ -88,6 +88,7 @@ import { ComentariosCComponent } from './components/historiales/comentarios-c/co
     UpdateSComponent,
     AsignarAHotelComponent,
     ComentariosCComponent,
+    CategoryBarComponent
   ],
   imports: [
     BrowserModule,

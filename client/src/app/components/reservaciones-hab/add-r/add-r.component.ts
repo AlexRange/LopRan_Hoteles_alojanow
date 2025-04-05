@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ReservacionesService } from '../../../services/reservaciones.service';
 import Swal from 'sweetalert2';
@@ -7,7 +7,8 @@ import { Reservaciones } from '../../../models/modelos';
 
 @Component({
   selector: 'app-add-r',
-  standalone: false,
+  standalone: true,
+  imports: [ReactiveFormsModule],
   templateUrl: './add-r.component.html',
   styleUrl: './add-r.component.css'
 })
