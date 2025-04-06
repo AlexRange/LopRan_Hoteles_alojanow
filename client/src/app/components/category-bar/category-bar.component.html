@@ -1,0 +1,8 @@
+<div class="category-bar">
+  <button 
+    *ngFor="let category of categories" 
+    (click)="onCategoryClick(category.name)" 
+    class="category-button">
+    {{ category.icon }} {{ category.name }}
+  </button>
+</div>

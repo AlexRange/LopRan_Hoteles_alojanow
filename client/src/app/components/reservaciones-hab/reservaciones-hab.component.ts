@@ -7,10 +7,13 @@ import { ReservacionesService } from '../../services/reservaciones.service';
 import { UsuariosService } from '../../services/usuarios.service';
 import { AddRComponent } from './add-r/add-r.component';
 import { UpdateRComponent } from './update-r/update-r.component';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-reservaciones-hab',
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './reservaciones-hab.component.html',
   styleUrls: ['./reservaciones-hab.component.css']
 })

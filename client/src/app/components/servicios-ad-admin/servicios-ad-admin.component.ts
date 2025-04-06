@@ -6,10 +6,13 @@ import { ServiciosAdicionalesService } from '../../services/servicios-adicionale
 import { AddSComponent } from './add-s/add-s.component';
 import { AsignarAHotelComponent } from './asignar-a-hotel/asignar-a-hotel.component';
 import { UpdateSComponent } from './update-s/update-s.component';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-servicios-ad-admin',
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './servicios-ad-admin.component.html',
   styleUrl: './servicios-ad-admin.component.css'
 })

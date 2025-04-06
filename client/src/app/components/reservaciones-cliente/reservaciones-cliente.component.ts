@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import Swal from 'sweetalert2/dist/sweetalert2.js';
+import Swal from 'sweetalert2';
 import { Reservaciones } from '../../models/modelos';
 import { Auth } from '../../services/auth.service';
 import { ReservacionesService } from '../../services/reservaciones.service';
