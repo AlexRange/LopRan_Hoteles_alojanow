@@ -16,7 +16,7 @@ import { UsuariosService } from '../../../services/usuarios.service';
 export class RegistroComponent implements OnDestroy {
   siteKey: string = '6LeHj9oqAAAAAG49-Z2cpiQs9pnnx8iiISQ6kkXz';
   registroForm: FormGroup;
-  imagenUserBase64: string = '';
+  imagenFileName: string = '';
   captchaToken: string | null = null;
   captchaExpired = false;
   private captchaRefreshTimer?: Subscription;
@@ -37,7 +37,7 @@ export class RegistroComponent implements OnDestroy {
       imagen_usuario: ['', Validators.required],
       fecha_registro: [new Date().toISOString()],
       tipo: ['cliente', Validators.required],
-      estatus: [0],
+      estatus: [1],
       token: [null],
       recaptcha: ['', Validators.required],
     }, {
@@ -255,7 +255,7 @@ export class RegistroComponent implements OnDestroy {
 
   private verifyCodeAndRegister(codigo: string) {
     const email = this.registroForm.value.email;
-    
+
     this.usuariosService.verificarCodigo(email, codigo).subscribe(
       (verificacionResponse) => {
         if (verificacionResponse?.success) {
@@ -291,10 +291,11 @@ export class RegistroComponent implements OnDestroy {
     delete formData.confirmarContrasena;
     delete formData.recaptcha;
 
+    // Usar this.imagenFileName que ya contiene el nombre del archivo
     const usuario: Usuarios = {
       id_usuario: 0,
       ...formData,
-      imagen_usuario: this.imagenUserBase64 || null,
+      imagen_usuario: this.imagenFileName, // Usamos la variable que ya contiene el nombre
       estatus: true,
     };
 
@@ -309,6 +310,7 @@ export class RegistroComponent implements OnDestroy {
         this.registroForm.reset();
         this.captchaToken = null;
         this.clearTimers();
+        this.imagenFileName = ''; // Limpiar también el nombre del archivo
       },
       error: (error) => {
         console.error('Error al registrar el usuario:', error);
@@ -358,25 +360,25 @@ export class RegistroComponent implements OnDestroy {
         return;
       }
 
-      const reader = new FileReader();
-
-      reader.onload = () => {
-        if (reader.result) {
-          this.imagenUserBase64 = reader.result as string;
-          this.registroForm.patchValue({ imagen_usuario: this.imagenUserBase64 });
+      this.usuariosService.uploadImage(file).subscribe({
+        next: (response) => {
+          console.log('Imagen subida exitosamente:', response);
+          // Asignar el nombre del archivo tanto al formulario como a la variable local
+          this.imagenFileName = response.filename;
+          console.log('Nombre imagen usuario');
+          this.registroForm.patchValue({
+            imagen_usuario: response.filename
+          });
+        },
+        error: (error) => {
+          console.error('Error al subir la imagen:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Hubo un problema al subir la imagen. Intenta con otro archivo.',
+          });
         }
-      };
-
-      reader.onerror = () => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Hubo un problema al leer la imagen. Intenta con otro archivo.',
-        });
-        console.error('Error al leer el archivo:', reader.error);
-      };
-
-      reader.readAsDataURL(file);
+      });
     }
   }
 

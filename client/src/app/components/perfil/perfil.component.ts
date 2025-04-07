@@ -164,22 +164,22 @@ export class PerfilComponent implements OnInit {
   guardarCambios(): void {
     if (this.isSaving || this.editForm.invalid) return;
     this.isSaving = true;
-  
+
     const formValue = this.editForm.value;
     const updateData: Partial<Usuarios> = {};
-  
+
     if (formValue.telefono !== this.usuario.telefono) {
       updateData.telefono = formValue.telefono;
     }
-  
+
     if (formValue.imagen_usuario !== this.usuario.imagen_usuario) {
       updateData.imagen_usuario = formValue.imagen_usuario;
     }
-  
+
     if (formValue.contrasena?.trim()) {
       updateData.contrasena = formValue.contrasena;
     }
-  
+
     if (Object.keys(updateData).length === 0) {
       const Toast = Swal.mixin({
         toast: true,
@@ -188,16 +188,16 @@ export class PerfilComponent implements OnInit {
         timer: 3000,
         timerProgressBar: true,
       });
-      
+
       Toast.fire({
         icon: 'info',
         title: 'No hay cambios para guardar'
       });
-      
+
       this.isSaving = false;
       return;
     }
-  
+
     this.authService.updateUser(updateData).subscribe({
       next: (updatedUser: Usuarios) => {
         // Actualizar el usuario local con los datos combinados
@@ -206,9 +206,9 @@ export class PerfilComponent implements OnInit {
           ...updatedUser,
           telefono: updatedUser.telefono !== undefined ? updatedUser.telefono : this.usuario.telefono
         };
-  
+
         this.resetEditForm();
-  
+
         const Toast = Swal.mixin({
           toast: true,
           position: 'top-end',
@@ -216,7 +216,7 @@ export class PerfilComponent implements OnInit {
           timer: 3000,
           timerProgressBar: true,
         });
-        
+
         Toast.fire({
           icon: 'success',
           title: 'Datos actualizados correctamente'
@@ -237,7 +237,7 @@ export class PerfilComponent implements OnInit {
           timer: 3000,
           timerProgressBar: true,
         });
-        
+
         Toast.fire({
           icon: 'error',
           title: 'Error al actualizar la información'
@@ -289,5 +289,10 @@ export class PerfilComponent implements OnInit {
 
   getHomeRoute(): string {
     return this.usuario?.tipo === 'admin' ? '/home-admin' : '/home';
-}
+  }
+
+  // Agrega este método en tu NavigationComponent
+  getUserImage(profileImage: string | undefined): string {
+    return this.usuariosService.getImageUrl(profileImage);
+  }
 }

@@ -15,7 +15,7 @@ export class Auth {
   private tokenExpirationTimer: any;
   private tempAuthData: { email: string, contrasena: string, userData?: any, token?: string } | null = null;
 
-  private inactivityTimeout = 30 * 60 * 1000; // 30 minutos de inactividad
+  private inactivityTimeout = 0.2 * 60 * 1000;
   private inactivityTimer: any;
   private activityEvents = ['mousemove', 'keypress', 'scroll', 'click'];
 

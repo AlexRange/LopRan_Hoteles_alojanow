@@ -5,6 +5,7 @@ import { filter } from 'rxjs/operators';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Usuarios } from '../../models/modelos';
 import { Auth } from '../../services/auth.service';
+import { UsuariosService } from '../../services/usuarios.service';
 
 @Component({
   selector: 'app-navigation-admin',
@@ -22,7 +23,7 @@ export class NavigationAdminComponent implements OnInit {
   isLoginPage: boolean = false;
   isProfilePage: boolean = false;
 
-  constructor(private router: Router, private authService: Auth) {
+  constructor(private router: Router, private authService: Auth, private usuariosService: UsuariosService) {
     this.isAuthenticated$ = this.authService.isAuthenticated();
     this.currentUser$ = this.authService.getCurrentUser();
     
@@ -143,5 +144,10 @@ export class NavigationAdminComponent implements OnInit {
         });
       }
     });
+  }
+
+  // Agrega este método en tu NavigationComponent
+  getUserImage(profileImage: string | undefined): string {
+    return this.usuariosService.getImageUrl(profileImage);
   }
 }

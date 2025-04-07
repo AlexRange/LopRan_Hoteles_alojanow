@@ -18,7 +18,8 @@
                 </button>
 
                 <!-- Imagen responsiva -->
-                <img [src]="hotel.imagen_hotel" class="card-img-top" [alt]="hotel.nombre" />
+                <img [src]="getImageUrl(hotel.imagen_hotel)" class="card-img-top" [alt]="hotel.nombre"
+                    onerror="this.src='assets/default-hotel.png'" />
                 <div class="card-body">
                     <h5 class="card-title">{{ hotel.nombre }}</h5>
                     <p class="hotel-location">

@@ -12,11 +12,10 @@ export class HotelesService {
   
   constructor(private http: HttpClient) { }
 
-  // Obtener todos los hoteles
+  // Obtener todos los hoteles (Método existente - sin cambios)
   getHotel(): Observable<Hoteles[]> {
     return this.http.get<any>(`${this.apiUrl}/hoteles`).pipe(
       map(response => {
-        // Si tu backend devuelve los datos en un campo específico
         return response.data || response;
       }),
       catchError(error => {
@@ -26,7 +25,7 @@ export class HotelesService {
     );
   }
 
-  // Eliminar un hotel
+  // Eliminar un hotel (Método existente - sin cambios)
   deleteHotel(id_hotel: string | number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/hoteles/${id_hotel}`).pipe(
       catchError(error => {
@@ -36,7 +35,7 @@ export class HotelesService {
     );
   }
 
-  // Crear un nuevo hotel
+  // Crear un nuevo hotel (Método existente - sin cambios)
   saveHotel(hotel: Hoteles): Observable<any> {
     return this.http.post(`${this.apiUrl}/hoteles`, hotel).pipe(
       catchError(error => {
@@ -46,7 +45,7 @@ export class HotelesService {
     );
   }
 
-  // Actualizar un hotel existente
+  // Actualizar un hotel existente (Método existente - sin cambios)
   updateHotel(id_hotel: string | number, hotel: Hoteles): Observable<any> {
     return this.http.put(`${this.apiUrl}/hoteles/${id_hotel}`, hotel).pipe(
       catchError(error => {
@@ -55,4 +54,32 @@ export class HotelesService {
       })
     );
   }
+
+  // NUEVO MÉTODO: Obtener un hotel específico por ID
+  getOneHotel(id_hotel: string | number): Observable<Hoteles | null> {
+    return this.http.get<Hoteles>(`${this.apiUrl}/hoteles/${id_hotel}`).pipe(
+      catchError(error => {
+        console.error(`Error fetching hotel with ID ${id_hotel}:`, error);
+        return of(null);
+      })
+    );
+  }
+
+  // NUEVO MÉTODO: Subir imagen del hotel
+  uploadImage(file: File): Observable<{ filename: string }> {
+    const formData = new FormData();
+    formData.append('image', file);
+    return this.http.post<{ filename: string }>(
+      `${this.apiUrl}/hoteles/upload`,
+      formData
+    );
+  }
+
+  getImageUrl(imageName: string | null | undefined): string {
+    // Asegúrate de que coincida con la ruta de almacenamiento en el backend
+    return `${environment.API_URL}/uploads/hoteles/${imageName}`;
+  }
+
+
+
 }

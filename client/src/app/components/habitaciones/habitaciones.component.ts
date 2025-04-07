@@ -55,7 +55,12 @@ export class HabitacionesComponent implements OnInit {
   getHabitaciones() {
     this.habitacionesSrv.getHabitacion().subscribe({
       next: (res) => {
-        this.habitacionesget = res;
+        // Procesar las imágenes para construir la URL completa
+        this.habitacionesget = res.map(habitacion => ({
+          ...habitacion,
+          imagen_habitacion: this.habitacionesSrv.getImageUrl(habitacion.imagen_habitacion)
+        }));
+        
         this.totalItems = res.length;
         this.calculateTotalPages();
         this.updateFilteredHabitaciones();
@@ -223,5 +228,9 @@ export class HabitacionesComponent implements OnInit {
         this.loadData();
       }
     });
+  }
+
+  getImageUrl(imageName: string | null | undefined): string {
+    return this.habitacionesSrv.getImageUrl(imageName);
   }
 }

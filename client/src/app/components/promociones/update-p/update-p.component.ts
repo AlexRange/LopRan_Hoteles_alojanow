@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Hoteles, Promociones } from '../../../models/modelos';
@@ -8,8 +8,7 @@ import { PromocionesService } from '../../../services/promociones.service';
 
 @Component({
   selector: 'app-update-p',
-  standalone: true,
-  imports:[ReactiveFormsModule],
+  standalone: false,
   templateUrl: './update-p.component.html',
   styleUrl: './update-p.component.css'
 })

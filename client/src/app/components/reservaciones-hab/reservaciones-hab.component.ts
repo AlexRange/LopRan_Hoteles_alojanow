@@ -7,13 +7,10 @@ import { ReservacionesService } from '../../services/reservaciones.service';
 import { UsuariosService } from '../../services/usuarios.service';
 import { AddRComponent } from './add-r/add-r.component';
 import { UpdateRComponent } from './update-r/update-r.component';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-reservaciones-hab',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
+  standalone: false,
   templateUrl: './reservaciones-hab.component.html',
   styleUrls: ['./reservaciones-hab.component.css']
 })
@@ -50,7 +47,6 @@ export class ReservacionesHabComponent implements OnInit {
     // Cargar usuarios
     this.usuariosSrv.getUsuarios().subscribe({
       next: (usuariosResponse: any) => {
-        console.log('Respuesta completa de usuarios:', usuariosResponse);
         
         // Procesar usuarios - versión más flexible
         let usuariosList: Usuarios[] = [];
@@ -71,8 +67,6 @@ export class ReservacionesHabComponent implements OnInit {
           }
         }
         
-        console.log('Lista de usuarios procesada:', usuariosList);
-        
         if (usuariosList.length === 0) {
           console.warn('No se encontraron usuarios en la respuesta');
         }
@@ -85,12 +79,10 @@ export class ReservacionesHabComponent implements OnInit {
             this.usuarios[usuario.id_usuario] = nombreCompleto || 'Nombre no disponible';
           }
         });
-        console.log('Mapeo de usuarios creado:', this.usuarios);
 
         // Cargar hoteles
         this.hotelesSrv.getHotel().subscribe({
           next: (hotelesResponse: any) => {
-            console.log('Respuesta completa de hoteles:', hotelesResponse);
             
             // Procesar hoteles de manera similar
             let hotelesList: Hoteles[] = [];
@@ -109,14 +101,11 @@ export class ReservacionesHabComponent implements OnInit {
               }
             }
             
-            console.log('Lista de hoteles procesada:', hotelesList);
-            
             hotelesList.forEach((hotel: Hoteles) => {
               if (hotel && hotel.id_hotel) {
                 this.hoteles[hotel.id_hotel] = hotel.nombre || 'Hotel sin nombre';
               }
             });
-            console.log('Mapeo de hoteles creado:', this.hoteles);
 
             // Cargar reservaciones
             this.getReservaciones();
@@ -138,7 +127,6 @@ export class ReservacionesHabComponent implements OnInit {
   getReservaciones(): void {
     this.reservacionesSrv.getReservaciones().subscribe({
       next: (res: Reservaciones[]) => {
-        console.log('Reservaciones obtenidas:', res);
         this.reservacionesget = res;
         this.totalItems = res.length;
         this.calculateTotalPages();
@@ -150,16 +138,10 @@ export class ReservacionesHabComponent implements OnInit {
   }
 
   updateFilteredReservations(): void {
-    console.log('Actualizando reservaciones filtradas...');
-    console.log('Mapeo de usuarios disponible:', this.usuarios);
-    console.log('Mapeo de hoteles disponible:', this.hoteles);
     
     this.filteredReservaciones = this.reservacionesget.map(reservacion => {
       const userId = Number(reservacion.id_usuario);
       const hotelId = Number(reservacion.id_hotel);
-
-      console.log(`Procesando reservación ID: ${reservacion.id_reservacion}`);
-      console.log(`ID Usuario: ${userId}, ID Hotel: ${hotelId}`);
       
       const nombreUsuario = !isNaN(userId) 
         ? (this.usuarios[userId] || 'Usuario no encontrado') 
@@ -169,9 +151,6 @@ export class ReservacionesHabComponent implements OnInit {
         ? (this.hoteles[hotelId] || 'Hotel no encontrado') 
         : 'ID inválido';
 
-      console.log(`Nombre usuario encontrado: ${nombreUsuario}`);
-      console.log(`Nombre hotel encontrado: ${nombreHotel}`);
-
       return {
         ...reservacion,
         nombreUsuario: nombreUsuario,
@@ -179,7 +158,6 @@ export class ReservacionesHabComponent implements OnInit {
       };
     });
     
-    console.log('Reservaciones filtradas:', this.filteredReservaciones);
     this.applyPagination();
   }
 
@@ -189,32 +167,27 @@ export class ReservacionesHabComponent implements OnInit {
     if (this.currentPage > this.totalPages && this.totalPages > 0) {
       this.currentPage = this.totalPages;
     }
-    console.log(`Páginas calculadas: ${this.totalPages}, Página actual: ${this.currentPage}`);
   }
 
   applyPagination(): void {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = Math.min(startIndex + this.itemsPerPage, this.totalItems);
     this.filteredReservaciones = this.filteredReservaciones.slice(startIndex, endIndex);
-    console.log(`Aplicando paginación: Índices ${startIndex} a ${endIndex}`);
   }
 
   onItemsPerPageChange(): void {
-    console.log(`Cambio en items por página: ${this.itemsPerPage}`);
     this.currentPage = 1;
     this.calculateTotalPages();
     this.applyPagination();
   }
 
   pageChanged(newPage: number): void {
-    console.log(`Cambio de página solicitado a: ${newPage}`);
     this.currentPage = Math.max(1, Math.min(newPage, this.totalPages));
     this.applyPagination();
   }
 
   getEndIndex(): number {
     const endIndex = Math.min(this.currentPage * this.itemsPerPage, this.totalItems);
-    console.log(`Calculando índice final: ${endIndex}`);
     return endIndex;
   }
 
@@ -240,7 +213,6 @@ export class ReservacionesHabComponent implements OnInit {
       pages.push(i);
     }
 
-    console.log(`Páginas visibles generadas: ${pages.join(', ')}`);
     return pages;
   }
 

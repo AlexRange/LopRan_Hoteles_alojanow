@@ -13,7 +13,7 @@ import { HotelesService } from '../../../services/hoteles.service';
 })
 export class AddHComponent implements OnInit {
   hotelForm: FormGroup;
-  imagenHotelBase64: string = '';
+  selectedFile: File | null = null;
   isSubmitting: boolean = false;
 
   constructor(
@@ -37,7 +37,7 @@ export class AddHComponent implements OnInit {
   ngOnInit(): void {}
 
   onSubmit() {
-    if (this.hotelForm.invalid || !this.imagenHotelBase64) {
+    if (this.hotelForm.invalid || !this.selectedFile) {
       Swal.fire({
         icon: 'warning',
         title: 'Datos incompletos',
@@ -48,35 +48,47 @@ export class AddHComponent implements OnInit {
 
     this.isSubmitting = true;
 
-    const hotel: Hoteles = {
-      ...this.hotelForm.value,
-      imagen_hotel: this.imagenHotelBase64,
-      fecha_registro: new Date().toISOString()
-    };
+    // First upload the image
+    this.hotelService.uploadImage(this.selectedFile).subscribe({
+      next: (uploadResponse) => {
+        // Once image is uploaded, save the hotel with the filename
+        const hotel: Hoteles = {
+          ...this.hotelForm.value,
+          imagen_hotel: uploadResponse.filename, // Store the filename
+          fecha_registro: new Date().toISOString()
+        };
 
-    this.hotelService.saveHotel(hotel).subscribe({
-      next: () => {
-        Swal.fire({
-          icon: 'success',
-          title: '¡Éxito!',
-          text: 'El hotel se ha registrado correctamente.',
-          timer: 2000,
-          showConfirmButton: false
-        }).then(() => {
-          this.modal.close('success');
+        this.hotelService.saveHotel(hotel).subscribe({
+          next: () => {
+            Swal.fire({
+              icon: 'success',
+              title: '¡Éxito!',
+              text: 'El hotel se ha registrado correctamente.',
+              timer: 2000,
+              showConfirmButton: false
+            }).then(() => {
+              this.modal.close('success');
+            });
+          },
+          error: (error) => {
+            this.isSubmitting = false;
+            console.error('Error al guardar el hotel:', error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Ocurrió un error al registrar el hotel. Por favor, inténtelo nuevamente.'
+            });
+          }
         });
       },
       error: (error) => {
         this.isSubmitting = false;
-        console.error('Error al guardar el hotel:', error);
+        console.error('Error al subir la imagen:', error);
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'Ocurrió un error al registrar el hotel. Por favor, inténtelo nuevamente.'
+          text: 'Ocurrió un error al subir la imagen. Por favor, inténtelo nuevamente.'
         });
-      },
-      complete: () => {
-        this.isSubmitting = false;
       }
     });
   }
@@ -103,15 +115,16 @@ export class AddHComponent implements OnInit {
   onFileChange(event: any) {
     const file = event.target.files[0];
     if (file) {
-      // Validar tamaño máximo (ejemplo: 2MB)
-      const maxSize = 2 * 1024 * 1024;
+      // Validar tamaño máximo (5MB como en el backend)
+      const maxSize = 5 * 1024 * 1024;
       if (file.size > maxSize) {
         Swal.fire({
           icon: 'error',
           title: 'Archivo demasiado grande',
-          text: 'La imagen no debe exceder los 2MB.'
+          text: 'La imagen no debe exceder los 5MB.'
         });
         event.target.value = '';
+        this.selectedFile = null;
         return;
       }
 
@@ -124,15 +137,12 @@ export class AddHComponent implements OnInit {
           text: 'Solo se aceptan imágenes en formato JPG, JPEG o PNG.'
         });
         event.target.value = '';
+        this.selectedFile = null;
         return;
       }
 
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.imagenHotelBase64 = reader.result as string;
-        this.hotelForm.patchValue({ imagen_hotel: this.imagenHotelBase64 });
-      };
-      reader.readAsDataURL(file);
+      this.selectedFile = file;
+      this.hotelForm.patchValue({ imagen_hotel: 'pending_upload' }); // Temporary value
     }
   }
 }

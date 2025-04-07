@@ -6,7 +6,7 @@
         </div>
         <div class="container p-4">
             <form [formGroup]="habitacionForm" (ngSubmit)="onSubmit()">
-                
+
                 <div class="form-group mb-4">
                     <label for="id_hotel" class="form-label">Hotel:</label>
                     <select id="id_hotel" formControlName="id_hotel" class="form-control" required>
@@ -16,27 +16,32 @@
 
                 <div class="form-group mb-4">
                     <label for="tipo_habitacion" class="form-label">Tipo de Habitación:</label>
-                    <input type="text" id="tipo_habitacion" formControlName="tipo_habitacion" class="form-control" placeholder="Ejemplo: Suite, Doble, Individual" required />
+                    <input type="text" id="tipo_habitacion" formControlName="tipo_habitacion" class="form-control"
+                        placeholder="Ejemplo: Suite, Doble, Individual" required />
                 </div>
 
                 <div class="form-group mb-4">
                     <label for="num_habitacion" class="form-label">Número de Habitación:</label>
-                    <input type="number" id="num_habitacion" formControlName="num_habitacion" class="form-control" placeholder="Número único de habitación" required min="1" />
+                    <input type="number" id="num_habitacion" formControlName="num_habitacion" class="form-control"
+                        placeholder="Número único de habitación" required min="1" />
                 </div>
 
                 <div class="form-group mb-4">
                     <label for="descripcion" class="form-label">Descripción:</label>
-                    <textarea id="descripcion" formControlName="descripcion" class="form-control" placeholder="Ingresa una breve descripción"></textarea>
+                    <textarea id="descripcion" formControlName="descripcion" class="form-control"
+                        placeholder="Ingresa una breve descripción"></textarea>
                 </div>
 
                 <div class="form-group mb-4">
                     <label for="capacidad" class="form-label">Capacidad:</label>
-                    <input type="number" id="capacidad" formControlName="capacidad" class="form-control" placeholder="Cantidad de personas" required min="1" />
+                    <input type="number" id="capacidad" formControlName="capacidad" class="form-control"
+                        placeholder="Cantidad de personas" required min="1" />
                 </div>
 
                 <div class="form-group mb-4">
                     <label for="precio_noche" class="form-label">Precio por Noche:</label>
-                    <input type="number" id="precio_noche" formControlName="precio_noche" class="form-control" placeholder="Precio en MXN" required min="0" step="0.01" />
+                    <input type="number" id="precio_noche" formControlName="precio_noche" class="form-control"
+                        placeholder="Precio en MXN" required min="0" step="0.01" />
                 </div>
 
                 <div class="form-group mb-4">
@@ -49,18 +54,27 @@
 
                 <div class="form-group mb-4">
                     <label for="imagen_habitacion" class="form-label">Imagen de la Habitación:</label>
-                    <input type="file" id="imagen_habitacion" (change)="onFileChange($event)" class="form-control" required />
+                    <input type="file" id="imagen_habitacion" (change)="onFileChange($event)" class="form-control"
+                        required />
                 </div>
 
                 <div class="form-group mb-4">
                     <label for="descripcion_imagen_hab" class="form-label">Descripción de la Imagen:</label>
-                    <input type="text" id="descripcion_imagen_hab" formControlName="descripcion_imagen_hab" class="form-control" placeholder="Describe la imagen" />
+                    <input type="text" id="descripcion_imagen_hab" formControlName="descripcion_imagen_hab"
+                        class="form-control" placeholder="Describe la imagen" />
                 </div>
 
                 <div class="container mt-4">
                     <div class="row">
                         <div class="col-md-12">
-                            <button class="btn btn-success btn-block" type="submit">Guardar Habitación</button>
+                            <button class="btn btn-success btn-block" type="submit" [disabled]="isSubmitting">
+                                <span *ngIf="!isSubmitting">Guardar Habitación</span>
+                                <span *ngIf="isSubmitting">
+                                    <span class="spinner-border spinner-border-sm" role="status"
+                                        aria-hidden="true"></span>
+                                    Procesando...
+                                </span>
+                            </button>
                         </div>
                     </div>
                 </div>

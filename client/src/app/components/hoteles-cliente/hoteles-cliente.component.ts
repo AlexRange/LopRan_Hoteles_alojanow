@@ -243,4 +243,8 @@ export class HotelesClienteComponent implements OnInit {
       this.checkBottomPosition();
     }, 1000);
   }
+
+  getImageUrl(imageName: string | null | undefined): string {
+    return this.hotelService.getImageUrl(imageName);
+  }
 }

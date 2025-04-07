@@ -85,8 +85,9 @@
                                 </span>
                             </td>
                             <td>
-                                <img [src]="hot.imagen_hotel" alt="Imagen del hotel" class="img-thumbnail"
-                                    style="max-width: 80px; max-height: 60px;">
+                                <img [src]="getImageUrl(hot.imagen_hotel)" alt="{{hot.nombre}}"
+                                    class="img-thumbnail hotel-image" style="max-width: 100px; max-height: 100px;"
+                                    onerror="this.src='assets/default-hotel.png'">
                             </td>
                             <td>{{ hot.descripcion_imagen_hot }}</td>
                             <td class="sticky-col-right">

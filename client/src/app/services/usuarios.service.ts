@@ -26,6 +26,21 @@ export class UsuariosService {
     return this.http.post(`${this.apiUrl}/usuarios`, usuario);
   }
 
+  /// Método alternativo que acepta File
+  uploadImage(file: File): Observable<{ filename: string }> {
+    const formData = new FormData();
+    formData.append('image', file);
+    return this.http.post<{ filename: string }>(
+      `${this.apiUrl}/usuarios/upload`,
+      formData
+    );
+  }
+
+  getImageUrl(imageName: string | null | undefined): string {
+    // Asegúrate de que coincida con la ruta de almacenamiento en el backend
+    return `${environment.API_URL}/uploads/usuarios/${imageName}`;
+  }
+
   // Actualizar un usuario existente
   updateUsuario(id_usuario: number, usuario: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/usuarios/${id_usuario}`, usuario);
@@ -49,13 +64,13 @@ export class UsuariosService {
   verificarCodigo(email: string, code: string): Observable<any> {
     const trimmedCode = code.trim(); // Eliminar espacios al inicio y fin
     console.log('Enviando a verificación:', { email, trimmedCode });
-  
+
     return this.http.post(`${this.apiUrl}/usuarios/verify-code`, {
       email,
       code: trimmedCode
     });
   }
-  
+
 
   private temporalUsuarioSubject = new BehaviorSubject<Usuarios | null>(null);
   temporalUsuario$ = this.temporalUsuarioSubject.asObservable();

@@ -1,7 +1,53 @@
 import crypto from 'crypto';
 import { Request, Response } from 'express';
+import fs from 'fs';
+import multer, { FileFilterCallback } from 'multer';
 import nodemailer from 'nodemailer';
+import path from 'path';
 import poolPromise from '../database';
+
+// Extender la interfaz Request para incluir la propiedad file
+declare global {
+    namespace Express {
+        interface Request {
+            file?: Express.Multer.File;
+        }
+    }
+}
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const uploadPath = path.join(__dirname, '../../uploads/usuarios'); // Ruta dentro del server
+        
+        if (!fs.existsSync(uploadPath)) {
+            fs.mkdirSync(uploadPath, { recursive: true });
+        }
+        
+        cb(null, uploadPath);
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const ext = path.extname(file.originalname);
+        cb(null, 'user-' + uniqueSuffix + ext);
+    }
+});
+
+const fileFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallback) => {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+    if (allowedTypes.includes(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(new Error('Solo se permiten imágenes (JPEG, PNG, JPG)'));
+    }
+};
+
+const upload = multer({ 
+    storage: storage,
+    fileFilter: fileFilter,
+    limits: {
+        fileSize: 5 * 1024 * 1024 // Límite de 5MB
+    }
+});
 
 class UsuariosController {
     public async list(req: Request, res: Response): Promise<void> {
@@ -119,28 +165,29 @@ class UsuariosController {
         }
     }
 
-    public async sendNewPassword(req: Request, res: Response): Promise<Response> {
+    public async sendNewPassword(req: Request, res: Response): Promise<void> {
         const { email } = req.body;
-
+    
         if (!email) {
-            return res.status(400).json({ message: 'El correo electrónico es requerido' });
+            res.status(400).json({ message: 'El correo electrónico es requerido' });
+            return;
         }
-
+    
         try {
             const newPassword = crypto.randomBytes(4).toString('hex');
-
             const pool = await poolPromise;
-
+    
             // 1. Verificar si el usuario existe
             const [users]: any = await pool.query('SELECT id_usuario FROM usuarios WHERE email = ?', [email]);
-
+    
             if (users.length === 0) {
-                return res.status(404).json({ message: 'Usuario no encontrado' });
+                res.status(404).json({ message: 'Usuario no encontrado' });
+                return;
             }
-
+    
             // 2. Actualizar la contraseña
             await pool.query('UPDATE usuarios SET contrasena = ? WHERE email = ?', [newPassword, email]);
-
+    
             // 3. Enviar el correo
             const transporter = nodemailer.createTransport({
                 service: 'gmail',
@@ -149,7 +196,7 @@ class UsuariosController {
                     pass: 'nnev ftrj fjgr hgkt'
                 }
             });
-
+    
             await transporter.sendMail({
                 from: 'appnotificaciones68@gmail.com',
                 to: email,
@@ -157,16 +204,40 @@ class UsuariosController {
                 text: `Tu nueva contraseña es: ${newPassword}`,
                 html: `<p>Tu nueva contraseña es: <strong>${newPassword}</strong></p>
                 <p>Por seguridad, te recomendamos cambiarla después de iniciar sesión.</p>`
-                
             });
-
-            return res.json({ message: 'Nueva contraseña enviada correctamente' });
+    
+            res.json({ message: 'Nueva contraseña enviada correctamente' });
         } catch (error) {
             console.error('Error en sendNewPassword:', error);
-            return res.status(500).json({ message: 'Error al procesar la solicitud' });
+            res.status(500).json({ message: 'Error al procesar la solicitud' });
+        }
+    }
+
+    public async uploadImage(req: Request, res: Response): Promise<void> {
+        try {
+            if (!req.file) {
+                res.status(400).json({ message: 'No se ha subido ningún archivo' });
+                return;
+            }
+
+            const filePath = req.file.filename;
+            res.json({ 
+                success: true, 
+                filename: filePath,
+                message: 'Imagen subida correctamente'
+            });
+        } catch (error) {
+            console.error('Error al subir la imagen:', error);
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            res.status(500).json({ 
+                success: false, 
+                message: 'Error al subir la imagen',
+                error: errorMessage
+            });
         }
     }
 }
 
     const usuariosController = new UsuariosController();
-export default usuariosController;
+export { upload, usuariosController };
+

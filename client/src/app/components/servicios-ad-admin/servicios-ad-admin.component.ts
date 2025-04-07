@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { ServiciosAdicionales } from '../../models/modelos';
@@ -6,13 +6,10 @@ import { ServiciosAdicionalesService } from '../../services/servicios-adicionale
 import { AddSComponent } from './add-s/add-s.component';
 import { AsignarAHotelComponent } from './asignar-a-hotel/asignar-a-hotel.component';
 import { UpdateSComponent } from './update-s/update-s.component';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-servicios-ad-admin',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
+  standalone: false,
   templateUrl: './servicios-ad-admin.component.html',
   styleUrl: './servicios-ad-admin.component.css'
 })
@@ -28,7 +25,7 @@ export class ServiciosAdAdminComponent implements OnInit {
   totalItems: number = 0;
   totalPages: number = 0;
 
-  constructor(private modal: NgbModal, private serviciosSrv: ServiciosAdicionalesService) { }
+  constructor(private modal: NgbModal, private cdRef: ChangeDetectorRef, private serviciosSrv: ServiciosAdicionalesService) { }
 
   ngOnInit(): void {
     this.getServicios();
@@ -38,12 +35,13 @@ export class ServiciosAdAdminComponent implements OnInit {
     this.isLoading = true;
     this.serviciosSrv.getServicios().subscribe({
       next: (res) => {
-        this.servviciosget = res;
+        this.servviciosget = [...res]; // Usa spread operator para crear nueva referencia
         this.totalItems = res.length;
         this.calculateTotalPages();
         this.updateFilteredServicios();
         this.expanded = {};
         this.isLoading = false;
+        this.cdRef.detectChanges();
       },
       error: (err) => {
         console.error('Error fetching servicios:', err);
@@ -74,7 +72,7 @@ export class ServiciosAdAdminComponent implements OnInit {
 
   pageChanged(newPage: number) {
     newPage = Math.max(1, Math.min(newPage, this.totalPages));
-    
+
     if (this.currentPage !== newPage) {
       this.currentPage = newPage;
       this.updateFilteredServicios();
@@ -88,25 +86,25 @@ export class ServiciosAdAdminComponent implements OnInit {
   getPages(): number[] {
     const pages: number[] = [];
     const maxVisiblePages = 5;
-    
+
     if (this.totalPages <= maxVisiblePages) {
       for (let i = 1; i <= this.totalPages; i++) {
         pages.push(i);
       }
       return pages;
     }
-    
+
     let startPage = Math.max(1, this.currentPage - Math.floor(maxVisiblePages / 2));
     let endPage = Math.min(startPage + maxVisiblePages - 1, this.totalPages);
-    
+
     if (endPage - startPage + 1 < maxVisiblePages) {
       startPage = Math.max(1, endPage - maxVisiblePages + 1);
     }
-    
+
     for (let i = startPage; i <= endPage; i++) {
       pages.push(i);
     }
-    
+
     return pages;
   }
 
@@ -143,6 +141,7 @@ export class ServiciosAdAdminComponent implements OnInit {
     });
   }
 
+  // Modifica el método openModal()
   openModal() {
     const modalRef = this.modal.open(AddSComponent, {
       backdrop: 'static',
@@ -152,11 +151,17 @@ export class ServiciosAdAdminComponent implements OnInit {
 
     modalRef.closed.subscribe((result) => {
       if (result === 'success') {
-        this.getServicios();
+        this.getServicios(); // Esto debería actualizar la lista
       }
+    });
+
+    // Agrega esto para manejar errores en la suscripción
+    modalRef.dismissed.subscribe(() => {
+      console.log('Modal dismissed');
     });
   }
 
+  // Modifica el método openModalEdit()
   openModalEdit(serv: ServiciosAdicionales) {
     const modalRef = this.modal.open(UpdateSComponent, {
       backdrop: 'static',
@@ -167,22 +172,26 @@ export class ServiciosAdAdminComponent implements OnInit {
 
     modalRef.closed.subscribe((result) => {
       if (result === 'success') {
-        this.getServicios();
+        this.getServicios(); // Esto debería actualizar la lista
       }
+    });
+
+    // Agrega esto para manejar errores en la suscripción
+    modalRef.dismissed.subscribe(() => {
     });
   }
 
   openAssignModal(id_servicio: number) {
     const modalRef = this.modal.open(AsignarAHotelComponent, {
-        backdrop: 'static',
-        size: 'lg',
-        centered: true
+      backdrop: 'static',
+      size: 'lg',
+      centered: true
     });
-    
+
     modalRef.componentInstance.id_servicio = id_servicio;
 
     modalRef.closed.subscribe(() => {
-        this.getServicios();
+      this.getServicios();
     });
   }
 }

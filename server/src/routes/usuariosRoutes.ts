@@ -1,5 +1,5 @@
 import { Router } from "express";
-import usuariosController from "../controllers/usuariosController";
+import { upload, usuariosController } from "../controllers/usuariosController";
 
 class UsuariosRoutes {
     public router: Router = Router();
@@ -17,6 +17,7 @@ class UsuariosRoutes {
         this.router.post('/send-code', usuariosController.sendCode);
         this.router.post('/verify-code', usuariosController.verifyCode);
         this.router.post('/send-passwd', usuariosController.sendNewPassword);
+        this.router.post('/upload', upload.single('image'), usuariosController.uploadImage);
     }
 }
 

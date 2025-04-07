@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import hotelesController from '../controllers/hotelesController';
+import { hotelesController, hotelUpload } from '../controllers/hotelesController';
 
 class HotelesRoutes {
     public router: Router = Router();
@@ -15,6 +15,7 @@ class HotelesRoutes {
         this.router.post('/', hotelesController.create);
         this.router.put('/:id_hotel',hotelesController.update);
         this.router.delete('/:id_hotel',hotelesController.delete);
+        this.router.post('/upload', hotelUpload.single('image'), hotelesController.uploadImage);
     }
 }
 

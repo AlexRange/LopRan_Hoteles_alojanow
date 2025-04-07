@@ -4,6 +4,7 @@ import { filter } from 'rxjs/operators';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import { Usuarios } from '../../models/modelos';
 import { Auth } from '../../services/auth.service';
+import { UsuariosService } from '../../services/usuarios.service';
 
 @Component({
   selector: 'app-navigation',
@@ -20,9 +21,9 @@ export class NavigationComponent implements OnInit {
   isLoginPage: boolean = false;
   isProfilePage: boolean = false;
   menuOpen = false;
-  dropdownsOpen: {[key: string]: boolean} = {};
+  dropdownsOpen: { [key: string]: boolean } = {};
 
-  constructor(private router: Router, private authService: Auth) {
+  constructor(private router: Router, private authService: Auth, private usuariosService: UsuariosService) {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
@@ -34,7 +35,7 @@ export class NavigationComponent implements OnInit {
     this.authService.getCurrentUser().subscribe(user => {
       this.currentUser = user;
       this.isAuthenticated = !!user;
-      
+
       if (this.isAuthenticated) {
         this.authService.validateToken().subscribe({
           next: (isValid) => {
@@ -179,5 +180,9 @@ export class NavigationComponent implements OnInit {
         });
       }
     });
+  }
+
+  getUserImage(profileImage: string | undefined): string {
+    return this.usuariosService.getImageUrl(profileImage);
   }
 }

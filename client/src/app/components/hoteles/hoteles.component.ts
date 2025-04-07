@@ -24,7 +24,7 @@ export class HotelesComponent implements OnInit {
   totalItems: number = 0;
   totalPages: number = 0;
 
-  constructor(private hotelSrv: HotelesService, private modal: NgbModal) { }
+  constructor(private hotelSrv: HotelesService, private modal: NgbModal, private hotelesService: HotelesService) { }
 
   ngOnInit(): void {
     this.getHoteles();
@@ -169,5 +169,9 @@ export class HotelesComponent implements OnInit {
         this.getHoteles();
       }
     });
+  }
+
+  getImageUrl(imageName: string | null | undefined): string {
+    return this.hotelesService.getImageUrl(imageName);
   }
 }

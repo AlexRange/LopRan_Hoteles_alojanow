@@ -1,15 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import Swal from 'sweetalert2/dist/sweetalert2.js';
+import Swal from 'sweetalert2';
 import { ServiciosAdicionales } from '../../../models/modelos';
-import { ReactiveFormsModule } from '@angular/forms';
 import { ServiciosAdicionalesService } from '../../../services/servicios-adicionales.service';
 
 @Component({
   selector: 'app-update-s',
-  standalone: true,
-  imports: [ReactiveFormsModule],
+  standalone: false,
   templateUrl: './update-s.component.html',
   styleUrl: './update-s.component.css'
 })
