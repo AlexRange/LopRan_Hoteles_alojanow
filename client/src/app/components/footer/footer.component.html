@@ -49,44 +49,90 @@
         <div class="modal-content">
             <!-- Encabezado del Modal -->
             <div class="modal-header">
-                <h5 class="modal-title" id="sitemapModalLabel">Mapa del Sitio</h5>
+                <h5 class="modal-title" id="sitemapModalLabel">
+                    <i class="fas fa-sitemap me-2"></i>Mapa del Sitio
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <!-- Cuerpo del Modal -->
             <div class="modal-body">
                 <div class="sitemap-container">
-                    <!-- Inicio -->
-                    <div class="sitemap-section">
-                        <a href="/" class="sitemap-main-link">Inicio</a>
+                    <!-- Sección de navegación rápida -->
+                    <div class="sitemap-nav">
+                        <button class="sitemap-nav-btn active" data-section="general">General</button>
+                        <button class="sitemap-nav-btn" data-section="clientes" *ngIf="isLoggedIn && isClient">Mi Cuenta</button>
                     </div>
 
-                    <!-- Hoteles -->
-                    <div class="sitemap-section">
-                        <a href="#" class="sitemap-main-link">Hoteles</a>
-                        <div class="sitemap-sub">
-                            <a href="/explorar-hoteles" class="sitemap-sub-link">Explorar Hoteles</a>
-                            <!-- <a href="/hoteles-destacados" class="sitemap-sub-link">Hoteles Destacados</a> -->
-                        </div>
-                    </div>
+                    <!-- Contenido del mapa del sitio -->
+                    <div class="sitemap-content">
+                        <!-- Sección General -->
+                        <div class="sitemap-section show" id="general-section">
+                            <div class="sitemap-category">
+                                <h3 class="sitemap-category-title">
+                                    <i class="fas fa-home me-2"></i>Inicio
+                                </h3>
+                                <ul class="sitemap-links">
+                                    <li><a href="/" class="sitemap-link">Página principal</a></li>
+                                    <li><a href="/explorar-hoteles" class="sitemap-link">Buscar hoteles</a></li>
+                                </ul>
+                            </div>
 
-                    <!-- Promociones -->
-                    <!-- <div class="sitemap-section">
-                        <a href="#" class="sitemap-main-link">Promociones</a>
-                        <div class="sitemap-sub">
-                            <a href="/promociones-activas" class="sitemap-sub-link">Promociones Activas</a>
-                        </div>
-                    </div> -->
+                            <div class="sitemap-category">
+                                <h3 class="sitemap-category-title">
+                                    <i class="fas fa-info-circle me-2"></i>Información
+                                </h3>
+                                <ul class="sitemap-links">
+                                    <li><a href="/nosotros" class="sitemap-link">Sobre nosotros</a></li>
+                                    <li><a href="/preguntas-frec" class="sitemap-link">Preguntas frecuentes</a></li>
+                                    <li><a href="/privacidad" class="sitemap-link">Aviso de privacidad</a></li>
+                                </ul>
+                            </div>
 
-                    <!-- Perfil de Usuario (only for logged in clients) -->
-                    <div class="sitemap-section" *ngIf="isLoggedIn && isClient">
-                        <a href="/mi-perfil" class="sitemap-main-link">Mi Perfil</a>
-                        <div class="sitemap-sub">
-                            <a href="/mis-reservaciones" class="sitemap-sub-link">Historial de Reservaciones</a>
-                            <a href="/mis-comentarios" class="sitemap-sub-link">Historial de Comentarios</a>
+                            <div class="sitemap-category">
+                                <h3 class="sitemap-category-title">
+                                    <i class="fas fa-hotel me-2"></i>Hoteles
+                                </h3>
+                                <ul class="sitemap-links">
+                                    <li><a href="/explorar-hoteles" class="sitemap-link">Explorar hoteles</a></li>
+                                    <li><a href="/hoteles-destacados" class="sitemap-link">Hoteles destacados</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Sección Clientes (solo visible para usuarios logueados) -->
+                        <div class="sitemap-section" id="clientes-section" *ngIf="isLoggedIn && isClient">
+                            <div class="sitemap-category">
+                                <h3 class="sitemap-category-title">
+                                    <i class="fas fa-user-circle me-2"></i>Mi Perfil
+                                </h3>
+                                <ul class="sitemap-links">
+                                    <li><a href="/mi-perfil" class="sitemap-link">Información personal</a></li>
+                                    <li><a href="/mis-reservaciones" class="sitemap-link">Mis reservaciones</a></li>
+                                    <li><a href="/mis-comentarios" class="sitemap-link">Mis comentarios</a></li>
+                                </ul>
+                            </div>
+
+                            <div class="sitemap-category">
+                                <h3 class="sitemap-category-title">
+                                    <i class="fas fa-cog me-2"></i>Configuración
+                                </h3>
+                                <ul class="sitemap-links">
+                                    <li><a href="/configuracion" class="sitemap-link">Preferencias</a></li>
+                                    <li><a href="/seguridad" class="sitemap-link">Seguridad</a></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Pie del Modal -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cerrar
+                </button>
+                
             </div>
         </div>
     </div>

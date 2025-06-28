@@ -1,186 +1,260 @@
-/* Estilos para la tabla responsiva */
-.table-responsive-xl {
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    position: relative;
-    margin-bottom: 20px;
-}
-
-/* Columnas fijas */
-.sticky-col {
+/* ------------------- ESTILOS GENERALES ------------------- */
+body {
+    font-family: 'Montserrat', sans-serif;
+    color: #333;
+  }
+  
+  .container {
+    font-family: 'Montserrat', sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+    color: #003366;
+  }
+  
+  /* ------------------- ESTILOS PARA TABLAS ------------------- */
+  .table-responsive-xl {
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    background: white;
+    margin-bottom: 2rem;
+  }
+  
+  .table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #495057;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.95rem;
+  }
+  
+  .table thead th {
+    background: linear-gradient(135deg, #003366 0%, #006699 100%);
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    border: none;
+    padding: 1rem 1.2rem;
+    vertical-align: middle;
+  }
+  
+  .table tbody tr {
+    transition: all 0.2s ease;
+  }
+  
+  .table tbody tr:hover {
+    background-color: rgba(0, 163, 134, 0.05);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  .table td {
+    padding: 1.2rem;
+    vertical-align: middle;
+    border-top: 1px solid #e9ecef;
+  }
+  
+  .table th:first-child {
+    border-radius: 10px 0 0 0;
+  }
+  
+  .table th:last-child {
+    border-radius: 0 10px 0 0;
+  }
+  
+  /* Columnas fijas */
+  .sticky-col {
     position: sticky;
     left: 0;
-    background-color: #f8f9fa;
+    background-color: white;
     z-index: 1;
-    width: 80px;
-}
-
-.sticky-col-right {
+  }
+  
+  .sticky-col-right {
     position: sticky;
     right: 0;
-    background-color: #f8f9fa;
+    background-color: white;
     z-index: 1;
-    width: 150px;
-}
-
-/* Cabecera de tabla */
-.table th {
-    background-color: #343a40;
-    color: white;
-    position: sticky;
-    top: 0;
-    z-index: 2;
-    white-space: nowrap;
-    border-bottom: 2px solid #454d55;
-    padding: 12px 8px;
-    text-align: center;
-}
-
-/* Efecto hover */
-.table-hover tbody tr:hover td {
-    background-color: rgba(0, 123, 255, 0.05);
-}
-
-/* Scrollbar personalizado */
-.table-responsive-xl::-webkit-scrollbar {
-    height: 8px;
-    width: 8px;
-}
-
-.table-responsive-xl::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
-}
-
-.table-responsive-xl::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 10px;
-}
-
-.table-responsive-xl::-webkit-scrollbar-thumb:hover {
-    background: #555;
-}
-
-/* Estilo para la descripción */
-.description-container {
-    max-height: 50px;
+  }
+  
+  /* ------------------- ESTILOS PARA CELDAS ESPECIALES ------------------- */
+  .description-container {
+    max-height: 60px;
     overflow: hidden;
-    transition: max-height 0.4s ease-out;
-    word-wrap: break-word;
-    white-space: normal;
-}
-
-.description-container.expanded {
-    max-height: 500px;
-    overflow-y: auto;
-}
-
-/* Botón ver más/menos */
-.toggle-description {
-    display: block;
-    text-align: right;
-    margin-top: 5px;
-    color: #007bff;
+    transition: max-height 0.3s ease;
+  }
+  
+  .description-container.expanded {
+    max-height: none;
+  }
+  
+  .toggle-description {
+    color: #00A386;
     cursor: pointer;
     font-size: 0.8rem;
-}
-
-/* Ajustes generales de celdas */
-td {
-    vertical-align: middle;
-    white-space: normal;
-    padding: 8px;
-}
-
-/* Estilos para la paginación */
-.pagination {
-    margin-bottom: 0;
-    flex-wrap: wrap;
-}
-
-.page-item {
-    margin: 2px;
-}
-
-.page-item.active .page-link {
-    background-color: #343a40;
-    border-color: #343a40;
-}
-
-.page-link {
-    color: #343a40;
-    border: 1px solid #dee2e6;
-    min-width: 38px;
-    text-align: center;
-}
-
-.page-link:hover {
-    color: #343a40;
-    background-color: #f8f9fa;
-}
-
-/* Estilo para enlaces deshabilitados */
-.disabled-link {
-    pointer-events: none;
-    cursor: default;
-    color: #6c757d !important;
-    background-color: #e9ecef !important;
-}
-
-/* Estilos para el selector de items por página */
-.form-control-sm {
-    height: calc(1.5em + 0.5rem + 2px);
-    padding: 0.25rem 0.5rem;
-    font-size: 0.875rem;
-    line-height: 1.5;
-    display: inline-block;
-    width: auto;
-}
-
-/* Asegurar que los controles de paginación se vean bien en móviles */
-@media (max-width: 576px) {
-    .d-flex.justify-content-between.align-items-center {
-        flex-direction: column;
-        align-items: flex-start !important;
-    }
-    
-    .form-group.mb-0 {
-        margin-bottom: 1rem !important;
-    }
-    
-    .pagination {
-        justify-content: center;
-    }
-}
-
-/* Mensaje cuando no hay registros */
-.text-center {
-    padding: 20px;
-    font-style: italic;
-    color: #6c757d;
-}
-
-/* Estilo para los badges de disponibilidad */
-.badge {
-    padding: 5px 10px;
-    border-radius: 20px;
+    font-weight: 600;
+    display: block;
+    margin-top: 5px;
+  }
+  
+  .toggle-description:hover {
+    text-decoration: underline;
+  }
+  
+  .hotel-image {
+    border-radius: 4px;
+    transition: transform 0.3s ease;
+  }
+  
+  .hotel-image:hover {
+    transform: scale(1.8);
+    z-index: 10;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* ------------------- BADGES Y ETIQUETAS ------------------- */
+  .badge {
+    padding: 0.5em 0.8em;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  
+  .bg-warning {
+    background-color: #FFC107 !important;
+  }
+  
+  /* ------------------- BOTONES DE ACCIÓN ------------------- */
+  .btn-sm {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.8rem;
+    border-radius: 4px;
+  }
+  
+  .btn-success {
+    background-color: #00A386;
+    border-color: #00A386;
+  }
+  
+  .btn-success:hover {
+    background-color: #008770;
+    border-color: #008770;
+  }
+  
+  .btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+  }
+  
+  .btn-primary {
+    background-color: #006699;
+    border-color: #006699;
+  }
+  
+  .btn-primary:hover {
+    background-color: #005580;
+    border-color: #005580;
+  }
+  
+  /* ------------------- PAGINACIÓN ------------------- */
+  .pagination {
+    border-radius: 50px;
+  }
+  
+  .page-item.active .page-link {
+    background-color: #00A386;
+    border-color: #00A386;
+  }
+  
+  .page-link {
+    color: #006699;
+    margin: 0 3px;
+    border-radius: 4px !important;
+  }
+  
+  .page-link:hover {
+    color: #003366;
+  }
+  
+  /* ------------------- FORMULARIOS ------------------- */
+  .form-control {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 0.6rem 0.75rem;
+  }
+  
+  .form-control:focus {
+    border-color: #00A386;
+    box-shadow: 0 0 0 0.2rem rgba(0, 163, 134, 0.25);
+  }
+  
+  /* ------------------- BREADCRUMB ------------------- */
+  .breadcrumb {
+    background-color: transparent;
+    padding: 0.75rem 0;
     font-size: 0.9rem;
-}
-
-.bg-success {
-    background-color: #28a745 !important;
-}
-
-.bg-danger {
-    background-color: #dc3545 !important;
-}
-
-/* Estilo para las imágenes */
-.img-thumbnail {
-    padding: 0.25rem;
-    background-color: #fff;
-    border: 1px solid #dee2e6;
-    border-radius: 0.25rem;
-    max-width: 100%;
-    height: auto;
-}
+  }
+  
+  .breadcrumb-item a {
+    color: #006699;
+    text-decoration: none;
+  }
+  
+  .breadcrumb-item.active {
+    color: #00A386;
+    font-weight: 500;
+  }
+  
+  /* ------------------- MODALES ------------------- */
+  .modal-header {
+    background: linear-gradient(135deg, #003366 0%, #006699 100%);
+    color: white;
+  }
+  
+  /* ------------------- RESPONSIVE ------------------- */
+  @media (max-width: 768px) {
+    .table-responsive-xl {
+      border-radius: 8px;
+    }
+    
+    .table thead {
+      display: none;
+    }
+    
+    .table, .table tbody, .table tr, .table td {
+      display: block;
+      width: 100%;
+    }
+    
+    .table tr {
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .table td {
+      text-align: right;
+      padding-left: 50%;
+      position: relative;
+      border-top: 1px solid #e9ecef;
+    }
+    
+    .table td::before {
+      content: attr(data-label);
+      position: absolute;
+      left: 1rem;
+      width: calc(50% - 1rem);
+      padding-right: 1rem;
+      font-weight: 600;
+      text-align: left;
+      color: #006699;
+    }
+    
+    .sticky-col, .sticky-col-right {
+      position: static;
+    }
+  }

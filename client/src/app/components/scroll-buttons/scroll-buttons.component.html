@@ -1,0 +1,9 @@
+<div class="scroll-buttons-container">
+    <button *ngIf="showScrollUp" class="scroll-button scroll-up" (click)="scrollToTop()">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+    
+    <button *ngIf="showScrollDown" class="scroll-button scroll-down" (click)="scrollToBottom()">
+      <i class="fas fa-arrow-down"></i>
+    </button>
+  </div>

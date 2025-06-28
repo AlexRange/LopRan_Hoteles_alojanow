@@ -1,31 +1,154 @@
 <app-carrusel></app-carrusel>
 
-<section class="main-content">
-  <h2>Explora el mundo con nosotros</h2>
-  <p>Encuentra los mejores hospedajes en diferentes ciudades del mundo. Viaja, disfruta y vive la mejor experiencia.</p>
+<!-- Sección de mensaje principal -->
+<section class="main-message">
+  <div class="container">
+    <h2>Explora el mundo con nosotros</h2>
+    <p>Encuentra los mejores hospedajes en diferentes ciudades del mundo. Viaja, disfruta y vive la mejor experiencia.</p>
+  </div>
 </section>
 
-<section class="recommendations">
-  <h2 id="recommendations">🏡 Recomendaciones para ti</h2>
-  <div class="cards">
-    <div *ngFor="let place of recommendedPlaces" class="card">
-      <img [src]="place.image" alt="Hospedaje">
-      <div class="info">
-        <h3>{{ place.name }}</h3>
-        <p>{{ place.description }}</p>
-        <span class="price">{{ place.price }}</span>
-        <button>Reservar</button>
+<!-- Sección de búsqueda avanzada -->
+<section class="search-section">
+  <div class="container">
+    <div class="search-box">
+      <form (submit)="onSearch($event)">
+        <div class="search-fields">
+          <div class="field">
+            <label>Destino</label>
+            <input type="text" placeholder="¿A dónde vas?" [(ngModel)]="searchDestination" name="searchDestination" required>
+          </div>
+          <div class="field">
+            <label>Check-in</label>
+            <input type="date" [(ngModel)]="checkInDate" name="checkInDate">
+          </div>
+          <div class="field">
+            <label>Check-out</label>
+            <input type="date" [(ngModel)]="checkOutDate" name="checkOutDate">
+          </div>
+          <div class="field">
+            <label>Huéspedes</label>
+            <select [(ngModel)]="guests" name="guests">
+              <option value="1">1 huésped</option>
+              <option value="2">2 huéspedes</option>
+              <option value="3">3 huéspedes</option>
+              <option value="4">4 huéspedes</option>
+              <option value="5+">5+ huéspedes</option>
+            </select>
+          </div>
+          <button type="submit" class="search-button">
+            <i class="fas fa-search"></i> Buscar
+          </button>
+        </div>
+      </form>
+      
+      <!-- Resultados de búsqueda -->
+      <div class="search-results" *ngIf="showSearchResults">
+        <div *ngIf="searchResults.length === 0" class="no-results">
+          <i class="fas fa-hotel"></i>
+          <p>No se encontraron hoteles para tu búsqueda</p>
+        </div>
+        
+        <div *ngFor="let hotel of searchResults" class="result-item">
+          <img [src]="hotel.imagen_hotel || 'assets/default-hotel.jpg'" [alt]="hotel.nombre">
+          <div class="result-info">
+            <h3>{{ hotel.nombre }}</h3>
+            <div class="hotel-location">
+              <i class="fas fa-map-marker-alt"></i> {{ hotel.ciudad }}, {{ hotel.pais }}
+            </div>
+            <div class="rating">
+              <span *ngFor="let star of [1,2,3,4,5]">
+                <i class="fas fa-star" [class.filled]="star <= hotel.estrellas"></i>
+              </span>
+              <span class="reviews">({{ hotel.estrellas || 0 }} reseñas)</span>
+            </div>
+            <p class="description">{{ hotel.descripcion || 'Descripción no disponible' }}</p>
+            <div class="price">${{ getStartingPrice(hotel) }} <span>/noche</span></div>
+            <button class="reserve-button" [routerLink]="['/hoteles', hotel.id_hotel]">
+              <i class="fas fa-calendar-check"></i> Reservar ahora
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Botones de navegación -->
-<div class="navigation-buttons" *ngIf="showNavigationButtons">
-  <button class="nav-button top-button" (click)="scrollToTop()" title="Ir al inicio">
-      ↑
-  </button>
-  <button class="nav-button bottom-button" (click)="scrollToBottom()" title="Ir al final" *ngIf="showBottomButton">
-      ↓
-  </button>
-</div>
+<!-- Sección de filtros por zona -->
+<section class="zone-filters">
+  <div class="container">
+    <h2>Descubre por tipo de experiencia</h2>
+    <div class="filter-list">
+      <div class="filter-item" *ngFor="let filter of zoneFilters" (click)="filterByZone(filter.type)">
+        <div class="filter-icon">
+          <i [class]="filter.icon"></i>
+        </div>
+        <span>{{ filter.name }}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Sección de destacados (cards horizontales) -->
+<section class="featured-section">
+  <div class="container">
+    <h2><i class="fas fa-crown"></i> Hospedajes destacados</h2>
+    <div class="featured-list">
+      <div *ngFor="let hotel of featuredHotels" class="featured-card">
+        <div class="card-image">
+          <img [src]="hotel.imagen_hotel || 'assets/default-hotel.jpg'" [alt]="hotel.nombre">
+          <div class="featured-badge">Destacado</div>
+        </div>
+        <div class="card-content">
+          <h3>{{ hotel.nombre }}</h3>
+          <div class="hotel-location">
+            <i class="fas fa-map-marker-alt"></i> {{ hotel.ciudad }}, {{ hotel.pais }}
+          </div>
+          <div class="rating">
+            <span *ngFor="let star of [1,2,3,4,5]">
+              <i class="fas fa-star" [class.filled]="star <= hotel.estrellas"></i>
+            </span>
+            <span class="reviews">({{ hotel.estrellas || 0 }} reseñas)</span>
+          </div>
+          <p class="description">{{ (hotel.descripcion || 'Descripción no disponible').slice(0, 150) }}...</p>
+          <div class="price">${{ getStartingPrice(hotel) }} <span>/noche</span></div>
+          <button class="reserve-button" [routerLink]="['/hoteles', hotel.id_hotel]">
+            <i class="fas fa-calendar-alt"></i> Reservar Ya
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Sección de recomendaciones (cards verticales) -->
+<section class="recommendations">
+  <div class="container">
+    <h2><i class="fas fa-heart"></i> Recomendaciones para ti</h2>
+    <div class="recommendation-cards">
+      <div *ngFor="let hotel of recommendedHotels" class="recommendation-card">
+        <div class="card-image">
+          <img [src]="hotel.imagen_hotel || 'assets/default-hotel.jpg'" [alt]="hotel.nombre">
+        </div>
+        <div class="card-content">
+          <h3>{{ hotel.nombre }}</h3>
+          <div class="hotel-location">
+            <i class="fas fa-map-marker-alt"></i> {{ hotel.ciudad }}
+          </div>
+          <div class="rating">
+            <span *ngFor="let star of [1,2,3,4,5]">
+              <i class="fas fa-star" [class.filled]="star <= hotel.estrellas"></i>
+            </span>
+          </div>
+          <p class="description">{{ (hotel.descripcion || 'Descripción no disponible').slice(0, 100) }}...</p>
+          <div class="card-footer">
+            <div class="price">${{ getStartingPrice(hotel) }} <span>/noche</span></div>
+            <button class="reserve-button" [routerLink]="['/hoteles', hotel.id_hotel]">
+              <i class="fas fa-bed"></i> Reservar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

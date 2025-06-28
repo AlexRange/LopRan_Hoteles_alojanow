@@ -1,131 +1,139 @@
-/* Estilos generales del footer */
-.footer {
-    background: linear-gradient(135deg, #1a1a1a, #000000);
-    color: #fff;
-    padding: 3rem 0;
-    text-align: center;
-}
-
-/* Contenedor principal */
-.footer .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-/* Redes Sociales */
-.social-icons {
-    display: inline-flex;
-    margin-bottom: 1.5rem;
-}
-
-.social-image {
-    width: 32px;
-    height: 32px;
+/* Estilos generales */
+.card {
+    border-radius: 15px;
+    overflow: hidden;
+    max-width: 800px;
+    margin: 2rem auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
-}
-
-.social-image:hover {
-    transform: scale(1.15);
-}
-
-/* Estructura de columnas */
-.footer .row {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 2rem;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .border-light {
+    border-color: #f8f9fa !important;
+  }
+  
+  /* Header del modal */
+  .modal-header {
+    padding: 1.5rem;
+    border-bottom: none;
+  }
+  
+  h2 {
+    font-family: 'Playfair Display', serif;
+    color: white;
+    font-size: 1.8rem;
+    text-align: center;
     width: 100%;
-}
-
-/* Columnas */
-.footer [class*="col-"] {
-    flex: 0 0 auto;
-    width: auto;
-    max-width: 300px;
-    padding: 0 1rem;
-}
-
-/* Estilos de contenido */
-.footer h5 {
-    margin-bottom: 1.25rem;
+  }
+  
+  .close {
+    font-size: 1.8rem;
+    opacity: 1;
+    position: absolute;
+    right: 1.5rem;
+    top: 1.5rem;
+  }
+  
+  /* Formulario */
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-label {
     font-weight: 600;
-    color: #d4af37;
-    font-size: 1.125rem;
-    text-transform: uppercase;
-}
-
-.footer p, .footer a {
-    color: #e0e0e0;
-    text-decoration: none;
-    font-size: 0.95rem;
-    margin: 0.75rem 0;
+    color: #495057;
+    margin-bottom: 0.5rem;
     display: block;
-    transition: color 0.25s ease;
-}
-
-.footer a:hover {
-    color: #d4af37;
-}
-
-.footer i {
-    margin-right: 0.5rem;
-    color: #d4af37;
-}
-
-/* Sección de copyright */
-.footer-bottom {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 1.5rem;
-    margin-top: 1rem;
-    width: 100%;
-    font-size: 0.9rem;
-    color: #aaa;
-}
-
-.footer-bottom strong {
-    color: #d4af37;
+  }
+  
+  .form-control {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    transition: all 0.3s ease;
+  }
+  
+  .form-control:focus {
+    border-color: #b38b6d;
+    box-shadow: 0 0 0 0.25rem rgba(179, 139, 109, 0.25);
+  }
+  
+  /* Validaciones */
+  .text-danger {
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    display: block;
+  }
+  
+  /* Botones */
+  .btn-success {
+    background-color: #081b16;
+    border-color: #081b16;
+    padding: 0.75rem;
     font-weight: 600;
-}
-
-/* Responsive Design */
-@media (max-width: 991.98px) {
-    .footer .row {
-        gap: 1.5rem;
-    }
-}
-
-@media (max-width: 767.98px) {
-    .footer {
-        padding: 2rem 0;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    width: 100%;
+  }
+  
+  .btn-success:hover {
+    background-color: #b38b6d;
+    border-color: #b38b6d;
+    transform: translateY(-2px);
+  }
+  
+  .btn-success:disabled {
+    background-color: #6c757d;
+    border-color: #6c757d;
+  }
+  
+  /* reCAPTCHA */
+  ngx-recaptcha2 {
+    margin: 1.5rem 0;
+    display: block;
+  }
+  
+  /* Input de archivo */
+  input[type="file"] {
+    display: none;
+  }
+  
+  .file-upload-btn {
+    display: block;
+    padding: 0.75rem 1rem;
+    background-color: #f8f9fa;
+    border: 1px dashed #ced4da;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .file-upload-btn:hover {
+    background-color: #e9ecef;
+    border-color: #b38b6d;
+  }
+  
+  .file-upload-btn i {
+    margin-right: 0.5rem;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .card {
+      margin: 1rem;
     }
     
-    .footer .row {
-        flex-direction: column;
-        align-items: center;
-        gap: 1.5rem;
+    h2 {
+      font-size: 1.5rem;
+      padding-right: 2rem;
     }
     
-    .footer [class*="col-"] {
-        width: 100%;
-        max-width: 100%;
+    .container {
+      padding: 1rem;
     }
-}
-
-@media (max-width: 575.98px) {
-    .social-image {
-        width: 28px;
-        height: 28px;
-    }
-    
-    .footer h5 {
-        font-size: 1rem;
-    }
-    
-    .footer p, .footer a {
-        font-size: 0.9rem;
-    }
-}
+  }

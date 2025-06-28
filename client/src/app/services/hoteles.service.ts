@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, of } from 'rxjs';
 import { environment } from '../../environments/environments';
@@ -74,6 +74,22 @@ export class HotelesService {
       formData
     );
   }
+
+    // Buscar hoteles por término (nombre, ciudad, país, etc.)
+    buscarHoteles(termino: string): Observable<Hoteles[]> {
+      // Si tu backend soporta búsqueda con query params
+      const params = new HttpParams().set('q', termino);
+      
+      return this.http.get<any>(`${this.apiUrl}/hoteles/buscar`, { params }).pipe(
+        map(response => {
+          return response.data || response;
+        }),
+        catchError(error => {
+          console.error('Error searching hotels:', error);
+          return of([]);
+        })
+      );
+    }
 
   getImageUrl(imageName: string | null | undefined): string {
     // Asegúrate de que coincida con la ruta de almacenamiento en el backend

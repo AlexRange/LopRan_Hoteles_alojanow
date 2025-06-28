@@ -1,47 +1,90 @@
-/* Estilos de los paneles con colores verdes */
+/* ------------------- Estilo de los paneles ------------------- */
 .panel {
-    padding: 1em 2em;
-    border: none;
-    border-radius: 5px;
-    font-weight: bold;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    cursor: pointer;
-    color: #2faa4c; /* Verde oscuro */
-    transition: all 1000ms;
-    font-size: 18px;
-    position: relative;
-    overflow: hidden;
-    outline: 2px solid #2faa4c; /* Verde oscuro */
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 150px; /* Ajusta según necesidad */
-    margin: 10px 0;
+  --color: #00A97F;
+  padding: 1em 2em;
+  background-color: transparent;
+  border-radius: .3em;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.5s ease;
+  font-weight: 400;
+  font-size: 17px;
+  border: 1px solid var(--color);
+  font-family: inherit;
+  text-transform: uppercase;
+  color: var(--color);
+  z-index: 1;
+  margin: 10px 0;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.panel h3 {
+  margin: 0;
+  transition: color 0.5s;
+  position: relative;
+  z-index: 2;
+}
+
+.panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color);
+  z-index: -1;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s ease;
+}
+
+.panel:hover::before {
+  transform: scaleX(1);
+}
+
+.panel:hover {
+  color: white;
+  transform: scale(1.03);
+  box-shadow: 0 5px 15px rgba(0, 169, 127, 0.3);
+}
+
+.panel:active {
+  filter: brightness(.8);
+  transform: scale(0.98);
+}
+
+/* Versión alternativa con efecto de gradiente */
+/*
+.panel::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, var(--color), transparent);
+  transform: rotate(45deg);
+  transition: all 0.5s ease;
+  z-index: -1;
+  opacity: 0;
+}
+
+.panel:hover::before {
+  left: 100%;
+  opacity: 1;
+}
+*/
+
+/* Responsive para paneles */
+@media (max-width: 768px) {
+  .panel {
+      height: 120px;
+      font-size: 15px;
   }
-  
-  .panel:hover {
-    color: #ffffff;
-    transform: scale(1.05);
-    outline: 2px solid #63c76a; /* Verde más claro */
-    box-shadow: 4px 5px 17px -4px #3e8d4e; /* Sombra en verde oscuro */
-  }
-  
-  .panel::before {
-    content: "";
-    position: absolute;
-    left: -50px;
-    top: 0;
-    width: 0;
-    height: 100%;
-    background-color: #2faa4c; /* Verde oscuro */
-    transform: skewX(45deg);
-    z-index: -1;
-    transition: width 1000ms;
-  }
-  
-  .panel:hover::before {
-    width: 250%;
-  }
-  
+}

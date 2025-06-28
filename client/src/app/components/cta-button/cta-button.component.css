@@ -1,0 +1,70 @@
+.cta-container {
+    position: fixed;
+    right: 30px;
+    bottom: 100px; /* Ajusta según la posición de tus botones de scroll */
+    z-index: 9998; /* Un z-index menor que los botones de scroll */
+  }
+  
+  .cta-button {
+    background-color: #FF5722; /* Color naranja llamativo */
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 15px 25px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    animation: pulse 2s infinite;
+  }
+  
+  .cta-button:hover {
+    background-color: #E64A19;
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  }
+  
+  .cta-button i {
+    font-size: 20px;
+  }
+  
+  .cta-text {
+    display: inline-block;
+  }
+  
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(255, 87, 34, 0.7);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(255, 87, 34, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(255, 87, 34, 0);
+    }
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .cta-container {
+      right: 15px;
+      bottom: 80px;
+    }
+    
+    .cta-button {
+      padding: 12px 20px;
+      font-size: 14px;
+    }
+    
+    .cta-text {
+      display: none;
+    }
+    
+    .cta-button i {
+      font-size: 24px;
+    }
+  }

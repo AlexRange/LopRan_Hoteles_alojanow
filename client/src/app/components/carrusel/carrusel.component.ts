@@ -13,25 +13,25 @@ export class CarruselComponent {
       image: 'https://eproint.com/wp-content/uploads/2023/12/IP-in-The-Bahamas-WEB-Without-Text_11zon-1024x594.webp',
       title: 'BAHAMAS',
       name: 'U.S.A',
-      description: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit.'
+      description: 'un exclusivo hotel frente al mar turquesa de las Bahamas. Relájate en playas de arena blanca, disfruta de cócteles tropicales bajo palmeras y déjate envolver por la tranquilidad del Caribe. ¡Escapa de la rutina y vive la experiencia isleña como nunca antes!'
     },
     {
       image: 'https://www.sundes.com/uploads/001ImagenesNuevas//grecia.webp',
       title: 'GRECIA',
       name: 'Europa',
-      description: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit.'
+      description: 'Combina lujo moderno con el encanto clásico griego. Disfruta del atardecer desde tu balcón privado, explora ruinas milenarias y déjate conquistar por la gastronomía helénica. Grecia te espera, y este es tu punto de partida.'
     },
     {
       image: 'https://www.agenciadinamita.com/wp-content/uploads/2022/08/marketing-digital-cancun.webp',
       title: 'CANCUN',
       name: 'Mexico',
-      description: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit.'
+      description: 'Ubicado en la vibrante zona hotelera de Cancún, este resort todo incluido te ofrece playas cristalinas, gastronomía internacional, actividades acuáticas y vida nocturna sin comparación. ¡Vive el Caribe mexicano al máximo!'
     },
     {
       image: 'https://www.conecty.co/cdn/shop/articles/banner-viajar-japon.webp?v=1727277853',
-      title: 'JAPON',
-      name: 'Asia',
-      description: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit.'
+      title: 'TOKIO',
+      name: 'Japon',
+      description: 'Disfruta de vistas espectaculares, habitaciones de diseño japonés contemporáneo y una ubicación privilegiada cerca de templos, centros comerciales y estaciones de tren. Tokio nunca duerme, y aquí empieza tu aventura urbana.'
     },
     // Añade m
     // ás elementos aquí...

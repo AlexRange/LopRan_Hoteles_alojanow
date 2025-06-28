@@ -46,6 +46,10 @@ import { AsignarAHotelComponent } from './components/servicios-ad-admin/asignar-
 import { ComentariosCComponent } from './components/historiales/comentarios-c/comentarios-c.component';
 import { RecuperacionContrasenaComponent } from './components/recuperacion-contrasena/recuperacion-contrasena.component';
 import { CategoryBarComponent } from './components/category-bar/category-bar.component';
+import { ScrollButtonsComponent } from './components/scroll-buttons/scroll-buttons.component';
+import { CtaButtonComponent } from './components/cta-button/cta-button.component';
+import { AddTipohComponent } from './components/habitaciones/add-tipoh/add-tipoh.component';
+import { UpdateTipohComponent } from './components/habitaciones/update-tipoh/update-tipoh.component';
 
 
 
@@ -90,7 +94,11 @@ import { CategoryBarComponent } from './components/category-bar/category-bar.com
     AsignarAHotelComponent,
     ComentariosCComponent,
     RecuperacionContrasenaComponent,
-    CategoryBarComponent
+    CategoryBarComponent,
+    ScrollButtonsComponent,
+    CtaButtonComponent,
+    AddTipohComponent,
+    UpdateTipohComponent
   ],
   imports: [
     BrowserModule,

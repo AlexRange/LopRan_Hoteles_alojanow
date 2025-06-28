@@ -86,85 +86,184 @@
     color: #bbb;
     text-align: center;
 }
-
-/* Estilos para el modal */
+/* Estilos para el modal del mapa del sitio */
 .modal-content {
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+    border: none;
 }
 
 .modal-header {
-    background: linear-gradient(135deg, #004d99, #002b66);
+    background: linear-gradient(135deg, #081b16, #0d2e24);
     color: white;
     border-bottom: none;
-    padding: 15px 20px;
+    padding: 1.2rem 1.5rem;
 }
 
 .modal-title {
-    font-size: 1.3rem;
-    font-weight: bold;
+    font-size: 1.4rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
 }
 
 .modal-body {
+    padding: 0;
     background-color: #f8f9fa;
-    padding: 20px;
 }
 
-/* Mapa del sitio */
+.modal-footer {
+    border-top: 1px solid #e9ecef;
+    padding: 1rem 1.5rem;
+    background-color: #f8f9fa;
+}
+
+/* Contenedor principal */
 .sitemap-container {
     display: flex;
-    flex-direction: column;
-    gap: 15px;
+    height: 500px;
+    max-height: 70vh;
+}
+
+/* Navegación lateral */
+.sitemap-nav {
+    width: 180px;
+    background-color: #f0f0f0;
+    border-right: 1px solid #ddd;
+    padding: 1rem 0;
+}
+
+.sitemap-nav-btn {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+    background: none;
+    border: none;
+    text-align: left;
+    font-weight: 500;
+    color: #555;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border-left: 4px solid transparent;
+}
+
+.sitemap-nav-btn:hover {
+    background-color: #e9ecef;
+    color: #081b16;
+}
+
+.sitemap-nav-btn.active {
+    background-color: #e9ecef;
+    color: #081b16;
+    border-left: 4px solid #081b16;
+}
+
+/* Contenido del mapa */
+.sitemap-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
 }
 
 .sitemap-section {
-    background: white;
-    padding: 12px 15px;
-    border-radius: 8px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    display: none;
+    animation: fadeIn 0.3s ease;
 }
 
-.sitemap-main-link {
-    font-size: 1.1rem;
-    font-weight: bold;
-    color: #004d99;
-    text-decoration: none;
+.sitemap-section.show {
     display: block;
-    padding: 8px 0;
 }
 
-.sitemap-sub {
-    margin-left: 15px;
-    margin-top: 8px;
+/* Categorías */
+.sitemap-category {
+    margin-bottom: 1.5rem;
+}
+
+.sitemap-category-title {
+    font-size: 1.2rem;
+    color: #081b16;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e9ecef;
     display: flex;
-    flex-direction: column;
-    gap: 6px;
+    align-items: center;
 }
 
-.sitemap-sub-link {
-    font-size: 1rem;
-    color: #333;
+/* Lista de enlaces */
+.sitemap-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 0.5rem 1.5rem;
+}
+
+.sitemap-link {
+    display: flex;
+    align-items: center;
+    padding: 0.6rem 0.8rem;
+    color: #444;
     text-decoration: none;
-    transition: color 0.3s;
+    border-radius: 6px;
+    transition: all 0.2s ease;
 }
 
-.sitemap-sub-link:hover {
-    color: #004d99;
-    text-decoration: underline;
+.sitemap-link:hover {
+    background-color: #f0f0f0;
+    color: #081b16;
+    transform: translateX(5px);
+}
+
+.sitemap-link:before {
+    content: "→";
+    margin-right: 0.8rem;
+    color: #b38b6d;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.sitemap-link:hover:before {
+    opacity: 1;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 /* Responsive */
-@media (max-width: 767px) {
-    .footer .col-md-4 {
-        text-align: center !important;
+@media (max-width: 768px) {
+    .sitemap-container {
+        flex-direction: column;
+        height: auto;
+        max-height: 70vh;
     }
     
-    .modal-dialog {
-        margin: 20px;
+    .sitemap-nav {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+        display: flex;
+        overflow-x: auto;
+        padding: 0;
     }
     
-    .modal-title {
-        font-size: 1.1rem;
+    .sitemap-nav-btn {
+        padding: 1rem;
+        white-space: nowrap;
+        border-left: none;
+        border-bottom: 4px solid transparent;
+    }
+    
+    .sitemap-nav-btn.active {
+        border-left: none;
+        border-bottom: 4px solid #081b16;
+    }
+    
+    .sitemap-links {
+        grid-template-columns: 1fr;
     }
 }

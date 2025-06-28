@@ -12,6 +12,14 @@ export interface Usuarios {
     token: string;
 }
 
+// Interface para tabla Habitaciones
+export interface TipoHabitacion {
+    id_tipo_habitacion: number;
+    tipo_habitacion: string;
+    precio: number;
+    capacidad_personas: number;
+}
+
 // Interface para tabla Hoteles
 export interface Hoteles {
     id_hotel: number;

@@ -18,6 +18,7 @@ import reservacionesHabitacionesRoutes from './routes/reservacionesHbitacionesRo
 import reservacionesServiciosRoutes from './routes/reservacionesServiciosRoutes';
 import serviciosAdicionalesRoutes from './routes/serviciosAdicionalesRoutes';
 import UsuariosRoutes from './routes/usuariosRoutes';
+import tipoHabitacionRoutes from './routes/tipoHabitacionesRoutes';
 
 
 class Server {
@@ -69,6 +70,7 @@ class Server {
         this.app.use('/api/hoteles-servicios', hotelesServiciosRoutes);
         this.app.use('/api/recaptcha', recaptchaRoutes);
         this.app.use('/api/otp', otpRoutes);
+        this.app.use('/api/tipos-habitacion', tipoHabitacionRoutes);
     }
 
     start() {
