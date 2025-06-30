@@ -2,20 +2,21 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import config from '../config/config';
 import poolPromise from '../database';
+import bcrypt from 'bcrypt';
 
 class LoginController {
     public async login(req: Request, res: Response): Promise<void> {
         try {
             const { email, contrasena } = req.body;
             const pool = await poolPromise;
-
-            const result = await pool.query(
-                'SELECT id_usuario, nombre, email, telefono, tipo, imagen_usuario, estatus FROM usuarios WHERE email = ? AND contrasena = ?', 
-                [email, contrasena]
-            );
-            
+            const result = await pool.query('SELECT * FROM usuarios WHERE email = ?', [email]);
             if (result.length > 0) {
                 const user = result[0];
+                const match = await bcrypt.compare(contrasena, user.contrasena);
+                if (!match) {
+                    res.status(401).json({ success: false, message: "Credenciales incorrectas" });
+                    return;
+                }
                 
                 if (user.estatus === 1) {
                     const token = jwt.sign(

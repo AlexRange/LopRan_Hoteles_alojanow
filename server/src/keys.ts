@@ -2,7 +2,7 @@ export default {
     database: {
         host: 'localhost',
         user: 'root',
-        password: 'root',
+        password: '',
         database: 'reservaciones_hoteles'
     }
 }
