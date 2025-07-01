@@ -1,13 +1,14 @@
 import crypto from 'crypto';
+import bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
 import fs from 'fs';
 import multer, { FileFilterCallback } from 'multer';
 import nodemailer from 'nodemailer';
 import path from 'path';
 import poolPromise from '../database';
-import bcrypt from 'bcrypt';
 import { body, validationResult, param } from 'express-validator';
 import validator from 'validator';
+import xss from 'xss';
 // Extender la interfaz Request para incluir la propiedad file
 declare global {
     namespace Express {
@@ -20,11 +21,11 @@ declare global {
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         const uploadPath = path.join(__dirname, '../../uploads/usuarios'); // Ruta dentro del server
-        
+
         if (!fs.existsSync(uploadPath)) {
             fs.mkdirSync(uploadPath, { recursive: true });
         }
-        
+
         cb(null, uploadPath);
     },
     filename: (req, file, cb) => {
@@ -43,7 +44,7 @@ const fileFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallb
     }
 };
 
-const upload = multer({ 
+const upload = multer({
     storage: storage,
     fileFilter: fileFilter,
     limits: {
@@ -78,7 +79,8 @@ class UsuariosController {
     }
 
     public async getOne(req: Request, res: Response): Promise<void> {
-        const { id_usuario } = req.params;
+        // Sanitizamos id_usuario que viene por parámetro (aunque generalmente es numérico)
+        const id_usuario = sanitizeString(req.params.id_usuario);
         try {
             const pool = await poolPromise;
             const result = await pool.query('SELECT * FROM usuarios WHERE id_usuario = ?', [id_usuario]);
@@ -102,7 +104,7 @@ class UsuariosController {
         try {
             const pool = await poolPromise;
             const countResult = await pool.query('SELECT COUNT(*) as total FROM usuarios');
-            const count = Array.isArray(countResult) ? countResult[0].total : countResult[0].total;
+            const count = Array.isArray(countResult) ? countResult[0].total : 0;
 
             const userData = req.body;
 
@@ -117,18 +119,24 @@ class UsuariosController {
                 userData.tipo = 'admin';
             }
 
+            if (userData.contrasena) {
+                const saltRounds = 10;
+                userData.contrasena = await bcrypt.hash(userData.contrasena, saltRounds);
+            }
+
             await pool.query('INSERT INTO usuarios SET ?', [userData]);
             res.json({
                 message: 'Usuario registrado exitosamente',
                 ...(count === 0 && { notice: 'Primer usuario registrado como administrador' })
             });
         } catch (error) {
+            console.error(error);
             res.status(500).json({ message: 'Error al registrar el usuario' });
         }
     }
 
     public async delete(req: Request, res: Response): Promise<void> {
-        const { id_usuario } = req.params;
+        const id_usuario = sanitizeString(req.params.id_usuario);
         try {
             const pool = await poolPromise;
             await pool.query('DELETE FROM usuarios WHERE id_usuario = ?', [id_usuario]);
@@ -146,6 +154,13 @@ class UsuariosController {
         }
         const { id_usuario } = req.params;
         try {
+            let updatedData = sanitizeObject(req.body);
+
+            if (updatedData.contrasena) {
+                const saltRounds = 10;
+                updatedData.contrasena = await bcrypt.hash(updatedData.contrasena, saltRounds);
+            }
+
             const pool = await poolPromise;
             const updateData = req.body;
 
@@ -163,7 +178,7 @@ class UsuariosController {
     }
 
     public async sendCode(req: Request, res: Response): Promise<void> {
-        const { email } = req.body;
+        let { email } = sanitizeObject(req.body);
 
         try {
             const verificationCode = crypto.randomBytes(3).toString('hex');
@@ -191,7 +206,7 @@ class UsuariosController {
     }
 
     public async verifyCode(req: Request, res: Response): Promise<void> {
-        const { email, code } = req.body;
+        let { email, code } = sanitizeObject(req.body);
         try {
             const pool = await poolPromise;
             const result = await pool.query('SELECT * FROM verification_codes WHERE email = ? AND code = ?', [email, code]);
@@ -214,7 +229,37 @@ class UsuariosController {
             return;
         }
         try {
-            const newPassword = crypto.randomBytes(4).toString('hex');
+            // Generar contraseña que cumpla los requisitos de validación
+            function generateSecurePassword(length = 10): string {
+                const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                const lower = 'abcdefghijklmnopqrstuvwxyz';
+                const numbers = '0123456789';
+                const special = '!@#$%^&*(),.?":{}|<>';
+                const allChars = upper + lower + numbers + special;
+
+                let password = '';
+                // Aseguramos al menos un caracter de cada tipo
+                password += upper[Math.floor(Math.random() * upper.length)];
+                password += lower[Math.floor(Math.random() * lower.length)];
+                password += numbers[Math.floor(Math.random() * numbers.length)];
+                password += special[Math.floor(Math.random() * special.length)];
+
+                // Completar con caracteres aleatorios hasta alcanzar longitud deseada
+                for (let i = 4; i < length; i++) {
+                    password += allChars[Math.floor(Math.random() * allChars.length)];
+                }
+
+                // Mezclar la contraseña para no dejar en orden fijo
+                password = password.split('').sort(() => 0.5 - Math.random()).join('');
+                return password;
+            }
+
+            const newPasswordPlain = generateSecurePassword(10);
+
+            // Encriptar la nueva contraseña antes de guardarla
+            const saltRounds = 10;
+            const newPasswordHashed = await bcrypt.hash(newPasswordPlain, saltRounds);
+
             const pool = await poolPromise;
             const [users]: any = await pool.query('SELECT id_usuario FROM usuarios WHERE email = ?', [email]);
             if (users.length === 0) {
@@ -233,16 +278,16 @@ class UsuariosController {
                     pass: 'nnev ftrj fjgr hgkt'
                 }
             });
-    
+
             await transporter.sendMail({
                 from: 'appnotificaciones68@gmail.com',
                 to: email,
                 subject: 'Nueva contraseña',
-                text: `Tu nueva contraseña es: ${newPassword}`,
-                html: `<p>Tu nueva contraseña es: <strong>${newPassword}</strong></p>
-                <p>Por seguridad, te recomendamos cambiarla después de iniciar sesión.</p>`
+                text: `Tu nueva contraseña es: ${newPasswordPlain}`,
+                html: `<p>Tu nueva contraseña es: <strong>${newPasswordPlain}</strong></p>
+                   <p>Por seguridad, te recomendamos cambiarla después de iniciar sesión.</p>`
             });
-    
+
             res.json({ message: 'Nueva contraseña enviada correctamente' });
         } catch (error) {
             console.error('Error en sendNewPassword:', error);
@@ -258,16 +303,16 @@ class UsuariosController {
             }
 
             const filePath = req.file.filename;
-            res.json({ 
-                success: true, 
+            res.json({
+                success: true,
                 filename: filePath,
                 message: 'Imagen subida correctamente'
             });
         } catch (error) {
             console.error('Error al subir la imagen:', error);
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            res.status(500).json({ 
-                success: false, 
+            res.status(500).json({
+                success: false,
                 message: 'Error al subir la imagen',
                 error: errorMessage
             });
@@ -296,6 +341,5 @@ class UsuariosController {
     }
 }
 
-    const usuariosController = new UsuariosController();
+const usuariosController = new UsuariosController();
 export { upload, usuariosController };
-
