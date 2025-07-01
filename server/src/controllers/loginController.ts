@@ -1,48 +1,59 @@
+import bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import config from '../config/config';
 import poolPromise from '../database';
+import xss from 'xss';
 
 class LoginController {
     public async login(req: Request, res: Response): Promise<void> {
         try {
-            const { email, contrasena } = req.body;
+            // Sanitizar los datos recibidos para evitar XSS
+            const email = xss(req.body.email);
+            const contrasena = xss(req.body.contrasena);
+
             const pool = await poolPromise;
 
-            const result = await pool.query(
-                'SELECT id_usuario, nombre, email, telefono, tipo, imagen_usuario, estatus FROM usuarios WHERE email = ? AND contrasena = ?', 
-                [email, contrasena]
+            const result: any = await pool.query(
+                'SELECT id_usuario, nombre, email, telefono, tipo, imagen_usuario, estatus, contrasena FROM usuarios WHERE email = ?', 
+                [email]
             );
-            
-            if (result.length > 0) {
+
+            if (Array.isArray(result) && result.length > 0) {
                 const user = result[0];
-                
+
+                // No sanitizamos contrasena almacenada, sólo comparamos
+                const passwordMatch = await bcrypt.compare(contrasena, user.contrasena);
+                if (!passwordMatch) {
+                    res.status(401).json({ success: false, message: "Credenciales incorrectas" });
+                    return;
+                }
+
                 if (user.estatus === 1) {
                     const token = jwt.sign(
-                        { 
+                        {
                             id: user.id_usuario,
                             email: user.email,
                             nombre: user.nombre,
                             tipo: user.tipo
                         },
                         config.jwtSecret,
-                        { 
-                            expiresIn: config.jwtExpiration
-                        } as jwt.SignOptions
+                        { expiresIn: config.jwtExpiration } as jwt.SignOptions
                     );
-                    
+
                     await pool.query('UPDATE usuarios SET token = ? WHERE id_usuario = ?', [token, user.id_usuario]);
-                    
-                    res.json({ 
-                        success: true, 
+
+                    // Sanitizar datos sensibles antes de enviarlos
+                    res.json({
+                        success: true,
                         message: "Inicio de sesión exitoso",
                         token,
                         usuario: {
                             id_usuario: user.id_usuario,
-                            nombre: user.nombre,
-                            email: user.email,
-                            tipo: user.tipo,
-                            imagen_usuario: user.imagen_usuario
+                            nombre: xss(user.nombre),
+                            email: xss(user.email),
+                            tipo: xss(user.tipo),
+                            imagen_usuario: xss(user.imagen_usuario)
                         }
                     });
                 } else {
@@ -62,7 +73,7 @@ class LoginController {
             const token = req.header('Authorization')?.replace('Bearer ', '');
             if (!token) {
                 res.status(401).json({ success: false, message: "Token no proporcionado" });
-                return; // Termina la ejecución
+                return;
             }
 
             const pool = await poolPromise;
@@ -80,7 +91,7 @@ class LoginController {
             const token = req.header('Authorization')?.replace('Bearer ', '');
             if (!token) {
                 res.status(401).json({ valid: false, message: "Token no proporcionado" });
-                return; // Termina la ejecución
+                return;
             }
 
             jwt.verify(token, config.jwtSecret, (err, decoded) => {
