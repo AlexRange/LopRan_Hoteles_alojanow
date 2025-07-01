@@ -21,6 +21,7 @@ import { PromocionesComponent } from './components/promociones/promociones.compo
 import { RecuperacionContrasenaComponent } from './components/recuperacion-contrasena/recuperacion-contrasena.component';
 import { ReservacionesHabComponent } from './components/reservaciones-hab/reservaciones-hab.component';
 import { ServiciosAdAdminComponent } from './components/servicios-ad-admin/servicios-ad-admin.component';
+import { AuthGuardService } from './services/auth-guard.service';
 
 const routes: Routes = [
   {
@@ -50,31 +51,45 @@ const routes: Routes = [
   },
   {
     path: 'home-admin',
-    component: HomeAdminComponent
+    component: HomeAdminComponent,
+    canActivate: [AuthGuardService],
+    data: { roles: ['admin'] }
   },
   {
     path: 'habitaciones-admin',
-    component: HabitacionesComponent
+    component: HabitacionesComponent,
+    canActivate: [AuthGuardService],
+    data: { roles: ['admin'] }
   },
   {
     path: 'hoteles-admin',
-    component: HotelesComponent
+    component: HotelesComponent,
+    canActivate: [AuthGuardService],
+    data: { roles: ['admin'] }
   },
   {
     path: 'comentarios-admin',
-    component: ComentariosComponent
+    component: ComentariosComponent,
+    canActivate: [AuthGuardService],
+    data: { roles: ['admin'] }
   },
   {
     path: 'promociones-admin',
-    component: PromocionesComponent
+    component: PromocionesComponent,
+    canActivate: [AuthGuardService],
+    data: { roles: ['admin'] }
   },
   {
     path: 'reservaciones-admin',
-    component: ReservacionesHabComponent
+    component: ReservacionesHabComponent,
+    canActivate: [AuthGuardService],
+    data: { roles: ['admin'] }
   },
   {
     path: 'serviciosAd-admin',
-    component: ServiciosAdAdminComponent
+    component: ServiciosAdAdminComponent,
+    canActivate: [AuthGuardService],
+    data: { roles: ['admin'] }
   },
   {
     path: 'preguntas-frec',
