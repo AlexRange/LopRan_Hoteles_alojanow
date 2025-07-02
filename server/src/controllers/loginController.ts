@@ -15,7 +15,7 @@ class LoginController {
             const pool = await poolPromise;
 
             const result: any = await pool.query(
-                'SELECT id_usuario, nombre, email, telefono, tipo, imagen_usuario, estatus, contrasena FROM usuarios WHERE email = ?', 
+                'SELECT id_usuario, nombre, email, telefono, tipo, imagen_usuario, estatus, contrasena FROM usuarios WHERE email = ?',
                 [email]
             );
 
@@ -39,6 +39,12 @@ class LoginController {
                         },
                         config.jwtSecret,
                         { expiresIn: config.jwtExpiration } as jwt.SignOptions
+                    );
+
+                    // Actualizar tanto el token como la fecha de último login
+                    await pool.query(
+                        'UPDATE usuarios SET token = ?, ultimo_login = CURRENT_TIMESTAMP WHERE id_usuario = ?',
+                        [token, user.id_usuario]
                     );
 
                     await pool.query('UPDATE usuarios SET token = ? WHERE id_usuario = ?', [token, user.id_usuario]);
@@ -78,7 +84,7 @@ class LoginController {
 
             const pool = await poolPromise;
             await pool.query('UPDATE usuarios SET token = NULL WHERE token = ?', [token]);
-            
+
             res.json({ success: true, message: "Sesión cerrada correctamente" });
         } catch (error) {
             console.error('Error en logout:', error);
