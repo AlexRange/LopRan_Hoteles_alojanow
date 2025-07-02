@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import config from '../config/config';
 import poolPromise from '../database';
-import xss from 'xss';
+import xss from 'xss'; // Importar la librería xss para sanitizar entradas
 
 class LoginController {
     public async login(req: Request, res: Response): Promise<void> {
@@ -13,22 +13,15 @@ class LoginController {
             const contrasena = xss(req.body.contrasena);
 
             const pool = await poolPromise;
-
-            const result: any = await pool.query(
-                'SELECT id_usuario, nombre, email, telefono, tipo, imagen_usuario, estatus, contrasena FROM usuarios WHERE email = ?', 
-                [email]
-            );
-
-            if (Array.isArray(result) && result.length > 0) {
+            const result = await pool.query('SELECT * FROM usuarios WHERE email = ?', [email]);
+            if (result.length > 0) {
                 const user = result[0];
-
-                // No sanitizamos contrasena almacenada, sólo comparamos
-                const passwordMatch = await bcrypt.compare(contrasena, user.contrasena);
-                if (!passwordMatch) {
+                const match = await bcrypt.compare(contrasena, user.contrasena);
+                if (!match) {
                     res.status(401).json({ success: false, message: "Credenciales incorrectas" });
                     return;
                 }
-
+                
                 if (user.estatus === 1) {
                     const token = jwt.sign(
                         {
