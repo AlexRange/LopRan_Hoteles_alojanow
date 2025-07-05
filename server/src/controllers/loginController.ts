@@ -13,8 +13,14 @@ class LoginController {
             const contrasena = xss(req.body.contrasena);
 
             const pool = await poolPromise;
-            const result = await pool.query('SELECT * FROM usuarios WHERE email = ?', [email]);
-            if (result.length > 0) {
+
+            const result: any = await pool.query(
+                'SELECT id_usuario, nombre, email, telefono, tipo, imagen_usuario, estatus, contrasena FROM usuarios WHERE email = ?',
+                [email]
+            );
+
+            if (Array.isArray(result) && result.length > 0) {
+              
                 const user = result[0];
                 const match = await bcrypt.compare(contrasena, user.contrasena);
                 if (!match) {
@@ -32,6 +38,12 @@ class LoginController {
                         },
                         config.jwtSecret,
                         { expiresIn: config.jwtExpiration } as jwt.SignOptions
+                    );
+
+                    // Actualizar tanto el token como la fecha de último login
+                    await pool.query(
+                        'UPDATE usuarios SET token = ?, ultimo_login = CURRENT_TIMESTAMP WHERE id_usuario = ?',
+                        [token, user.id_usuario]
                     );
 
                     await pool.query('UPDATE usuarios SET token = ? WHERE id_usuario = ?', [token, user.id_usuario]);
@@ -71,7 +83,7 @@ class LoginController {
 
             const pool = await poolPromise;
             await pool.query('UPDATE usuarios SET token = NULL WHERE token = ?', [token]);
-            
+
             res.json({ success: true, message: "Sesión cerrada correctamente" });
         } catch (error) {
             console.error('Error en logout:', error);
