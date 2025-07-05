@@ -1,4 +1,6 @@
 import { Request, Response } from 'express';
+import { body, validationResult } from 'express-validator';
+import validator from 'validator';
 import poolPromise from '../database';
 import xss from 'xss';
 
@@ -46,10 +48,15 @@ class ComentariosController {
     }
 
     public async create(req: Request, res: Response): Promise<void> {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            res.status(400).json({ errors: errors.array() });
+            return;
+        }
         try {
             const pool = await poolPromise;
-            const sanitizedBody = sanitizeObject(req.body);
-            await pool.query('INSERT INTO comentarios_calificaciones SET ?', [sanitizedBody]);
+            const safeComentario = validator.escape(req.body.comentario);
+            await pool.query('INSERT INTO comentarios_calificaciones SET ?', [{ ...req.body, comentario: safeComentario }]);
             res.json({ message: 'Comentario Guardado' });
         } catch (err) {
             res.status(500).json({ error: 'Error al guardar el comentario' });
@@ -79,6 +86,11 @@ class ComentariosController {
         }
     }
 }
+
+export const validateCreateComentario = [
+    body('comentario').isLength({ min: 1, max: 500 }).withMessage('Comentario requerido'),
+    // ...otros campos...
+];
 
 const comentariosController = new ComentariosController();
 export default comentariosController;
