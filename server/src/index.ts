@@ -1,7 +1,8 @@
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import express, { Application } from 'express';
-import fs from "fs";
+import fs from 'fs';
+import https from 'https';
 import morgan from 'morgan';
 import path from 'path';
 
@@ -20,9 +21,9 @@ import serviciosAdicionalesRoutes from './routes/serviciosAdicionalesRoutes';
 import UsuariosRoutes from './routes/usuariosRoutes';
 import tipoHabitacionRoutes from './routes/tipoHabitacionesRoutes';
 
-
 class Server {
-    public app: Application
+    public app: Application;
+    private httpsServer: https.Server = {} as https.Server;
 
     constructor() {
         this.app = express();
@@ -32,11 +33,20 @@ class Server {
 
     config(): void {
         this.app.set('port', process.env.PORT || 4000);
+        this.app.set('httpsPort', process.env.HTTPS_PORT || 443);
+        
+        // Middlewares
         this.app.use(morgan('dev'));
-        this.app.use(cors());
+        this.app.use(cors({
+            origin: ['https://localhost:4200'], // Ajusta según tu frontend
+            methods: ['GET', 'POST', 'PUT', 'DELETE'],
+            allowedHeaders: ['Content-Type', 'Authorization'],
+            credentials: true
+        }));
         this.app.use(bodyParser.json({ limit: '10mb' }));
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: false, limit: '10mb' }));
+        
         // Serve static files from uploads directory
         this.app.use('/api/uploads/usuarios', express.static(path.join(__dirname, '../uploads/usuarios')));
         this.app.use('/api/uploads/hoteles', express.static(path.join(__dirname, '../uploads/hoteles')));
@@ -48,7 +58,6 @@ class Server {
         const hotelesDir = path.join(uploadsBaseDir, 'hoteles');
         const habitacionesDir = path.join(uploadsBaseDir, 'habitaciones');
 
-        // Create directories recursively
         [uploadsBaseDir, usuariosDir, hotelesDir, habitacionesDir].forEach(dir => {
             if (!fs.existsSync(dir)) {
                 fs.mkdirSync(dir, { recursive: true });
@@ -71,11 +80,27 @@ class Server {
         this.app.use('/api/recaptcha', recaptchaRoutes);
         this.app.use('/api/otp', otpRoutes);
         this.app.use('/api/tipos-habitacion', tipoHabitacionRoutes);
+
+        // Health check endpoint
+        this.app.get('/api/health', (req, res) => {
+            res.status(200).json({ status: 'OK', https: true });
+        });
     }
 
     start() {
-        this.app.listen(this.app.get('port'), '0.0.0.0', () => {
-            console.log('Server on port', this.app.get('port'));
+        // Configuración SSL (asegúrate de tener estos archivos en tu proyecto)
+        const sslOptions = {
+            key: fs.readFileSync(path.join(__dirname, '../key.pem')),
+            cert: fs.readFileSync(path.join(__dirname, '../cert.pem')),
+            // Si tienes un CA, inclúyelo así:
+            // ca: fs.readFileSync(path.join(__dirname, '../ca.pem'))
+        };
+
+        // Crear servidor HTTPS
+        this.httpsServer = https.createServer(sslOptions, this.app);
+        
+        this.httpsServer.listen(this.app.get('port'), () => {
+            console.log(`Servidor HTTPS corriendo en https://localhost:${this.app.get('port')}`);
         });
     }
 }

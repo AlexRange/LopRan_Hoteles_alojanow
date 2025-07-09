@@ -157,7 +157,7 @@ export class ServiciosAdAdminComponent implements OnInit {
 
     // Agrega esto para manejar errores en la suscripción
     modalRef.dismissed.subscribe(() => {
-      console.log('Modal dismissed');
+      
     });
   }
 
