@@ -54,8 +54,6 @@ export class AddPComponent implements OnInit {
       ...this.promocionForm.value,
     };
 
-    console.log('Enviando datos al backend:', promocion);
-
     this.promocionSrv.savePromocion(promocion).subscribe(
       () => {
         Swal.fire({

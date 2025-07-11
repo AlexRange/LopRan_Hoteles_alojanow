@@ -362,10 +362,8 @@ export class RegistroComponent implements OnDestroy {
 
       this.usuariosService.uploadImage(file).subscribe({
         next: (response) => {
-          console.log('Imagen subida exitosamente:', response);
           // Asignar el nombre del archivo tanto al formulario como a la variable local
           this.imagenFileName = response.filename;
-          console.log('Nombre imagen usuario');
           this.registroForm.patchValue({
             imagen_usuario: response.filename
           });
@@ -385,13 +383,12 @@ export class RegistroComponent implements OnDestroy {
   captchaResolved(token: string) {
     this.captchaToken = token;
     this.captchaExpired = false;
-    console.log('Token reCAPTCHA obtenido:', this.captchaToken);
   }
 
   resetCaptcha() {
     this.captchaToken = null;
     this.captchaExpired = true;
     this.registroForm.get('recaptcha')?.reset();
-    console.log('reCAPTCHA reseteado');
+
   }
 }

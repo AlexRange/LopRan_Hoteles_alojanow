@@ -1,23 +1,26 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { Usuarios } from '../models/modelos';
+import Swal from 'sweetalert2';
 
 @Injectable({
   providedIn: 'root'
 })
-export class Auth {
+export class Auth implements OnDestroy {
   private currentUserSubject: BehaviorSubject<Usuarios | null>;
   public currentUser$: Observable<Usuarios | null>;
-  private apiUrl = 'http://localhost:4000/api';
+  private apiUrl = 'https://localhost:4000/api';
   private tokenExpirationTimer: any;
   private tempAuthData: { email: string, contrasena: string, userData?: any, token?: string } | null = null;
 
-  private inactivityTimeout = 5 * 60 * 1000;
+  private warningTimeout = 3 * 60 * 1000; // 3 minutos para mostrar alerta
+  private gracePeriod = 2 * 60 * 1000; // 2 minutos más para cerrar sesión si no hay respuesta
   private inactivityTimer: any;
-  private activityEvents = ['mousemove', 'keypress', 'scroll', 'click'];
+  private warningTimer: any;
+  private activityEvents = ['mousemove', 'keypress', 'scroll', 'click', 'touchstart'];
 
   constructor(private http: HttpClient, private router: Router) {
     this.currentUserSubject = new BehaviorSubject<Usuarios | null>(this.getStoredUser());
@@ -38,25 +41,59 @@ export class Auth {
   }
 
   private setupInactivityListener(): void {
-    this.resetInactivityTimer();
+    this.resetInactivityTimers();
     this.activityEvents.forEach(event => {
-      window.addEventListener(event, this.resetInactivityTimer.bind(this));
+      window.addEventListener(event, this.resetInactivityTimersBound);
     });
   }
 
-  private resetInactivityTimer(): void {
-    if (this.getCurrentUserValue()) {
-      clearTimeout(this.inactivityTimer);
-      this.inactivityTimer = setTimeout(() => {
+  private resetInactivityTimersBound = this.resetInactivityTimers.bind(this);
+
+  private resetInactivityTimers(): void {
+    if (!this.getCurrentUserValue()) return;
+
+    clearTimeout(this.inactivityTimer);
+    clearTimeout(this.warningTimer);
+    Swal.close();
+
+    this.warningTimer = setTimeout(() => this.showInactivityWarning(), this.warningTimeout);
+  }
+
+  private showInactivityWarning(): void {
+    Swal.fire({
+      title: 'Sesión por expirar',
+      text: 'Tu sesión está a punto de expirar por inactividad. ¿Deseas continuar?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Extender sesión',
+      cancelButtonText: 'Cerrar sesión',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      timer: this.gracePeriod,
+      timerProgressBar: true,
+      didOpen: () => {
+        // El usuario tiene graciaPeriod para contestar
+        this.inactivityTimer = setTimeout(() => this.logoutDueToInactivity(), this.gracePeriod);
+      },
+      willClose: () => {
+        clearTimeout(this.inactivityTimer);
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.resetInactivityTimers();
+      } else if (result.dismiss === Swal.DismissReason.cancel || result.dismiss === Swal.DismissReason.timer) {
         this.logoutDueToInactivity();
-      }, this.inactivityTimeout);
-    }
+      }
+    });
   }
 
   private logoutDueToInactivity(): void {
-    console.log('Sesión cerrada por inactividad');
     this.logout().subscribe({
-      next: () => this.router.navigate(['/login'], { queryParams: { sessionExpired: true } }),
+      next: () => {
+        this.router.navigate(['/login'], {
+          queryParams: { sessionExpired: true }
+        });
+      },
       error: (err) => {
         console.error('Error al cerrar sesión por inactividad:', err);
         this.clearAuthData();
@@ -86,7 +123,7 @@ export class Auth {
       this.clearAuthData();
     }
 
-    this.resetInactivityTimer();
+    this.resetInactivityTimers();
   }
 
   loginToServer(email: string, contrasena: string): Observable<{ success: boolean, usuario?: Usuarios, token?: string, message?: string }> {
@@ -135,6 +172,8 @@ export class Auth {
     this.currentUserSubject.next(null);
     clearTimeout(this.tokenExpirationTimer);
     clearTimeout(this.inactivityTimer);
+    clearTimeout(this.warningTimer);
+    Swal.close();
   }
 
   private clearTempAuthData(): void {
@@ -208,15 +247,12 @@ export class Auth {
     const headers = new HttpHeaders({ 'Authorization': `Bearer ${this.getToken()}` });
     return this.http.put<Usuarios>(`${this.apiUrl}/usuarios/${currentUser.id_usuario}`, userData, { headers }).pipe(
       tap(updatedUser => {
-        // Combinar los datos existentes con los nuevos, preservando valores no modificados
         const mergedUser = {
           ...currentUser,
           ...updatedUser,
-          // Asegurar que los campos críticos no sean sobrescritos con undefined
           telefono: updatedUser.telefono !== undefined ? updatedUser.telefono : currentUser.telefono,
           imagen_usuario: updatedUser.imagen_usuario !== undefined ? updatedUser.imagen_usuario : currentUser.imagen_usuario
         };
-
         localStorage.setItem('currentUser', JSON.stringify(mergedUser));
         this.currentUserSubject.next(mergedUser);
       }),
@@ -231,7 +267,7 @@ export class Auth {
 
   ngOnDestroy(): void {
     this.activityEvents.forEach(event => {
-      window.removeEventListener(event, this.resetInactivityTimer.bind(this));
+      window.removeEventListener(event, this.resetInactivityTimersBound);
     });
     this.clearAuthData();
   }

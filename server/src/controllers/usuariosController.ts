@@ -9,6 +9,25 @@ import poolPromise from '../database';
 import { body, validationResult, param } from 'express-validator';
 import validator from 'validator';
 import xss from 'xss';
+import * as net from 'net';
+
+// Utility functions
+function sanitizeString(str: string): string {
+    return validator.escape(validator.trim(str));
+}
+
+function sanitizeObject(obj: any): any {
+    const sanitized: any = {};
+    for (const key in obj) {
+        if (typeof obj[key] === 'string') {
+            sanitized[key] = sanitizeString(obj[key]);
+        } else {
+            sanitized[key] = obj[key];
+        }
+    }
+    return sanitized;
+}
+
 // Extender la interfaz Request para incluir la propiedad file
 declare global {
     namespace Express {
@@ -267,9 +286,9 @@ class UsuariosController {
                 return;
             }
             // Hash de la nueva contraseña
-            const hashedPassword = await bcrypt.hash(newPassword, 10);
+            const hashedPassword = await bcrypt.hash(newPasswordPlain, 10);
             await pool.query('UPDATE usuarios SET contrasena = ? WHERE email = ?', [hashedPassword, email]);
-    
+
             // 3. Enviar el correo
             const transporter = nodemailer.createTransport({
                 service: 'gmail',
