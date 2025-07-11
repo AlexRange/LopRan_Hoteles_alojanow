@@ -2,6 +2,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import express, { Application } from 'express';
 import fs from "fs";
+import https from "https";
 import morgan from 'morgan';
 import path from 'path';
 
@@ -31,6 +32,13 @@ class Server {
     }
 
     config(): void {
+        this.app.use((req, res, next) => {
+            res.header('Access-Control-Allow-Origin', 'https://localhost:4200'); // URL de tu frontend
+            res.header('Access-Control-Allow-Credentials', 'true');
+            res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+            res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+            next();
+        });
         this.app.set('port', process.env.PORT || 4000);
         this.app.use(morgan('dev'));
         this.app.use(cors());
@@ -54,6 +62,17 @@ class Server {
                 fs.mkdirSync(dir, { recursive: true });
             }
         });
+        // Cors configuration
+             this.app.use(cors({
+        origin: 'https://localhost:4200', // URL exacta de tu frontend
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+        credentials: true, // Si usas cookies/tokens
+        optionsSuccessStatus: 200 // Para navegadores antiguos
+    }));
+
+    // Manejo explícito de preflight OPTIONS
+    this.app.options('*', cors());
     }
 
     routes(): void {
@@ -74,10 +93,16 @@ class Server {
     }
 
     start() {
-        this.app.listen(this.app.get('port'), '0.0.0.0', () => {
-            console.log('Server on port', this.app.get('port'));
+    const options = {
+        key: fs.readFileSync('./localhost-key.pem'),
+        cert: fs.readFileSync('./localhost.pem')
+    };
+
+    https.createServer(options, this.app)
+        .listen(this.app.get('port'), '0.0.0.0', () => {
+            console.log(`Servidor HTTPS en https://api.localhost:${this.app.get('port')}`);
         });
-    }
+}
 }
 
 const server = new Server();
