@@ -131,8 +131,6 @@ export class UpdateHComponent implements OnInit {
       fecha_registro: this.prop?.fecha_registro || new Date().toISOString()
     };
 
-    console.log('Datos a enviar para actualización:', updatedHotel);
-
     this.hotelService.updateHotel(this.prop!.id_hotel, updatedHotel).subscribe({
       next: () => {
         Swal.fire({

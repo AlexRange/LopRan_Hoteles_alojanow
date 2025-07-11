@@ -63,7 +63,6 @@ export class UsuariosService {
 
   verificarCodigo(email: string, code: string): Observable<any> {
     const trimmedCode = code.trim(); // Eliminar espacios al inicio y fin
-    console.log('Enviando a verificación:', { email, trimmedCode });
 
     return this.http.post(`${this.apiUrl}/usuarios/verify-code`, {
       email,

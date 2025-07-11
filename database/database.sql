@@ -8,7 +8,8 @@ CREATE TABLE usuarios (
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     tipo ENUM('cliente', 'admin') DEFAULT 'cliente', 
     estatus TINYINT(1) DEFAULT 0 COMMENT '1=Activo, 0=Inactivo',
-    token VARCHAR(255) DEFAULT NULL
+    token VARCHAR(255) DEFAULT NULL,
+    ultimo_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Tabla de Hoteles

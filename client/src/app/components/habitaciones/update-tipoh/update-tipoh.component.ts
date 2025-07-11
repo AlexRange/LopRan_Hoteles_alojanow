@@ -29,13 +29,7 @@ export class UpdateTipohComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('Prop received:', this.tipoHabitacion); // Agrega esto para depuración
     if (this.tipoHabitacion) {
-      console.log('Patching form with:', {
-        tipo_habitacion: this.tipoHabitacion.tipo_habitacion,
-        precio: this.tipoHabitacion.precio,
-        capacidad_personas: this.tipoHabitacion.capacidad_personas
-      });
       
       this.tipoHabitacionForm.patchValue({
         tipo_habitacion: this.tipoHabitacion.tipo_habitacion,

@@ -47,8 +47,6 @@ export class AddRComponent implements OnInit {
       fecha_reservacion: new Date().toISOString()
     };
 
-    console.log('Enviando datos al backend:', reservacion);
-
     this.reservacionesSrv.saveReservacion(reservacion).subscribe(
       () => {
         Swal.fire({

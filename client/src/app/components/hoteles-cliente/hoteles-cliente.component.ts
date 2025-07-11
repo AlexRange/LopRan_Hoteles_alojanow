@@ -174,7 +174,6 @@ export class HotelesClienteComponent implements OnInit {
 
     this.comentariosService.saveComentario(this.nuevoComentario).subscribe(
       response => {
-        console.log('Comentario guardado:', response);
 
         Swal.fire({
           position: 'top-end',
