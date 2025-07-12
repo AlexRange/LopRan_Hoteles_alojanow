@@ -1,184 +1,364 @@
-import bodyParser from 'body-parser';
-import cors from 'cors';
-import express, { Application } from 'express';
+import crypto from 'crypto';
+import bcrypt from 'bcrypt';
+import { Request, Response } from 'express';
 import fs from 'fs';
-import https from 'https';
-import morgan from 'morgan';
+import multer, { FileFilterCallback } from 'multer';
+import nodemailer from 'nodemailer';
 import path from 'path';
-import helmet from 'helmet';
-import rateLimit, { RateLimitRequestHandler } from 'express-rate-limit';
-import comentariosRoutes from './routes/comentariosRoutes';
-import habitacionesRoutes from './routes/habitacionesRoutes';
-import hotelesRoutes from './routes/hotelesRoutes';
-import hotelesServiciosRoutes from './routes/hotelServiciosRoutes';
-import loginRoutes from './routes/loginRoutes';
-import otpRoutes from './routes/optRoutes';
-import pagosRoutes from './routes/PagosRoutes';
-import promocionesRoutes from './routes/promocionesRoutes';
-import recaptchaRoutes from './routes/recaptchaRoutes';
-import reservacionesHabitacionesRoutes from './routes/reservacionesHbitacionesRoutes';
-import reservacionesServiciosRoutes from './routes/reservacionesServiciosRoutes';
-import serviciosAdicionalesRoutes from './routes/serviciosAdicionalesRoutes';
-import UsuariosRoutes from './routes/usuariosRoutes';
-import tipoHabitacionRoutes from './routes/tipoHabitacionesRoutes';
+import poolPromise from './database';
+import { body, validationResult, param } from 'express-validator';
+import validator from 'validator';
+import xss from 'xss';
+import * as net from 'net';
 
-let authLimiter: RateLimitRequestHandler;
-
-class Server {
-    public app: Application;
-    private httpsServer: https.Server = {} as https.Server;
-
-    constructor() {
-        this.app = express();
-        this.config();
-        this.routes();
-    }
-
-    config(): void {
-        this.app.use((req, res, next) => {
-            res.header('Access-Control-Allow-Origin', 'https://localhost:4200'); // URL de tu frontend
-            res.header('Access-Control-Allow-Credentials', 'true');
-            res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-            res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-            next();
-        });
-        this.app.set('port', process.env.PORT || 4000);
-        this.app.set('httpsPort', process.env.HTTPS_PORT || 443);
-
-        // 1. Configuración básica de seguridad con helmet
-        this.app.use(helmet());
-
-        // 2. Configuración personalizada de CSP y otros headers
-        this.app.use((req, res, next) => {
-            // Configuración específica de Content Security Policy
-            res.setHeader(
-                'Content-Security-Policy',
-                "default-src 'self'; " +
-                "script-src 'self' 'unsafe-inline' https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/; " +
-                "style-src 'self' 'unsafe-inline'; " +
-                "img-src 'self' data: blob:; " +
-                "font-src 'self'; " +
-                "connect-src 'self'; " +
-                "form-action 'self'; " +
-                "frame-ancestors 'none'"
-            );
-
-            // Headers adicionales
-            res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-            res.setHeader('X-Permitted-Cross-Domain-Policies', 'none');
-
-            next();
-        });
-
-        // 3. Configuración de Rate Limiting
-        const generalLimiter = rateLimit({
-            windowMs: 15 * 60 * 1000, // 15 minutos
-            max: 200,
-            standardHeaders: true,
-            legacyHeaders: false,
-            message: {
-                success: false,
-                message: "Demasiadas peticiones desde esta IP"
-            },
-            skip: (req) => req.path === '/api/health'
-        });
-
-        // Configuración para authLimiter (ahora asignando a la variable declarada)
-        authLimiter = rateLimit({
-            windowMs: 15 * 60 * 1000,
-            max: 20,
-            message: {
-                success: false,
-                message: "Demasiados intentos de autenticación"
-            }
-        });
-
-        // Middlewares
-        this.app.use(morgan('dev'));
-        this.app.use(cors({
-            origin: ['https://localhost:4200'], // Ajusta según tu frontend
-            methods: ['GET', 'POST', 'PUT', 'DELETE'],
-            allowedHeaders: ['Content-Type', 'Authorization'],
-            credentials: true,
-            exposedHeaders: ['Content-Security-Policy', 'X-Content-Type-Options']
-        }));
-
-        // Aplicar rate limiting general a todas las rutas
-        this.app.use(generalLimiter);
-
-        this.app.use(bodyParser.json({ limit: '10mb' }));
-        this.app.use(express.json());
-        this.app.use(express.urlencoded({ extended: false, limit: '10mb' }));
-
-        // Serve static files from uploads directory
-        this.app.use('/api/uploads/usuarios', express.static(path.join(__dirname, '../uploads/usuarios')));
-        this.app.use('/api/uploads/hoteles', express.static(path.join(__dirname, '../uploads/hoteles')));
-        this.app.use('/api/uploads/habitaciones', express.static(path.join(__dirname, '../uploads/habitaciones')));
-
-        // Create upload directories if they don't exist
-        const uploadsBaseDir = path.join(__dirname, '../uploads');
-        const usuariosDir = path.join(uploadsBaseDir, 'usuarios');
-        const hotelesDir = path.join(uploadsBaseDir, 'hoteles');
-        const habitacionesDir = path.join(uploadsBaseDir, 'habitaciones');
-
-        [uploadsBaseDir, usuariosDir, hotelesDir, habitacionesDir].forEach(dir => {
-            if (!fs.existsSync(dir)) {
-                fs.mkdirSync(dir, { recursive: true });
-            }
-        });
-        // Cors configuration
-             this.app.use(cors({
-        origin: 'https://localhost:4200', // URL exacta de tu frontend
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
-        credentials: true, // Si usas cookies/tokens
-        optionsSuccessStatus: 200 // Para navegadores antiguos
-    }));
-
-    // Manejo explícito de preflight OPTIONS
-    this.app.options('*', cors());
-    }
-
-    routes(): void {
-        // Aplicar rate limiting específico a rutas sensibles
-        this.app.use('/api/login', authLimiter, loginRoutes);
-        this.app.use('/api/otp', authLimiter, otpRoutes);
-
-        // Rutas normales con rate limiting general
-        this.app.use('/api/usuarios', UsuariosRoutes);
-        this.app.use('/api/reservaciones', reservacionesHabitacionesRoutes);
-        this.app.use('/api/comentarios', comentariosRoutes);
-        this.app.use('/api/habitaciones', habitacionesRoutes);
-        this.app.use('/api/hoteles', hotelesRoutes);
-        this.app.use('/api/pagos', pagosRoutes);
-        this.app.use('/api/promociones', promocionesRoutes);
-        this.app.use('/api/reservacionesSer', reservacionesServiciosRoutes);
-        this.app.use('/api/serviciosAd', serviciosAdicionalesRoutes);
-        this.app.use('/api/hoteles-servicios', hotelesServiciosRoutes);
-        this.app.use('/api/recaptcha', recaptchaRoutes);
-        this.app.use('/api/tipos-habitacion', tipoHabitacionRoutes);
-
-        // Health check endpoint (sin rate limiting)
-        this.app.get('/api/health', (req, res) => {
-            res.status(200).json({ status: 'OK', https: true });
-        });
-    }
-
-    start() {
-        // Configuración SSL
-        const sslOptions = {
-            key: fs.readFileSync(path.join(__dirname, '../key.pem')),
-            cert: fs.readFileSync(path.join(__dirname, '../cert.pem')),
-        };
-
-        // Crear servidor HTTPS
-        this.httpsServer = https.createServer(sslOptions, this.app);
-
-        this.httpsServer.listen(this.app.get('port'), () => {
-            console.log(`Servidor HTTPS corriendo en https://localhost:${this.app.get('port')}`);
-        });
-}
+// Utility functions
+function sanitizeString(str: string): string {
+    return validator.escape(validator.trim(str));
 }
 
-const server = new Server();
-server.start();
+function sanitizeObject(obj: any): any {
+    const sanitized: any = {};
+    for (const key in obj) {
+        if (typeof obj[key] === 'string') {
+            sanitized[key] = sanitizeString(obj[key]);
+        } else {
+            sanitized[key] = obj[key];
+        }
+    }
+    return sanitized;
+}
+
+// Extender la interfaz Request para incluir la propiedad file
+declare global {
+    namespace Express {
+        interface Request {
+            file?: Express.Multer.File;
+        }
+    }
+}
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const uploadPath = path.join(__dirname, '../../uploads/usuarios'); // Ruta dentro del server
+
+        if (!fs.existsSync(uploadPath)) {
+            fs.mkdirSync(uploadPath, { recursive: true });
+        }
+
+        cb(null, uploadPath);
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const ext = path.extname(file.originalname);
+        cb(null, 'user-' + uniqueSuffix + ext);
+    }
+});
+
+const fileFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallback) => {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+    if (allowedTypes.includes(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(new Error('Solo se permiten imágenes (JPEG, PNG, JPG)'));
+    }
+};
+
+const upload = multer({
+    storage: storage,
+    fileFilter: fileFilter,
+    limits: {
+        fileSize: 5 * 1024 * 1024 // Límite de 5MB
+    }
+});
+
+// Middleware de validación para crear usuario
+export const validateCreateUser = [
+    body('email').isEmail().withMessage('Email inválido'),
+    body('contrasena').isLength({ min: 6 }).withMessage('Contraseña muy corta'),
+    body('nombre').isLength({ min: 1 }).withMessage('Nombre requerido'),
+    // Agrega validaciones para otros campos según tu modelo
+];
+
+// Middleware de validación para actualizar usuario
+export const validateUpdateUser = [
+    param('id_usuario').isInt().withMessage('ID inválido'),
+    body('nombre').optional().isLength({ min: 1 }).withMessage('Nombre requerido'),
+    // Agrega validaciones para otros campos
+];
+
+class UsuariosController {
+    public async list(req: Request, res: Response): Promise<void> {
+        try {
+            const pool = await poolPromise;
+            const result = await pool.query('SELECT * FROM usuarios');
+            res.json(result);
+        } catch (error) {
+            res.status(500).json({ message: 'Error al obtener los usuarios' });
+        }
+    }
+
+    public async getOne(req: Request, res: Response): Promise<void> {
+        // Sanitizamos id_usuario que viene por parámetro (aunque generalmente es numérico)
+        const id_usuario = sanitizeString(req.params.id_usuario);
+        try {
+            const pool = await poolPromise;
+            const result = await pool.query('SELECT * FROM usuarios WHERE id_usuario = ?', [id_usuario]);
+
+            if (result && Array.isArray(result) && result.length) {
+                res.json(result[0]);
+            } else {
+                res.status(404).json({ message: "Usuario no encontrado" });
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'Error al buscar el usuario' });
+        }
+    }
+
+    public async create(req: Request, res: Response): Promise<void> {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            res.status(400).json({ errors: errors.array() });
+            return;
+        }
+        try {
+            const pool = await poolPromise;
+            const countResult = await pool.query('SELECT COUNT(*) as total FROM usuarios');
+            const count = Array.isArray(countResult) ? countResult[0].total : 0;
+
+            const userData = req.body;
+
+            // Sanitizar campos
+            userData.nombre = validator.escape(userData.nombre);
+            userData.email = validator.normalizeEmail(userData.email);
+
+            // Hash de contraseña
+            userData.contrasena = await bcrypt.hash(userData.contrasena, 10);
+
+            if (count === 0) {
+                userData.tipo = 'admin';
+            }
+
+            if (userData.contrasena) {
+                const saltRounds = 10;
+                userData.contrasena = await bcrypt.hash(userData.contrasena, saltRounds);
+            }
+
+            await pool.query('INSERT INTO usuarios SET ?', [userData]);
+            res.json({
+                message: 'Usuario registrado exitosamente',
+                ...(count === 0 && { notice: 'Primer usuario registrado como administrador' })
+            });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Error al registrar el usuario' });
+        }
+    }
+
+    public async delete(req: Request, res: Response): Promise<void> {
+        const id_usuario = sanitizeString(req.params.id_usuario);
+        try {
+            const pool = await poolPromise;
+            await pool.query('DELETE FROM usuarios WHERE id_usuario = ?', [id_usuario]);
+            res.json({ message: "Usuario eliminado correctamente" });
+        } catch (error) {
+            res.status(500).json({ message: 'Error al eliminar el usuario' });
+        }
+    }
+
+    public async update(req: Request, res: Response): Promise<void> {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            res.status(400).json({ errors: errors.array() });
+            return;
+        }
+        const { id_usuario } = req.params;
+        try {
+            let updatedData = sanitizeObject(req.body);
+
+            if (updatedData.contrasena) {
+                const saltRounds = 10;
+                updatedData.contrasena = await bcrypt.hash(updatedData.contrasena, saltRounds);
+            }
+
+            const pool = await poolPromise;
+            const updateData = req.body;
+
+            // Sanitizar campos
+            if (updateData.nombre) updateData.nombre = validator.escape(updateData.nombre);
+            if (updateData.contrasena) {
+                updateData.contrasena = await bcrypt.hash(updateData.contrasena, 10);
+            }
+
+            await pool.query('UPDATE usuarios SET ? WHERE id_usuario = ?', [updateData, id_usuario]);
+            res.json({ message: "Usuario actualizado correctamente" });
+        } catch (error) {
+            res.status(500).json({ message: 'Error al actualizar el usuario' });
+        }
+    }
+
+    public async sendCode(req: Request, res: Response): Promise<void> {
+        let { email } = sanitizeObject(req.body);
+
+        try {
+            const verificationCode = crypto.randomBytes(3).toString('hex');
+            const transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: 'appnotificaciones68@gmail.com',
+                    pass: 'nnev ftrj fjgr hgkt'
+                }
+            });
+
+            await transporter.sendMail({
+                from: 'appnotificaciones68@gmail.com',
+                to: email,
+                subject: 'Código de Verificación',
+                text: `Tu código de verificación es: ${verificationCode}`
+            });
+
+            const pool = await poolPromise;
+            await pool.query('INSERT INTO verification_codes (email, code) VALUES (?, ?)', [email, verificationCode]);
+            res.json({ message: 'Código enviado correctamente' });
+        } catch (error) {
+            res.status(500).json({ message: 'Error al enviar el código' });
+        }
+    }
+
+    public async verifyCode(req: Request, res: Response): Promise<void> {
+        let { email, code } = sanitizeObject(req.body);
+        try {
+            const pool = await poolPromise;
+            const result = await pool.query('SELECT * FROM verification_codes WHERE email = ? AND code = ?', [email, code]);
+
+            if (result && Array.isArray(result) && result.length) {
+                await pool.query('UPDATE verification_codes SET estatus = ? WHERE email = ? AND code = ?', ['Verificado', email, code]);
+                res.json({ success: true, message: 'Código verificado' });
+            } else {
+                res.status(400).json({ success: false, message: 'Código inválido' });
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'Error al verificar el código' });
+        }
+    }
+
+    public async sendNewPassword(req: Request, res: Response): Promise<void> {
+        const { email } = req.body;
+        if (!email) {
+            res.status(400).json({ message: 'El correo electrónico es requerido' });
+            return;
+        }
+        try {
+            // Generar contraseña que cumpla los requisitos de validación
+            function generateSecurePassword(length = 10): string {
+                const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                const lower = 'abcdefghijklmnopqrstuvwxyz';
+                const numbers = '0123456789';
+                const special = '!@#$%^&*(),.?":{}|<>';
+                const allChars = upper + lower + numbers + special;
+
+                let password = '';
+                // Aseguramos al menos un caracter de cada tipo
+                password += upper[Math.floor(Math.random() * upper.length)];
+                password += lower[Math.floor(Math.random() * lower.length)];
+                password += numbers[Math.floor(Math.random() * numbers.length)];
+                password += special[Math.floor(Math.random() * special.length)];
+
+                // Completar con caracteres aleatorios hasta alcanzar longitud deseada
+                for (let i = 4; i < length; i++) {
+                    password += allChars[Math.floor(Math.random() * allChars.length)];
+                }
+
+                // Mezclar la contraseña para no dejar en orden fijo
+                password = password.split('').sort(() => 0.5 - Math.random()).join('');
+                return password;
+            }
+
+            const newPasswordPlain = generateSecurePassword(10);
+
+            // Encriptar la nueva contraseña antes de guardarla
+            const saltRounds = 10;
+            const newPasswordHashed = await bcrypt.hash(newPasswordPlain, saltRounds);
+
+            const pool = await poolPromise;
+            const [users]: any = await pool.query('SELECT id_usuario FROM usuarios WHERE email = ?', [email]);
+            if (users.length === 0) {
+                res.status(404).json({ message: 'Usuario no encontrado' });
+                return;
+            }
+            // Hash de la nueva contraseña
+            const hashedPassword = await bcrypt.hash(newPasswordPlain, 10);
+            await pool.query('UPDATE usuarios SET contrasena = ? WHERE email = ?', [hashedPassword, email]);
+
+            // 3. Enviar el correo
+            const transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: 'appnotificaciones68@gmail.com',
+                    pass: 'nnev ftrj fjgr hgkt'
+                }
+            });
+
+            await transporter.sendMail({
+                from: 'appnotificaciones68@gmail.com',
+                to: email,
+                subject: 'Nueva contraseña',
+                text: `Tu nueva contraseña es: ${newPasswordPlain}`,
+                html: `<p>Tu nueva contraseña es: <strong>${newPasswordPlain}</strong></p>
+                   <p>Por seguridad, te recomendamos cambiarla después de iniciar sesión.</p>`
+            });
+
+            res.json({ message: 'Nueva contraseña enviada correctamente' });
+        } catch (error) {
+            console.error('Error en sendNewPassword:', error);
+            res.status(500).json({ message: 'Error al procesar la solicitud' });
+        }
+    }
+
+    public async uploadImage(req: Request, res: Response): Promise<void> {
+        try {
+            if (!req.file) {
+                res.status(400).json({ message: 'No se ha subido ningún archivo' });
+                return;
+            }
+
+            const filePath = req.file.filename;
+            res.json({
+                success: true,
+                filename: filePath,
+                message: 'Imagen subida correctamente'
+            });
+        } catch (error) {
+            console.error('Error al subir la imagen:', error);
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            res.status(500).json({
+                success: false,
+                message: 'Error al subir la imagen',
+                error: errorMessage
+            });
+        }
+    }
+
+    public async login(req: Request, res: Response): Promise<void> {
+        try {
+            const { email, contrasena } = req.body;
+            const pool = await poolPromise;
+            const result = await pool.query('SELECT * FROM usuarios WHERE email = ?', [email]);
+            if (result.length > 0) {
+                const user = result[0];
+                const match = await bcrypt.compare(contrasena, user.contrasena);
+                if (!match) {
+                    res.status(401).json({ success: false, message: "Credenciales incorrectas" });
+                    return;
+                }
+                res.json({ success: true, message: "Inicio de sesión exitoso", user });
+            } else {
+                res.status(401).json({ success: false, message: "Credenciales incorrectas" });
+            }
+        } catch (error) {
+            res.status(500).json({ success: false, message: "Error interno del servidor" });
+        }
+    }
+}
+
+const usuariosController = new UsuariosController();
+export { upload, usuariosController };
