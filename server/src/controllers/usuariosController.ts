@@ -97,6 +97,7 @@ class UsuariosController {
         }
     }
 
+    //Evidencia punto A04:2021 - Insecure Design
     public async getOne(req: Request, res: Response): Promise<void> {
         // Sanitizamos id_usuario que viene por parámetro (aunque generalmente es numérico)
         const id_usuario = sanitizeString(req.params.id_usuario);
