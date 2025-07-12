@@ -5,7 +5,8 @@
   "scripts": {
     "build": "tsc -w",
     "start": "node build/index.js",
-    "dev": "nodemon build/index.js"
+    "dev": "nodemon build/index.js",
+    "cronUpdateLibraries": "node build/cronUpdateLibraries.js"
   },
   "keywords": [],
   "author": "",
