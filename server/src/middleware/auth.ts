@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import config from '../config/config';
+import { logSuspiciousActivity } from '../utils/logger';
 
 interface JwtPayload {
     id: number;
@@ -25,22 +26,19 @@ export const securityHeaders = (req: Request, res: Response, next: NextFunction)
 // Middleware de autenticación (exportado)
 export const auth = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        // Aplicamos los headers de seguridad primero
         securityHeaders(req, res, () => {});
-        
         const token = req.header('Authorization')?.replace('Bearer ', '');
-        
         if (!token) {
+            logSuspiciousActivity(req.ip ?? 'unknown', 'Token ausente');
             res.status(401).json({ error: 'Por favor autentícate' });
             return;
         }
-
         const decoded = jwt.verify(token, config.jwtSecret) as JwtPayload;
         (req as any).token = token;
         (req as any).user = decoded;
-        
         next();
     } catch (err) {
+        logSuspiciousActivity(req.ip ?? 'unknown', 'Token inválido');
         res.status(401).json({ error: 'Por favor autentícate' });
     }
 };

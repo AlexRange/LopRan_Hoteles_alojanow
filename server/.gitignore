@@ -2,3 +2,4 @@ node_modules/
 
 # Ignorar la carpeta de build
 build/
+.env
