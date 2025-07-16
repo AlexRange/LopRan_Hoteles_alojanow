@@ -1,0 +1,6 @@
+projectKey=AlojaNowARP
+serverUrl=http://localhost:9000
+serverVersion=25.7.0.110598
+dashboardUrl=http://localhost:9000/dashboard?id=AlojaNowARP
+ceTaskId=2c89796b-7000-4b54-a069-817619e04abb
+ceTaskUrl=http://localhost:9000/api/ce/task?id=2c89796b-7000-4b54-a069-817619e04abb
