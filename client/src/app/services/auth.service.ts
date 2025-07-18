@@ -12,7 +12,7 @@ import Swal from 'sweetalert2';
 export class Auth implements OnDestroy {
   private currentUserSubject: BehaviorSubject<Usuarios | null>;
   public currentUser$: Observable<Usuarios | null>;
-  private apiUrl = 'https://localhost:4000/api';
+  private apiUrl = 'http://localhost:4000/api';
   private tokenExpirationTimer: any;
   private tempAuthData: { email: string, contrasena: string, userData?: any, token?: string } | null = null;
 

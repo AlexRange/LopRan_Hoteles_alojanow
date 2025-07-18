@@ -44,8 +44,8 @@ class LoginController {
 
                 // Actualizar tanto el token como la fecha de último login
                 await pool.query(
-                    'UPDATE usuarios SET token = ?, ultimo_login = CURRENT_TIMESTAMP WHERE id_usuario = ?',
-                    [token, user.id_usuario]
+                    'UPDATE usuarios SET ultimo_login = CURRENT_TIMESTAMP WHERE id_usuario = ?',
+                    [user.id_usuario]
                 );
 
                 await pool.query('UPDATE usuarios SET token = ? WHERE id_usuario = ?', [token, user.id_usuario]);

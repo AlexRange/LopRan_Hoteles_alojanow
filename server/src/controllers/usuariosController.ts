@@ -6,27 +6,7 @@ import multer, { FileFilterCallback } from 'multer';
 import nodemailer from 'nodemailer';
 import path from 'path';
 import poolPromise from '../database';
-import { body, validationResult, param } from 'express-validator';
-import validator from 'validator';
 import xss from 'xss';
-import * as net from 'net';
-
-// Utility functions
-function sanitizeString(str: string): string {
-    return validator.escape(validator.trim(str));
-}
-
-function sanitizeObject(obj: any): any {
-    const sanitized: any = {};
-    for (const key in obj) {
-        if (typeof obj[key] === 'string') {
-            sanitized[key] = sanitizeString(obj[key]);
-        } else {
-            sanitized[key] = obj[key];
-        }
-    }
-    return sanitized;
-}
 
 // Extender la interfaz Request para incluir la propiedad file
 declare global {
@@ -71,20 +51,28 @@ const upload = multer({
     }
 });
 
-// Middleware de validación para crear usuario
-export const validateCreateUser = [
-    body('email').isEmail().withMessage('Email inválido'),
-    body('contrasena').isLength({ min: 6 }).withMessage('Contraseña muy corta'),
-    body('nombre').isLength({ min: 1 }).withMessage('Nombre requerido'),
-    // Agrega validaciones para otros campos según tu modelo
-];
+function sanitizeObject(obj: any): any {
+    if (!obj || typeof obj !== 'object') return obj;
 
-// Middleware de validación para actualizar usuario
-export const validateUpdateUser = [
-    param('id_usuario').isInt().withMessage('ID inválido'),
-    body('nombre').optional().isLength({ min: 1 }).withMessage('Nombre requerido'),
-    // Agrega validaciones para otros campos
-];
+    const sanitized: any = {};
+    for (const key in obj) {
+        if (!obj.hasOwnProperty(key)) continue;
+        const value = obj[key];
+        if (typeof value === 'string') {
+            sanitized[key] = xss(value);
+        } else if (typeof value === 'object' && value !== null) {
+            // Sanitizar recursivamente objetos anidados
+            sanitized[key] = sanitizeObject(value);
+        } else {
+            sanitized[key] = value;
+        }
+    }
+    return sanitized;
+}
+
+function sanitizeString(value: string): string {
+    return xss(value);
+}
 
 class UsuariosController {
     public async list(req: Request, res: Response): Promise<void> {
@@ -97,7 +85,6 @@ class UsuariosController {
         }
     }
 
-    //Evidencia punto A04:2021 - Insecure Design
     public async getOne(req: Request, res: Response): Promise<void> {
         // Sanitizamos id_usuario que viene por parámetro (aunque generalmente es numérico)
         const id_usuario = sanitizeString(req.params.id_usuario);
@@ -116,24 +103,12 @@ class UsuariosController {
     }
 
     public async create(req: Request, res: Response): Promise<void> {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            res.status(400).json({ errors: errors.array() });
-            return;
-        }
         try {
             const pool = await poolPromise;
             const countResult = await pool.query('SELECT COUNT(*) as total FROM usuarios');
             const count = Array.isArray(countResult) ? countResult[0].total : 0;
 
-            const userData = req.body;
-
-            // Sanitizar campos
-            userData.nombre = validator.escape(userData.nombre);
-            userData.email = validator.normalizeEmail(userData.email);
-
-            // Hash de contraseña
-            userData.contrasena = await bcrypt.hash(userData.contrasena, 10);
+            let userData = sanitizeObject(req.body);
 
             if (count === 0) {
                 userData.tipo = 'admin';
@@ -167,12 +142,7 @@ class UsuariosController {
     }
 
     public async update(req: Request, res: Response): Promise<void> {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            res.status(400).json({ errors: errors.array() });
-            return;
-        }
-        const { id_usuario } = req.params;
+        const id_usuario = sanitizeString(req.params.id_usuario);
         try {
             let updatedData = sanitizeObject(req.body);
 
@@ -182,15 +152,7 @@ class UsuariosController {
             }
 
             const pool = await poolPromise;
-            const updateData = req.body;
-
-            // Sanitizar campos
-            if (updateData.nombre) updateData.nombre = validator.escape(updateData.nombre);
-            if (updateData.contrasena) {
-                updateData.contrasena = await bcrypt.hash(updateData.contrasena, 10);
-            }
-
-            await pool.query('UPDATE usuarios SET ? WHERE id_usuario = ?', [updateData, id_usuario]);
+            await pool.query('UPDATE usuarios SET ? WHERE id_usuario = ?', [updatedData, id_usuario]);
             res.json({ message: "Usuario actualizado correctamente" });
         } catch (error) {
             res.status(500).json({ message: 'Error al actualizar el usuario' });
@@ -243,11 +205,13 @@ class UsuariosController {
     }
 
     public async sendNewPassword(req: Request, res: Response): Promise<void> {
-        const { email } = req.body;
+        let { email } = sanitizeObject(req.body);
+
         if (!email) {
             res.status(400).json({ message: 'El correo electrónico es requerido' });
             return;
         }
+
         try {
             // Generar contraseña que cumpla los requisitos de validación
             function generateSecurePassword(length = 10): string {
@@ -281,16 +245,18 @@ class UsuariosController {
             const newPasswordHashed = await bcrypt.hash(newPasswordPlain, saltRounds);
 
             const pool = await poolPromise;
+
+            // Verificar si el usuario existe
             const [users]: any = await pool.query('SELECT id_usuario FROM usuarios WHERE email = ?', [email]);
             if (users.length === 0) {
                 res.status(404).json({ message: 'Usuario no encontrado' });
                 return;
             }
-            // Hash de la nueva contraseña
-            const hashedPassword = await bcrypt.hash(newPasswordPlain, 10);
-            await pool.query('UPDATE usuarios SET contrasena = ? WHERE email = ?', [hashedPassword, email]);
 
-            // 3. Enviar el correo
+            // Actualizar la contraseña en la base de datos con la versión encriptada
+            await pool.query('UPDATE usuarios SET contrasena = ? WHERE email = ?', [newPasswordHashed, email]);
+
+            // Configurar y enviar el correo con la contraseña en texto plano
             const transporter = nodemailer.createTransport({
                 service: 'gmail',
                 auth: {
@@ -336,27 +302,6 @@ class UsuariosController {
                 message: 'Error al subir la imagen',
                 error: errorMessage
             });
-        }
-    }
-
-    public async login(req: Request, res: Response): Promise<void> {
-        try {
-            const { email, contrasena } = req.body;
-            const pool = await poolPromise;
-            const result = await pool.query('SELECT * FROM usuarios WHERE email = ?', [email]);
-            if (result.length > 0) {
-                const user = result[0];
-                const match = await bcrypt.compare(contrasena, user.contrasena);
-                if (!match) {
-                    res.status(401).json({ success: false, message: "Credenciales incorrectas" });
-                    return;
-                }
-                res.json({ success: true, message: "Inicio de sesión exitoso", user });
-            } else {
-                res.status(401).json({ success: false, message: "Credenciales incorrectas" });
-            }
-        } catch (error) {
-            res.status(500).json({ success: false, message: "Error interno del servidor" });
         }
     }
 }
